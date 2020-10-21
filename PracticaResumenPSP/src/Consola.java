@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 public class Consola {
 	
 	public static void main(String args[]) {
