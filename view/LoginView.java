@@ -2,8 +2,9 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,21 +12,24 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
+import dao.UserDAO;
+import model.Employee;
 
 public class LoginView {
 
 	private JFrame frame;
-	private JTextField txtUsuario;
+	private JTextField txtUser;
 	private JPasswordField txtPassword;
 	private JButton btnLogin;
+	private UserDAO userDAO;
 
 	/**
-	 * Crea la aplicación
+	 * Crea la aplicaciÃ³n
 	 */
 	public LoginView() {
 		initialize();
+		userDAO = new UserDAO();
 	}
 
 	/**
@@ -48,16 +52,18 @@ public class LoginView {
 	private void setControllers() {
 		btnLogin.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				if (true) { // TODO: rellenar if con el método de usuarioDAO correspondiente
-					// Comprobar que tipo de usuario entró (ventas o mecánico)
-					if (true) { // TODO: rellenar if 
+				var user = createEmployee();
+				if (userDAO.login(user)) {
+					// Comprobar que tipo de usuario entra (ventas o mecÃ¡nico)
+					if (userDAO.isSalesEmployee(user)) {
 						new SalesLandingView().getFrame().setVisible(true);
 						frame.dispose();
-					} else { // si es de mecánica (próximamente en otro sprint)
-						
+					} else { // si es de mecÃ¡nica (prÃ³ximamente en otro sprint)
+						//new MechanicalLadingView().getFrame().setVisible(true);
+						frame.dispose();
 					}
 				} else {
-					JOptionPane.showMessageDialog(frame, null, "Usuario o contraseña incorrecto",
+					JOptionPane.showMessageDialog(frame, "Usuario o contraseï¿½a incorrecto", "Warning!",
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -73,12 +79,12 @@ public class LoginView {
 		frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		mainPanel.setLayout(null);
 
-		txtUsuario = new JTextField();
-		txtUsuario.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		txtUsuario.setText("Usuario");
-		txtUsuario.setBounds(295, 210, 191, 30);
-		mainPanel.add(txtUsuario);
-		txtUsuario.setColumns(10);
+		txtUser = new JTextField();
+		txtUser.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		txtUser.setText("Usuario");
+		txtUser.setBounds(295, 210, 191, 30);
+		mainPanel.add(txtUser);
+		txtUser.setColumns(10);
 
 		btnLogin = new JButton("Acceder");
 
@@ -92,6 +98,16 @@ public class LoginView {
 		txtPassword = new JPasswordField("Usuario");
 		txtPassword.setBounds(295, 259, 191, 30);
 		mainPanel.add(txtPassword);
+	}
+	
+	/**
+	 * Crea un usuario con los datos de los textField
+	 * @return
+	 */
+	private Employee createEmployee() {
+		var username = txtUser.getText();
+		var password = txtUser.getText();
+		return new Employee(username, password);
 	}
 
 	public JFrame getFrame() {
