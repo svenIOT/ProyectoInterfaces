@@ -63,7 +63,7 @@ public class LoginView {
 						frame.dispose();
 					}
 				} else {
-					JOptionPane.showMessageDialog(frame, "Usuario o contrase�a incorrecto", "Warning!",
+					JOptionPane.showMessageDialog(frame, "Usuario o contraseña incorrecto", "Warning!",
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}
