@@ -34,10 +34,10 @@ public class UserDAO extends AbstractDAO {
 	 * @return
 	 */
 	public boolean isSalesEmployee(Employee e) {
-		var isSales = false;
+		var isSales = true;
 		try {
 			stm = con.createStatement();
-			rs = stm.executeQuery("SELECT * FROM empleado INNER JOIN VENTAS ON empleado.cod_empleado = ventas.cod_empleado WHERE username='" + e.getUsername()
+			rs = stm.executeQuery("SELECT * FROM empleado INNER JOIN VENTAS ON empleado.cod_empleado = ventas.cod_empleado WHERE usuario='" + e.getUsername()
 					+ "' AND contrasena='" + e.getPassword() + "'");
 			isSales = rs.next();
 		} catch (Exception ex) {

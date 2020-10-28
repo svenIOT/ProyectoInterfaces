@@ -27,7 +27,7 @@ public class SalesLandingView {
 	private JComboBox<?> vehicleComboBox;
 
 	/**
-	 * Crea la aplicaci�n
+	 * Crea la aplicación
 	 */
 	public SalesLandingView() {
 		initialize();
@@ -64,15 +64,15 @@ public class SalesLandingView {
 			}
 		});
 
-		// Combobox de veh�culos
+		// Combobox de vehículos
 		vehicleComboBox.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
-				if (vehicleComboBox.getSelectedItem().toString().equals("Alta veh�culo")) {
-					// TODO: abrir ventana alta cliente
+				if (vehicleComboBox.getSelectedItem().toString().equals("Alta vehículo")) {
+					// TODO: abrir ventana alta vehículo
 					vehicleComboBox.setSelectedIndex(0);
 				}
-				if (vehicleComboBox.getSelectedItem().toString().equals("Listar veh�culo")) {
-					// TODO: abrir ventana buscar cliente
+				if (vehicleComboBox.getSelectedItem().toString().equals("Listar vehículo")) {
+					// TODO: abrir ventana buscar vehículo
 					vehicleComboBox.setSelectedIndex(0);
 				}
 			}
@@ -108,7 +108,7 @@ public class SalesLandingView {
 		bottomPanel.setBackground(new Color(233, 196, 106));
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 
-		btnLogOut = new JButton("Cerrar Sesi�n");
+		btnLogOut = new JButton("Cerrar Sesión");
 
 		btnLogOut.setBorder(null);
 		btnLogOut.setBackground(new Color(233, 196, 106));
@@ -132,7 +132,7 @@ public class SalesLandingView {
 		JPanel headerPanel = new JPanel();
 		mainPanel.add(headerPanel);
 
-		JLabel lblNewLabel = new JLabel("Men\u00FA Principal");
+		JLabel lblNewLabel = new JLabel("Menú Principal");
 		lblNewLabel.setFont(new Font("SansSerif", Font.BOLD, 25));
 		headerPanel.add(lblNewLabel);
 
@@ -141,7 +141,7 @@ public class SalesLandingView {
 		mainPanel.add(customerPanel);
 		customerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 80));
 
-		JLabel lblCustomers = new JLabel("Gesti\u00F3n de clientes");
+		JLabel lblCustomers = new JLabel("Gestión de clientes");
 		lblCustomers.setFont(new Font("SansSerif", Font.BOLD, 18));
 		customerPanel.add(lblCustomers);
 
@@ -155,12 +155,12 @@ public class SalesLandingView {
 		mainPanel.add(vehiclesPanel);
 		vehiclesPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 80));
 
-		JLabel lblGestinDeVehculos = new JLabel("Gesti\u00F3n de veh\u00EDculos");
+		JLabel lblGestinDeVehculos = new JLabel("Gestión de vehículos");
 		lblGestinDeVehculos.setFont(new Font("SansSerif", Font.BOLD, 18));
 		vehiclesPanel.add(lblGestinDeVehculos);
 
 		vehicleComboBox = new JComboBox();
-		vehicleComboBox.setModel(new DefaultComboBoxModel(new String[] {"Elige una", "Alta veh\u00EDculo", "Listar veh\u00EDculo"}));
+		vehicleComboBox.setModel(new DefaultComboBoxModel(new String[] {"Elige una", "Alta vehículo", "Listar vehículo"}));
 		vehicleComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesPanel.add(vehicleComboBox);
 

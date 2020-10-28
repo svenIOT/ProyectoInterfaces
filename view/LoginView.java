@@ -106,7 +106,7 @@ public class LoginView {
 	 */
 	private Employee createEmployee() {
 		var username = txtUser.getText();
-		var password = txtUser.getText();
+		var password = new String (txtPassword.getPassword());
 		return new Employee(username, password);
 	}
 
