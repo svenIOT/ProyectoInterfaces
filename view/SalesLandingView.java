@@ -6,18 +6,20 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
-import javax.swing.JButton;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 
 public class SalesLandingView {
 
@@ -51,15 +53,15 @@ public class SalesLandingView {
 	 */
 	private void setControllers() {
 		// Combobox de clientes
-		customerComboBox.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
-				if (customerComboBox.getSelectedItem().toString().equals("Alta cliente")) {
+		customerComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Alta cliente")) {
 					// TODO: abrir ventana alta cliente
-					customerComboBox.setSelectedIndex(0);
+					vehicleComboBox.setSelectedIndex(0);
 				}
-				if (customerComboBox.getSelectedItem().toString().equals("Listar cliente")) {
-					// TODO: abrir ventana buscar cliente
-					customerComboBox.setSelectedIndex(0);
+				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar cliente")) {
+					new SalesSearchAndListClientView().getFrame().setVisible(true);
+					frame.dispose();
 				}
 			}
 		});
@@ -67,14 +69,7 @@ public class SalesLandingView {
 		// Combobox de vehículos
 		vehicleComboBox.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
-				if (vehicleComboBox.getSelectedItem().toString().equals("Alta vehículo")) {
-					// TODO: abrir ventana alta vehículo
-					vehicleComboBox.setSelectedIndex(0);
-				}
-				if (vehicleComboBox.getSelectedItem().toString().equals("Listar vehículo")) {
-					// TODO: abrir ventana buscar vehículo
-					vehicleComboBox.setSelectedIndex(0);
-				}
+
 			}
 		});
 
@@ -146,7 +141,8 @@ public class SalesLandingView {
 		customerPanel.add(lblCustomers);
 
 		customerComboBox = new JComboBox();
-		customerComboBox.setModel(new DefaultComboBoxModel(new String[] {"Elige una", "Alta cliente", "Listar cliente"}));
+		customerComboBox
+				.setModel(new DefaultComboBoxModel(new String[] { "Elige una", "Alta cliente", "Listar cliente" }));
 		customerComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		customerPanel.add(customerComboBox);
 
@@ -160,7 +156,8 @@ public class SalesLandingView {
 		vehiclesPanel.add(lblGestinDeVehculos);
 
 		vehicleComboBox = new JComboBox();
-		vehicleComboBox.setModel(new DefaultComboBoxModel(new String[] {"Elige una", "Alta vehículo", "Listar vehículo"}));
+		vehicleComboBox
+				.setModel(new DefaultComboBoxModel(new String[] { "Elige una", "Alta vehículo", "Listar vehículo" }));
 		vehicleComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesPanel.add(vehicleComboBox);
 
