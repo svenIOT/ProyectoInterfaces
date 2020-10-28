@@ -10,6 +10,11 @@ public class UserDAO extends AbstractDAO {
 		super();
 	}
 
+	/**
+	 * Comprueba si el empleado existe en la BBDD
+	 * @param e
+	 * @return
+	 */
 	public boolean login(Employee e) {
 		boolean isLogin = false;
 		try {
@@ -23,6 +28,11 @@ public class UserDAO extends AbstractDAO {
 		return isLogin;
 	}
 
+	/**
+	 * Comprueba si el empleado pertenece al departamento de ventas
+	 * @param e
+	 * @return
+	 */
 	public boolean isSalesEmployee(Employee e) {
 		var isSales = false;
 		try {
