@@ -24,6 +24,7 @@ public class SalesSearchAndListClientView {
 	private JButton btnBackToMenu;
 	private JTextField textFieldSearch;
 	private JTable clientTable;
+	private JButton btnSearch;
 
 	/**
 	 * Crea la aplicación
@@ -49,6 +50,12 @@ public class SalesSearchAndListClientView {
 	 * Contiene los controladores
 	 */
 	private void setControllers() {
+		//Botón buscar cliente
+		btnSearch.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				// TODO: clientDAO buscar cliente
+			}
+		});
 
 		// Volver al menú principal
 		btnBackToMenu.addMouseListener(new MouseAdapter() {
@@ -138,7 +145,7 @@ public class SalesSearchAndListClientView {
 		searchPanel.add(textFieldSearch);
 		textFieldSearch.setColumns(20);
 
-		JButton btnSearch = new JButton("Buscar cliente");
+		btnSearch = new JButton("Buscar cliente");
 		btnSearch.setForeground(Color.WHITE);
 		btnSearch.setFont(new Font("SansSerif", Font.BOLD, 15));
 		btnSearch.setBorderPainted(false);

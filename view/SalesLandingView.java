@@ -55,11 +55,10 @@ public class SalesLandingView {
 		// Combobox de clientes
 		customerComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Alta cliente")) {
+				if (customerComboBox.getSelectedItem().toString().equalsIgnoreCase("Alta cliente")) {
 					// TODO: abrir ventana alta cliente
-					vehicleComboBox.setSelectedIndex(0);
 				}
-				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar cliente")) {
+				if (customerComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar cliente")) {
 					new SalesSearchAndListClientView().getFrame().setVisible(true);
 					frame.dispose();
 				}
