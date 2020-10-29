@@ -15,7 +15,7 @@ public class ClientDAO extends AbstractDAO {
 	 * Añade un cliente a la BBDD
 	 * @param e Objeto cliente
 	 */
-	protected void addClient(Client e) {
+	public void addClient(Client e) {
 		try {
 			stm = con.createStatement();
 			stm.executeUpdate("INSERT INTO taller.cliente (cod_cliente, dni) VALUES (0, " + e.getDni() + ")");
@@ -29,7 +29,7 @@ public class ClientDAO extends AbstractDAO {
 	 * 
 	 * @return Lista de clientes
 	 */
-	protected List<Client> fillTable() {
+	public List<Client> fillTable() {
 		var clients = new ArrayList<Client>();
 		try {
 			stm = con.createStatement();
@@ -52,7 +52,7 @@ public class ClientDAO extends AbstractDAO {
 	 * @param dni String
 	 * @return Objeto cliente
 	 */
-	protected Client searchClient(String dni) {
+	public Client searchClient(String dni) {
 		Client client = null;
 		try {
 			stm = con.createStatement();

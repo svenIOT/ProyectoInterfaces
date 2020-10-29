@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 import javax.swing.JButton;
@@ -17,6 +18,10 @@ import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import dao.ClientDAO;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 public class SalesSearchAndListClientView {
 
 	private JFrame frame;
@@ -25,12 +30,14 @@ public class SalesSearchAndListClientView {
 	private JTextField textFieldSearch;
 	private JTable clientTable;
 	private JButton btnSearch;
+	private ClientDAO clientDAO;
 
 	/**
 	 * Crea la aplicación
 	 */
 	public SalesSearchAndListClientView() {
 		initialize();
+		clientDAO = new ClientDAO();
 	}
 
 	/**
@@ -50,10 +57,42 @@ public class SalesSearchAndListClientView {
 	 * Contiene los controladores
 	 */
 	private void setControllers() {
-		//Botón buscar cliente
+		// Al abrir la ventana se rellena la tabla con TODOS los clientes
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowOpened(WindowEvent e) {
+				// Insertar los clientes en la tabla clientes
+				var clientList = clientDAO.fillTable();
+				if (clientList != null) {
+					for (var i = 0; i < clientList.size(); ++i) {
+						var tableModel = (DefaultTableModel) clientTable.getModel();
+						tableModel.addRow(new Object[] { clientList.get(i).getClientCod() , clientList.get(i).getDni(),
+								clientList.get(i).getNombre(), clientList.get(i).getApellidos(), clientList.get(i).getTelefono() });
+					}
+				}
+			}
+		});
+
+		// Botón buscar cliente
 		btnSearch.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// TODO: clientDAO buscar cliente
+				// Reiniciar el contenido de la tabla clientes
+				var rows = clientTable.getRowCount();
+				clientTable.removeRowSelectionInterval(0, rows);
+
+				// Buscar cliente por dni
+				var dni = textFieldSearch.getText();
+				var clientResult = clientDAO.searchClient(dni);
+
+				// Insertar el cliente devuelto en la tabla clientes
+				if (clientResult != null) {
+					var tableModel = (DefaultTableModel) clientTable.getModel();
+					tableModel.addRow(new Object[] { clientResult.getClientCod(), clientResult.getDni(),
+							clientResult.getNombre(), clientResult.getApellidos(), clientResult.getTelefono() });
+				} else {
+					JOptionPane.showMessageDialog(frame, "Cliente no encontrado, revise el DNI", "Warning!",
+							JOptionPane.ERROR_MESSAGE);
+				}
+
 			}
 		});
 
@@ -159,21 +198,31 @@ public class SalesSearchAndListClientView {
 
 		clientTable = new JTable();
 		clientTable.setFont(new Font("SansSerif", Font.BOLD, 15));
-		clientTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "C\u00F3digo", "DNI", "Nombre", "Apellidos", "Tel\u00E9fono" }) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class };
-
+		clientTable.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null},
+			},
+			new String[] {
+				"C\u00F3digo", "DNI", "Nombre", "Apellidos", "Tel\u00E9fono"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Integer.class, String.class, String.class, String.class, String.class
+			};
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 		});
-		clientTable.getColumnModel().getColumn(0).setPreferredWidth(45);
+		clientTable.getColumnModel().getColumn(0).setPreferredWidth(80);
 		clientTable.getColumnModel().getColumn(0).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+		clientTable.getColumnModel().getColumn(1).setPreferredWidth(180);
 		clientTable.getColumnModel().getColumn(1).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(2).setPreferredWidth(95);
-		clientTable.getColumnModel().getColumn(3).setPreferredWidth(150);
+		clientTable.getColumnModel().getColumn(2).setPreferredWidth(180);
+		clientTable.getColumnModel().getColumn(2).setMaxWidth(555);
+		clientTable.getColumnModel().getColumn(3).setPreferredWidth(250);
+		clientTable.getColumnModel().getColumn(3).setMaxWidth(555);
 		clientTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+		clientTable.getColumnModel().getColumn(4).setMaxWidth(555);
 		listPanel.add(clientTable);
 
 	}
