@@ -21,6 +21,9 @@ import javax.swing.table.DefaultTableModel;
 import dao.ClientDAO;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 public class SalesSearchAndListClientView {
 
@@ -65,8 +68,9 @@ public class SalesSearchAndListClientView {
 				if (clientList != null) {
 					for (var i = 0; i < clientList.size(); ++i) {
 						var tableModel = (DefaultTableModel) clientTable.getModel();
-						tableModel.addRow(new Object[] { clientList.get(i).getClientCod() , clientList.get(i).getDni(),
-								clientList.get(i).getNombre(), clientList.get(i).getApellidos(), clientList.get(i).getTelefono() });
+						tableModel.addRow(new Object[] { clientList.get(i).getClientCod(), clientList.get(i).getDni(),
+								clientList.get(i).getNombre(), clientList.get(i).getApellidos(),
+								clientList.get(i).getTelefono() });
 					}
 				}
 			}
@@ -75,9 +79,15 @@ public class SalesSearchAndListClientView {
 		// Botón buscar cliente
 		btnSearch.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
+				var tableModel = (DefaultTableModel) clientTable.getModel();
 				// Reiniciar el contenido de la tabla clientes
 				var rows = clientTable.getRowCount();
-				clientTable.removeRowSelectionInterval(0, rows);
+				// Si hay filas las elimina
+				if (rows > 0) {
+					for (var i = 0; i < rows; ++i) {
+						tableModel.removeRow(i);
+					}
+				}
 
 				// Buscar cliente por dni
 				var dni = textFieldSearch.getText();
@@ -85,7 +95,6 @@ public class SalesSearchAndListClientView {
 
 				// Insertar el cliente devuelto en la tabla clientes
 				if (clientResult != null) {
-					var tableModel = (DefaultTableModel) clientTable.getModel();
 					tableModel.addRow(new Object[] { clientResult.getClientCod(), clientResult.getDni(),
 							clientResult.getNombre(), clientResult.getApellidos(), clientResult.getTelefono() });
 				} else {
@@ -153,10 +162,20 @@ public class SalesSearchAndListClientView {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBorder(new MatteBorder(2, 2, 1, 1, (Color) new Color(0, 0, 0)));
 		frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setLayout(new GridLayout(3, 0, 0, 0));
+		GridBagLayout gbl_mainPanel = new GridBagLayout();
+		gbl_mainPanel.columnWidths = new int[] { 1063, 0 };
+		gbl_mainPanel.rowHeights = new int[] { 150, 150, 420, 0 };
+		gbl_mainPanel.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
+		gbl_mainPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		mainPanel.setLayout(gbl_mainPanel);
 
 		JPanel headerPanel = new JPanel();
-		mainPanel.add(headerPanel);
+		GridBagConstraints gbc_headerPanel = new GridBagConstraints();
+		gbc_headerPanel.fill = GridBagConstraints.BOTH;
+		gbc_headerPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_headerPanel.gridx = 0;
+		gbc_headerPanel.gridy = 0;
+		mainPanel.add(headerPanel, gbc_headerPanel);
 		headerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 150, 20));
 
 		btnBackToMenu = new JButton("Volver al menú");
@@ -171,7 +190,12 @@ public class SalesSearchAndListClientView {
 
 		JPanel searchPanel = new JPanel();
 		searchPanel.setBorder(new MatteBorder(1, 0, 1, 0, (Color) new Color(0, 0, 0)));
-		mainPanel.add(searchPanel);
+		GridBagConstraints gbc_searchPanel = new GridBagConstraints();
+		gbc_searchPanel.fill = GridBagConstraints.BOTH;
+		gbc_searchPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_searchPanel.gridx = 0;
+		gbc_searchPanel.gridy = 1;
+		mainPanel.add(searchPanel, gbc_searchPanel);
 		searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 70, 30));
 
 		JLabel lblSearch = new JLabel("DNI");
@@ -193,35 +217,32 @@ public class SalesSearchAndListClientView {
 
 		JPanel listPanel = new JPanel();
 		listPanel.setBorder(new MatteBorder(0, 1, 0, 0, (Color) new Color(0, 0, 0)));
-		mainPanel.add(listPanel);
-		listPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 10));
+		GridBagConstraints gbc_listPanel = new GridBagConstraints();
+		gbc_listPanel.fill = GridBagConstraints.BOTH;
+		gbc_listPanel.gridx = 0;
+		gbc_listPanel.gridy = 2;
+		mainPanel.add(listPanel, gbc_listPanel);
+		listPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 20));
 
 		clientTable = new JTable();
 		clientTable.setFont(new Font("SansSerif", Font.BOLD, 15));
-		clientTable.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null},
-			},
-			new String[] {
-				"C\u00F3digo", "DNI", "Nombre", "Apellidos", "Tel\u00E9fono"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				Integer.class, String.class, String.class, String.class, String.class
-			};
+		clientTable.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "C\u00F3digo", "DNI", "Nombre", "Apellidos", "Tel\u00E9fono" }) {
+			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class };
+
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 		});
 		clientTable.getColumnModel().getColumn(0).setPreferredWidth(80);
 		clientTable.getColumnModel().getColumn(0).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(1).setPreferredWidth(180);
+		clientTable.getColumnModel().getColumn(1).setPreferredWidth(200);
 		clientTable.getColumnModel().getColumn(1).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(2).setPreferredWidth(180);
+		clientTable.getColumnModel().getColumn(2).setPreferredWidth(200);
 		clientTable.getColumnModel().getColumn(2).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(3).setPreferredWidth(250);
+		clientTable.getColumnModel().getColumn(3).setPreferredWidth(280);
 		clientTable.getColumnModel().getColumn(3).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(4).setPreferredWidth(100);
+		clientTable.getColumnModel().getColumn(4).setPreferredWidth(200);
 		clientTable.getColumnModel().getColumn(4).setMaxWidth(555);
 		listPanel.add(clientTable);
 
