@@ -6,12 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -20,6 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class SalesLandingView {
 
@@ -27,6 +25,7 @@ public class SalesLandingView {
 	private JButton btnLogOut;
 	private JComboBox<?> customerComboBox;
 	private JComboBox<?> vehicleComboBox;
+	private JComboBox<?> salesComboBox;
 
 	/**
 	 * Crea la aplicación
@@ -53,8 +52,8 @@ public class SalesLandingView {
 	 */
 	private void setControllers() {
 		// Combobox de clientes
-		customerComboBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent arg0) {
+		customerComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				if (customerComboBox.getSelectedItem().toString().equalsIgnoreCase("Alta cliente")) {
 					new SalesAltaClientesView().getFrame().setVisible(true);
 					frame.dispose();
@@ -67,9 +66,9 @@ public class SalesLandingView {
 		});
 
 		// Combobox de vehículos
-		vehicleComboBox.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
-
+		customerComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
 			}
 		});
 
@@ -140,7 +139,11 @@ public class SalesLandingView {
 		lblCustomers.setFont(new Font("SansSerif", Font.BOLD, 18));
 		customerPanel.add(lblCustomers);
 
-		customerComboBox = new JComboBox();
+		customerComboBox = new JComboBox<>();
+		customerComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		customerComboBox
 				.setModel(new DefaultComboBoxModel(new String[] { "Elige una", "Alta cliente", "Listar cliente" }));
 		customerComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -155,7 +158,7 @@ public class SalesLandingView {
 		lblGestinDeVehculos.setFont(new Font("SansSerif", Font.BOLD, 18));
 		vehiclesPanel.add(lblGestinDeVehculos);
 
-		vehicleComboBox = new JComboBox();
+		vehicleComboBox = new JComboBox<>();
 		vehicleComboBox
 				.setModel(new DefaultComboBoxModel(new String[] { "Elige una", "Alta vehículo", "Listar vehículo" }));
 		vehicleComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -170,7 +173,7 @@ public class SalesLandingView {
 		lblSales.setFont(new Font("SansSerif", Font.BOLD, 18));
 		salesPanel.add(lblSales);
 
-		JComboBox salesComboBox = new JComboBox();
+		salesComboBox = new JComboBox<>();
 		salesComboBox.setModel(new DefaultComboBoxModel(new String[] { "In Process..." }));
 		salesComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		salesPanel.add(salesComboBox);

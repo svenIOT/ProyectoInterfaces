@@ -65,17 +65,13 @@ public class SalesAltaClientesView {
 		registerButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				var client = createClient();
-				if(client != null) {
+				if (client != null) {
 					clientDAO.addClient(client);
 					JOptionPane.showMessageDialog(frame, "Cliente añadido", "Success!",
 							JOptionPane.INFORMATION_MESSAGE);
-				} else {
-					JOptionPane.showMessageDialog(frame, "Error, revise los datos", "Warning!",
-							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
-		
 
 		// Volver al menú principal
 		backButton.addMouseListener(new MouseAdapter() {
@@ -92,8 +88,7 @@ public class SalesAltaClientesView {
 				frame.dispose();
 			}
 		});
-		
-		
+
 	}
 
 	private void setUIComponents() {
@@ -182,8 +177,7 @@ public class SalesAltaClientesView {
 		// Componentes panel derecho
 		// Añadir Jlabel y JText para los distintos datos del ciente
 		JLabel lblCod = new JLabel("Código de cliente:");
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblCod, 26, SpringLayout.NORTH,
-				clientDataPanelLeft);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblCod, 26, SpringLayout.NORTH, clientDataPanelLeft);
 		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblCod, 70, SpringLayout.WEST, clientDataPanelLeft);
 		lblCod.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		clientDataPanelLeft.add(lblCod);
@@ -265,29 +259,40 @@ public class SalesAltaClientesView {
 
 		// Botones
 		backButton = new JButton("Volver al menú");
-		backButton.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		backButton.setBackground(new Color(238, 151, 129));
+		backButton.setFont(new Font("SansSerif", Font.BOLD, 15));
+		backButton.setBackground(new Color(244, 162, 97));
 		backButton.setForeground(Color.WHITE);
 		bottonPanel.add(backButton);
 
 		registerButton = new JButton("Añadir cliente");
-		registerButton.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		registerButton.setBackground(new Color(244, 162, 97));
+		registerButton.setFont(new Font("SansSerif", Font.BOLD, 15));
+		registerButton.setBackground(new Color(231, 111, 81));
 		registerButton.setForeground(Color.WHITE);
 		bottonPanel.add(registerButton);
 
 	}
-	
+
 	/**
 	 * Crea un usuario con los datos de los textField
+	 * 
 	 * @return
 	 */
 	private Client createClient() {
+		Client client = null;
 		var name = txtName.getText();
 		var surnames = txtSurnames.getText();
 		var dni = txtDni.getText();
 		var telephone = txtTelephone.getText();
-		return new Client(dni, name, surnames, telephone);
+
+		if (txtDni.getText().isBlank() || txtName.getText().isBlank() || txtSurnames.getText().isBlank()
+				|| txtTelephone.getText().isBlank()) {
+			JOptionPane.showMessageDialog(frame, "Error, los campos no pueden estar vacios, ni contener solo espacios",
+					"Warning!", JOptionPane.ERROR_MESSAGE);
+		} else {
+			client = new Client(dni, name, surnames, telephone);
+		}
+
+		return client;
 	}
 
 	public JFrame getFrame() {
