@@ -283,12 +283,11 @@ public class SalesAltaClientesView {
 	 * @return
 	 */
 	private Client createClient() {
-		//var cod = txtCod.getText();
 		var name = txtName.getText();
 		var surnames = txtSurnames.getText();
 		var dni = txtDni.getText();
 		var telephone = txtTelephone.getText();
-		return new Client(name, surnames, dni, telephone);
+		return new Client(dni, name, surnames, telephone);
 	}
 
 	public JFrame getFrame() {
