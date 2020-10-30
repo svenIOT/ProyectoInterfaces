@@ -56,7 +56,8 @@ public class SalesLandingView {
 		customerComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				if (customerComboBox.getSelectedItem().toString().equalsIgnoreCase("Alta cliente")) {
-					// TODO: abrir ventana alta cliente
+					new SalesAltaClientesView().getFrame().setVisible(true);
+					frame.dispose();
 				}
 				if (customerComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar cliente")) {
 					new SalesSearchAndListClientView().getFrame().setVisible(true);

@@ -12,13 +12,16 @@ public class ClientDAO extends AbstractDAO {
 	}
 
 	/**
-	 * Añade un cliente a la BBDD
+	 * Añade un cliente a la BBDD (tabla persona y tabla cliente)
+	 * 
 	 * @param e Objeto cliente
 	 */
 	public void addClient(Client e) {
 		try {
 			stm = con.createStatement();
-			stm.executeUpdate("INSERT INTO taller.cliente (cod_cliente, dni) VALUES (0, " + e.getDni() + ")");
+			stm.executeUpdate("INSERT INTO taller.persona (dni, nombre, apellidos, telefono) VALUES (0, '" + e.getDni()
+					+ "', '" + e.getNombre() + "', '" + e.getApellidos() + "', '" + e.getTelefono() + "')");
+			stm.executeUpdate("INSERT INTO taller.cliente (cod_cliente, dni) VALUES (0, '" + e.getDni() + "')");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
