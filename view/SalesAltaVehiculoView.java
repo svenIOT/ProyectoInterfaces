@@ -3,13 +3,14 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -25,22 +26,11 @@ import javax.swing.border.MatteBorder;
 public class SalesAltaVehiculoView {
 
 	private JFrame frame;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SalesAltaVehiculoView window = new SalesAltaVehiculoView();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private JComboBox<?> vehicleTypeComboBox;
+	private JComboBox<?> fuelVehicleComboBox;
+	private JButton returnButton;
+	private JButton addVehicleButton;
+	private JButton btnLogOut;
 
 	/**
 	 * Create the application.
@@ -63,7 +53,21 @@ public class SalesAltaVehiculoView {
 	}
 	
 	private void setControllers() {
-		
+		// Volver al menú principal
+		returnButton.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						new SalesLandingView().getFrame().setVisible(true);
+						frame.dispose();
+					}
+				});
+
+				// Volver al login
+				btnLogOut.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						new LoginView().getFrame().setVisible(true);
+						frame.dispose();
+					}
+				});
 	}
 	
 	private void setUIComponents() {
@@ -91,7 +95,7 @@ public class SalesAltaVehiculoView {
 		bottomPanel.setBackground(new Color(233, 196, 106));
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 		//Se añaden los componentes al bottomPanel
-		JButton btnLogOut = new JButton("Cerrar Sesión");
+		btnLogOut = new JButton("Cerrar Sesión");
 		btnLogOut.setBorder(null);
 		btnLogOut.setBackground(new Color(233, 196, 106));
 		btnLogOut.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -156,7 +160,7 @@ public class SalesAltaVehiculoView {
 		vehicleTypeLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesDatesPanelLeft.add(vehicleTypeLbl);
 		
-		JComboBox vehicleTypeComboBox = new JComboBox();
+		vehicleTypeComboBox = new JComboBox<>();
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, vehicleTypeComboBox, 74, SpringLayout.EAST, vehicleTypeLbl);
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, vehicleTypeComboBox, -141, SpringLayout.EAST, vehiclesDatesPanelLeft);
 		vehicleTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"Coche","Motocicleta","Ciclomotor"}));
@@ -229,7 +233,7 @@ public class SalesAltaVehiculoView {
 		fuelVehicleLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesDatesPanelRight.add(fuelVehicleLbl);
 		
-		JComboBox fuelVehicleComboBox = new JComboBox();
+		fuelVehicleComboBox = new JComboBox<>();
 		fuelVehicleComboBox.setModel(new DefaultComboBoxModel(new String[] {"Diesel","Gasolina","Eléctrico","Híbrido"}));
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, fuelVehicleComboBox, -3, SpringLayout.NORTH, fuelVehicleLbl);
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, fuelVehicleComboBox, 74, SpringLayout.EAST, fuelVehicleLbl);
@@ -259,18 +263,22 @@ public class SalesAltaVehiculoView {
 		buttonPanel.setLayout(new FlowLayout(1,250,100));
 		
 		//Botones
-		JButton returnButton = new JButton("Volver al menú");
+		returnButton = new JButton("Volver al menú");
 		returnButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 		returnButton.setBackground(new Color(238, 151, 129));
 		returnButton.setForeground(Color.WHITE);
 		buttonPanel.add(returnButton);
 		
-		JButton addVehicleButton = new JButton("Añadir vehículo");
+		addVehicleButton = new JButton("Añadir vehículo");
 		addVehicleButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 		addVehicleButton.setBackground(new Color(244,162,97));
 		addVehicleButton.setForeground(Color.WHITE);
 		buttonPanel.add(addVehicleButton);
 			
+	}
+
+	public JFrame getFrame() {
+		return frame;
 	}
 
 }

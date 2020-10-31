@@ -66,9 +66,16 @@ public class SalesLandingView {
 		});
 
 		// Combobox de vehículos
-		customerComboBox.addActionListener(new ActionListener() {
+		vehicleComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Alta vehículo")) {
+					new SalesAltaVehiculoView().getFrame().setVisible(true);
+					frame.dispose();
+				}
+				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar vehículo")) {
+					//new Sales().getFrame().setVisible(true);
+					//frame.dispose();
+				}
 			}
 		});
 

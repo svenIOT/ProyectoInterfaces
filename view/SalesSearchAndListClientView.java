@@ -83,7 +83,7 @@ public class SalesSearchAndListClientView {
 				var rows = clientTable.getRowCount();
 				// Si hay filas las elimina
 				if (rows > 0) {
-					for (var i = 0; i < rows; ++i) {
+					for (var i = (rows - 1); i > -1; --i) {
 						tableModel.removeRow(i);
 					}
 				}
