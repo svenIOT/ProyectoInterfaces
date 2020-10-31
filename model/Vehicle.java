@@ -16,6 +16,19 @@ public class Vehicle {
 		this.cod_cliente = cod_cliente;
 		this.cod_conce = cod_conce;
 	}
+	
+	
+
+	public Vehicle(String num_bastidor, String marca, String modelo, String combustible, String precio) {
+		super();
+		this.num_bastidor = num_bastidor;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.combustible = combustible;
+		this.precio = precio;
+	}
+
+
 
 	public String getNum_bastidor() {
 		return num_bastidor;
