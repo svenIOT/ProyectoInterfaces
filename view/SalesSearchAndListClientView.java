@@ -23,6 +23,8 @@ import java.awt.event.WindowEvent;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import javax.swing.JScrollPane;
+import java.awt.Cursor;
 
 public class SalesSearchAndListClientView {
 
@@ -163,7 +165,7 @@ public class SalesSearchAndListClientView {
 		frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_mainPanel = new GridBagLayout();
 		gbl_mainPanel.columnWidths = new int[] { 1063, 0 };
-		gbl_mainPanel.rowHeights = new int[] { 150, 150, 420, 0 };
+		gbl_mainPanel.rowHeights = new int[] { 145, 110, 420, 0 };
 		gbl_mainPanel.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
 		gbl_mainPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		mainPanel.setLayout(gbl_mainPanel);
@@ -224,6 +226,10 @@ public class SalesSearchAndListClientView {
 		listPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 20));
 
 		clientTable = new JTable();
+		clientTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 15));
+		clientTable.getTableHeader().setForeground(Color.WHITE);
+		clientTable.getTableHeader().setBackground(new Color(244, 162, 97));
+		clientTable.setPreferredScrollableViewportSize(new Dimension(950, 400));
 		clientTable.setFont(new Font("SansSerif", Font.BOLD, 15));
 		clientTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "C\u00F3digo", "DNI", "Nombre", "Apellidos", "Tel\u00E9fono" }) {
@@ -243,7 +249,12 @@ public class SalesSearchAndListClientView {
 		clientTable.getColumnModel().getColumn(3).setMaxWidth(555);
 		clientTable.getColumnModel().getColumn(4).setPreferredWidth(200);
 		clientTable.getColumnModel().getColumn(4).setMaxWidth(555);
-		listPanel.add(clientTable);
+
+		JScrollPane tableScrollPane = new JScrollPane(clientTable);
+		tableScrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		tableScrollPane.setPreferredSize(new Dimension(1000, 402));
+		tableScrollPane.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		listPanel.add(tableScrollPane);
 
 	}
 
