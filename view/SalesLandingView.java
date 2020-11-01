@@ -55,7 +55,7 @@ public class SalesLandingView {
 		customerComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (customerComboBox.getSelectedItem().toString().equalsIgnoreCase("Alta cliente")) {
-					new SalesAltaClientesView().getFrame().setVisible(true);
+					new SalesAddClientView().getFrame().setVisible(true);
 					frame.dispose();
 				}
 				if (customerComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar cliente")) {
@@ -69,7 +69,7 @@ public class SalesLandingView {
 		vehicleComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Alta vehículo")) {
-					new SalesAltaVehiculoView().getFrame().setVisible(true);
+					new SalesAddVehicleView().getFrame().setVisible(true);
 					frame.dispose();
 				}
 				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar vehículo")) {

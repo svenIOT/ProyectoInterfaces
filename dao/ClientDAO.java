@@ -3,6 +3,7 @@ package dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.Constants;
 import model.Client;
 
 public class ClientDAO extends AbstractDAO {
@@ -36,8 +37,7 @@ public class ClientDAO extends AbstractDAO {
 		var clients = new ArrayList<Client>();
 		try {
 			stm = con.createStatement();
-			rs = stm.executeQuery(
-					"SELECT cliente.cod_cliente, cliente.dni, persona.nombre, persona.apellidos, persona.telefono FROM persona INNER JOIN cliente on persona.dni = cliente.dni");
+			rs = stm.executeQuery(Constants.SELECT_CLIENTS);
 			while (rs.next()) {
 				clients.add(
 						new Client(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));

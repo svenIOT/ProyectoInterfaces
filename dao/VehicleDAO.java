@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.Constants;
 import model.Car;
 import model.Moped;
 import model.Motorcycle;
@@ -58,9 +59,7 @@ public class VehicleDAO extends AbstractDAO {
 		var cars = new ArrayList<Car>();
 		try {
 			stm = con.createStatement();
-			stm.execute(
-					"SELECT vehiculo.num_bastidor, coche.mat_coche, vehiculo.marca, vehiculo.modelo, vehiculo.combustible, vehiculo.precio FROM "
-							+ "taller.vehiculo INNER JOIN taller.coche ON vehiculo.num_bastidor = coche.num_bastidor;");
+			rs = stm.executeQuery(Constants.SELECT_CARS);
 			while (rs.next()) {
 				cars.add(new Car(rs.getString(1), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6),
 						rs.getString(2)));
@@ -80,9 +79,7 @@ public class VehicleDAO extends AbstractDAO {
 		var motorcycles = new ArrayList<Motorcycle>();
 		try {
 			stm = con.createStatement();
-			stm.execute(
-					"SELECT vehiculo.num_bastidor, motocicleta.mat_moto, vehiculo.marca, vehiculo.modelo, vehiculo.combustible, vehiculo.precio FROM "
-							+ "taller.vehiculo INNER JOIN taller.motocicleta ON vehiculo.num_bastidor = motocicleta.num_bastidor;");
+			rs = stm.executeQuery(Constants.SELECT_MOTORCICLES);
 			while (rs.next()) {
 				motorcycles.add(new Motorcycle(rs.getString(1), rs.getString(3), rs.getString(4), rs.getString(5),
 						rs.getString(6), rs.getString(2)));
@@ -103,9 +100,7 @@ public class VehicleDAO extends AbstractDAO {
 		var moped = new ArrayList<Moped>();
 		try {
 			stm = con.createStatement();
-			stm.execute(
-					"SELECT vehiculo.num_bastidor, ciclomotor.mat_ciclo, vehiculo.marca, vehiculo.modelo, vehiculo.combustible, vehiculo.precio FROM "
-							+ "taller.vehiculo INNER JOIN taller.ciclomotor ON vehiculo.num_bastidor = ciclomotor.num_bastidor;");
+			rs = stm.executeQuery(Constants.SELECT_MOPEDS);
 			while (rs.next()) {
 				moped.add(new Moped(rs.getString(1), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6),
 						rs.getString(2)));
