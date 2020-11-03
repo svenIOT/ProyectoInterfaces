@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 
 import dao.UserDAO;
 import model.Employee;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 
 public class LoginView {
 
@@ -82,7 +84,7 @@ public class LoginView {
 		txtUser = new JTextField();
 		txtUser.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		txtUser.setText("Usuario");
-		txtUser.setBounds(295, 210, 191, 30);
+		txtUser.setBounds(300, 327, 191, 30);
 		mainPanel.add(txtUser);
 		txtUser.setColumns(10);
 
@@ -92,12 +94,17 @@ public class LoginView {
 		btnLogin.setForeground(Color.WHITE);
 		btnLogin.setBackground(new Color(231, 111, 81));
 		btnLogin.setFont(new Font("SansSerif", Font.BOLD, 15));
-		btnLogin.setBounds(295, 323, 191, 30);
+		btnLogin.setBounds(300, 440, 191, 30);
 		mainPanel.add(btnLogin);
 
 		txtPassword = new JPasswordField("Usuario");
-		txtPassword.setBounds(295, 259, 191, 30);
+		txtPassword.setBounds(300, 376, 191, 30);
 		mainPanel.add(txtPassword);
+		
+		JLabel lblLogo = new JLabel("");
+		lblLogo.setIcon(new ImageIcon(LoginView.class.getResource("/img/logo.png")));
+		lblLogo.setBounds(-21, 10, 817, 307);
+		mainPanel.add(lblLogo);
 	}
 	
 	/**
@@ -113,5 +120,4 @@ public class LoginView {
 	public JFrame getFrame() {
 		return frame;
 	}
-
 }

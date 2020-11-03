@@ -113,6 +113,7 @@ public class SalesSearchAndListClientView {
 			public void mouseClicked(MouseEvent e) {
 				if(clientTable.getSelectedRow() != -1) {
 					// new SalesClientDetailsView(tableModel.getValueAt(clientTable.getSelectedRow(), 0));
+					//frame.dispose();
 				} else {
 					JOptionPane.showMessageDialog(frame, "Haga clic en un cliente de la tabla para ver más detalles", "Warning!",
 							JOptionPane.ERROR_MESSAGE);
@@ -199,7 +200,7 @@ public class SalesSearchAndListClientView {
 		btnBackToMenu.setBackground(new Color(244, 162, 97));
 		headerPanel.add(btnBackToMenu);
 
-		JLabel lblMainMenu = new JLabel("Ficha del cliente");
+		JLabel lblMainMenu = new JLabel("Listado de clientes");
 		lblMainMenu.setFont(new Font("SansSerif", Font.BOLD, 25));
 		headerPanel.add(lblMainMenu);
 

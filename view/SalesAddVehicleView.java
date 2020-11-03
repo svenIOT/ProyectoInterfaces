@@ -157,7 +157,7 @@ public class SalesAddVehicleView {
 		vehiclesPanel.setPreferredSize(new Dimension(10, 50));
 
 		// Añadir Jlabel a clientesPanel
-		JLabel vehiclesDatesLbl = new JLabel("Datos del vehículo");
+		JLabel vehiclesDatesLbl = new JLabel("Añadir vehículo");
 		vehiclesDatesLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		vehiclesDatesLbl.setFont(new Font("SansSerif", Font.BOLD, 25));
 		vehiclesPanel.add(vehiclesDatesLbl, BorderLayout.CENTER);
@@ -190,8 +190,6 @@ public class SalesAddVehicleView {
 		vehicleTypeComboBox = new JComboBox<>();
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, vehicleTypeComboBox, 74, SpringLayout.EAST,
 				vehicleTypeLbl);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, vehicleTypeComboBox, -141, SpringLayout.EAST,
-				vehiclesDatesPanelLeft);
 		vehicleTypeComboBox.setModel(new DefaultComboBoxModel(new String[] { "Coche", "Motocicleta", "Ciclomotor" }));
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, vehicleTypeComboBox, -3, SpringLayout.NORTH,
 				vehicleTypeLbl);
@@ -207,10 +205,12 @@ public class SalesAddVehicleView {
 		vehiclesDatesPanelLeft.add(vehicleLicenseLbl);
 
 		vehicleLicenseTxt = new JTextField();
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, vehicleLicenseTxt, 126, SpringLayout.EAST, vehicleLicenseLbl);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, vehicleLicenseTxt, -106, SpringLayout.EAST, vehiclesDatesPanelLeft);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, vehicleTypeComboBox, 0, SpringLayout.EAST,
+				vehicleLicenseTxt);
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, vehicleLicenseTxt, -3, SpringLayout.NORTH,
 				vehicleLicenseLbl);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, vehicleLicenseTxt, 0, SpringLayout.EAST,
-				vehicleTypeComboBox);
 		vehicleLicenseTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehicleLicenseTxt.setColumns(10);
 		vehiclesDatesPanelLeft.add(vehicleLicenseTxt);
@@ -227,8 +227,8 @@ public class SalesAddVehicleView {
 		frameNumberTxt = new JTextField();
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, frameNumberTxt, -3, SpringLayout.NORTH,
 				frameNumberLbl);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, frameNumberTxt, 0, SpringLayout.WEST,
-				vehicleTypeComboBox);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, frameNumberTxt, 53, SpringLayout.EAST, frameNumberLbl);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, frameNumberTxt, -106, SpringLayout.EAST, vehiclesDatesPanelLeft);
 		frameNumberTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		frameNumberTxt.setColumns(10);
 		vehiclesDatesPanelLeft.add(frameNumberTxt);
@@ -240,8 +240,9 @@ public class SalesAddVehicleView {
 		vehiclesDatesPanelLeft.add(brandLbl);
 
 		brandTxt = new JTextField();
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, brandTxt, 146, SpringLayout.EAST, brandLbl);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, brandTxt, -106, SpringLayout.EAST, vehiclesDatesPanelLeft);
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, brandTxt, -3, SpringLayout.NORTH, brandLbl);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, brandTxt, 0, SpringLayout.WEST, vehicleTypeComboBox);
 		brandTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		brandTxt.setColumns(10);
 		vehiclesDatesPanelLeft.add(brandTxt);
@@ -254,7 +255,8 @@ public class SalesAddVehicleView {
 
 		modelTxt = new JTextField();
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, modelTxt, -3, SpringLayout.NORTH, modelLbl);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, modelTxt, 0, SpringLayout.WEST, vehicleTypeComboBox);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, modelTxt, 137, SpringLayout.EAST, modelLbl);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, modelTxt, -106, SpringLayout.EAST, vehiclesDatesPanelLeft);
 		modelTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		modelTxt.setColumns(10);
 		vehiclesDatesPanelLeft.add(modelTxt);
@@ -273,11 +275,11 @@ public class SalesAddVehicleView {
 		vehiclesDatesPanelRight.add(fuelVehicleLbl);
 
 		fuelVehicleComboBox = new JComboBox<>();
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, fuelVehicleComboBox, 74, SpringLayout.EAST, fuelVehicleLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, fuelVehicleComboBox, -81, SpringLayout.EAST, vehiclesDatesPanelRight);
 		fuelVehicleComboBox
 				.setModel(new DefaultComboBoxModel(new String[] { "Diesel", "Gasolina", "Eléctrico", "Híbrido" }));
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, fuelVehicleComboBox, -3, SpringLayout.NORTH,
-				fuelVehicleLbl);
-		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, fuelVehicleComboBox, 74, SpringLayout.EAST,
 				fuelVehicleLbl);
 		fuelVehicleComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesDatesPanelRight.add(fuelVehicleComboBox);
@@ -289,9 +291,8 @@ public class SalesAddVehicleView {
 		vehiclesDatesPanelRight.add(priceLbl);
 
 		priceTxt = new JTextField();
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, priceTxt, 0, SpringLayout.EAST, fuelVehicleComboBox);
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, priceTxt, 163, SpringLayout.EAST, priceLbl);
-		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, fuelVehicleComboBox, 0, SpringLayout.EAST,
-				priceTxt);
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, priceTxt, -3, SpringLayout.NORTH, priceLbl);
 		priceTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		priceTxt.setColumns(10);
@@ -308,13 +309,13 @@ public class SalesAddVehicleView {
 		// Botones
 		returnButton = new JButton("Volver al menú");
 		returnButton.setFont(new Font("SansSerif", Font.BOLD, 15));
-		returnButton.setBackground(new Color(238, 151, 129));
+		returnButton.setBackground(new Color(244, 162, 97));
 		returnButton.setForeground(Color.WHITE);
 		buttonPanel.add(returnButton);
 
 		addVehicleButton = new JButton("Añadir vehículo");
 		addVehicleButton.setFont(new Font("SansSerif", Font.BOLD, 15));
-		addVehicleButton.setBackground(new Color(244, 162, 97));
+		addVehicleButton.setBackground(new Color(231, 111, 81));
 		addVehicleButton.setForeground(Color.WHITE);
 		buttonPanel.add(addVehicleButton);
 
