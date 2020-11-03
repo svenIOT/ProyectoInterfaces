@@ -6,6 +6,7 @@ import java.util.List;
 
 import common.Constants;
 import model.Car;
+import model.Client;
 import model.Moped;
 import model.Motorcycle;
 import model.Vehicle;
@@ -48,6 +49,23 @@ public class VehicleDAO extends AbstractDAO {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	public Vehicle searchVehicle(String num_bastidor) {
+		Vehicle vehiculo = null;
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT vehiculo.num_bastidor, vehiculo.marca, vehiculo.modelo, vehiculo.combustible, vehiculo.precio FROM vehiculo WHERE vehiculo.num_bastidor='"
+							+ num_bastidor + "'");
+			if (rs.next()) {
+				vehiculo = new Vehicle(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return vehiculo;
 	}
 
 	/**
