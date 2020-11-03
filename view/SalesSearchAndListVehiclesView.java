@@ -220,17 +220,17 @@ public class SalesSearchAndListVehiclesView {
 		gbc_searchPanel.gridx = 0;
 		gbc_searchPanel.gridy = 1;
 		mainPanel.add(searchPanel, gbc_searchPanel);
-		searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 60, 30));
+		searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 50, 30));
 		
 		
 
-		JLabel lblSearch = new JLabel("Matrícula");
+		JLabel lblSearch = new JLabel("Número de bastidor");
 		lblSearch.setFont(new Font("SansSerif", Font.BOLD, 18));
 		searchPanel.add(lblSearch);
 
 		textFieldSearch = new JTextField();
 		textFieldSearch.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		textFieldSearch.setText("1234ABC");
+		textFieldSearch.setText("1234567890");
 		searchPanel.add(textFieldSearch);
 		textFieldSearch.setColumns(10);
 
