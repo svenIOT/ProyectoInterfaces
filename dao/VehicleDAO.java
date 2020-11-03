@@ -6,7 +6,6 @@ import java.util.List;
 
 import common.Constants;
 import model.Car;
-import model.Client;
 import model.Moped;
 import model.Motorcycle;
 import model.Vehicle;
@@ -50,21 +49,28 @@ public class VehicleDAO extends AbstractDAO {
 			ex.printStackTrace();
 		}
 	}
-	
-	public Vehicle searchVehicle(String num_bastidor) {
+
+	/**
+	 * Busca un vehículo según el número de bastidor
+	 * 
+	 * @param frameNumber String
+	 * @return Objeto vehículo
+	 */
+	public Vehicle searchVehicle(String frameNumber) {
 		Vehicle vehiculo = null;
 		try {
 			stm = con.createStatement();
 			rs = stm.executeQuery(
 					"SELECT vehiculo.num_bastidor, vehiculo.marca, vehiculo.modelo, vehiculo.combustible, vehiculo.precio FROM vehiculo WHERE vehiculo.num_bastidor='"
-							+ num_bastidor + "'");
+							+ frameNumber + "'");
 			if (rs.next()) {
-				vehiculo = new Vehicle(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+				vehiculo = new Vehicle(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+						rs.getString(5));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
+
 		return vehiculo;
 	}
 
@@ -86,6 +92,44 @@ public class VehicleDAO extends AbstractDAO {
 			ex.printStackTrace();
 		}
 		return cars;
+	}
+
+	public Car searchCar(String frameNumber) {
+		Car car = null;
+		String licenseNumber = "",
+				employeeSurnames = "", concesionaireName = "", brand = "", carModel = "", fuel = "",
+				price = "", clientSurnames = "";
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT coche.mat_coche, persona.apellidos, concesionario.nombre, vehiculo.marca, vehiculo.modelo, vehiculo.combustible, vehiculo.precio FROM taller.vehiculo INNER JOIN taller.concesionario ON "
+							+ "vehiculo.cod_conce = concesionario.cod_conce INNER JOIN taller.coche ON vehiculo.num_bastidor = coche.num_bastidor INNER JOIN taller.ventas ON vehiculo.cod_ventas = ventas.cod_ventas "
+							+ "INNER JOIN taller.empleado ON ventas.cod_empleado = empleado.cod_empleado INNER JOIN taller.persona ON empleado.dni = persona.dni WHERE vehiculo.num_bastidor='"
+							+ frameNumber + "'");
+			if (rs.next()) {
+				licenseNumber = rs.getString(1);
+				employeeSurnames = rs.getString(2);
+				concesionaireName = rs.getString(3);
+				brand = rs.getString(4);
+				carModel = rs.getString(5);
+				fuel = rs.getString(6);
+				price = rs.getString(7);
+
+			}
+
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT persona.apellidos FROM taller.persona INNER JOIN taller.cliente ON persona.dni = cliente.dni INNER JOIN taller.vehiculo ON cliente.cod_cliente = vehiculo.cod_cliente WHERE vehiculo.num_bastidor='"
+							+ frameNumber + "'");
+			if (rs.next()) {
+				clientSurnames = rs.getString(1);
+			}
+			car = new Car(frameNumber, brand, carModel, fuel, price, licenseNumber, concesionaireName, clientSurnames,
+					employeeSurnames);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return car;
 	}
 
 	/**

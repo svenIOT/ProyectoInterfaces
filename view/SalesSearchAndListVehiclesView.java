@@ -159,12 +159,21 @@ public class SalesSearchAndListVehiclesView {
 		// Botón ver detalles del vehículo
 		btnDetallesDelVehiculo.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				if (vehicleTable.getSelectedRow() != -1) {
-					// new
-					// SalesVehicleDetailsView(tableModel.getValueAt(clientTable.getSelectedRow(),
-					// 0));
+				// Asignar tipo de vehículo seleccionado
+				String selectedVehicleType = "";
+				if(carsRadioButton.isSelected()) {
+					selectedVehicleType = "Coche";
+				} else if (motorcyclesRadioButton.isSelected()) {
+					selectedVehicleType = "Motocicleta";
 				} else {
-					JOptionPane.showMessageDialog(frame, "Haga clic en un cliente de la tabla para ver más detalles",
+					selectedVehicleType = "Ciclomotor";
+				}
+				// Abrir detalles según la fila elegida
+				if (vehicleTable.getSelectedRow() != -1) {
+					 new SalesVehicleDetailsView(String.valueOf(tableModel.getValueAt(vehicleTable.getSelectedRow(), 0)),
+							 selectedVehicleType).getFrame().setVisible(true);
+				} else {
+					JOptionPane.showMessageDialog(frame, "Haga clic en un vehículo de la tabla para ver más detalles",
 							"Warning!", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -289,6 +298,7 @@ public class SalesSearchAndListVehiclesView {
 		filterPanel.add(lblTypes);
 
 		carsRadioButton = new JRadioButton();
+		carsRadioButton.setSelected(true);
 		carsRadioButton.setText("Coches");
 		carsRadioButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
 
