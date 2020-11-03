@@ -34,6 +34,7 @@ public class SalesSearchAndListClientView {
 	private JTextField textFieldSearch;
 	private JTable clientTable;
 	private JButton btnSearch;
+	private JButton btnDetallesDelCliente;
 	private ClientDAO clientDAO;
 
 	/**
@@ -61,6 +62,8 @@ public class SalesSearchAndListClientView {
 	 * Contiene los controladores
 	 */
 	private void setControllers() {
+		var tableModel = (DefaultTableModel) clientTable.getModel();
+		
 		// Al abrir la ventana se rellena la tabla con TODOS los clientes
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
@@ -80,7 +83,6 @@ public class SalesSearchAndListClientView {
 		// Botón buscar cliente
 		btnSearch.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				var tableModel = (DefaultTableModel) clientTable.getModel();
 				// Reiniciar el contenido de la tabla clientes
 				var rows = clientTable.getRowCount();
 				// Si hay filas las elimina
@@ -103,6 +105,18 @@ public class SalesSearchAndListClientView {
 							JOptionPane.ERROR_MESSAGE);
 				}
 
+			}
+		});
+		
+		// Botón ver detalles del cliente
+		btnDetallesDelCliente.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if(clientTable.getSelectedRow() != -1) {
+					// new SalesClientDetailsView(tableModel.getValueAt(clientTable.getSelectedRow(), 0));
+				} else {
+					JOptionPane.showMessageDialog(frame, "Haga clic en un cliente de la tabla para ver más detalles", "Warning!",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 
@@ -249,6 +263,13 @@ public class SalesSearchAndListClientView {
 		clientTable.getColumnModel().getColumn(3).setMaxWidth(555);
 		clientTable.getColumnModel().getColumn(4).setPreferredWidth(200);
 		clientTable.getColumnModel().getColumn(4).setMaxWidth(555);
+		
+		btnDetallesDelCliente = new JButton("Detalles cliente");
+		btnDetallesDelCliente.setForeground(Color.WHITE);
+		btnDetallesDelCliente.setFont(new Font("SansSerif", Font.BOLD, 15));
+		btnDetallesDelCliente.setBorderPainted(false);
+		btnDetallesDelCliente.setBackground(new Color(231, 111, 81));
+		listPanel.add(btnDetallesDelCliente);
 
 		JScrollPane tableScrollPane = new JScrollPane(clientTable);
 		tableScrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
