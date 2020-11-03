@@ -73,8 +73,8 @@ public class SalesLandingView {
 					frame.dispose();
 				}
 				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar vehículo")) {
-					//new Sales().getFrame().setVisible(true);
-					//frame.dispose();
+					new SalesSearchAndListVehiclesView().getFrame().setVisible(true);
+					frame.dispose();
 				}
 			}
 		});

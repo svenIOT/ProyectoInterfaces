@@ -18,11 +18,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
-import dao.ClientDAO;
 import dao.VehicleDAO;
-import model.Vehicle;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.GridBagLayout;
@@ -30,6 +26,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JScrollPane;
 import java.awt.Cursor;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class SalesSearchAndListVehiclesView {
 
@@ -41,10 +39,10 @@ public class SalesSearchAndListVehiclesView {
 	private JButton btnSearch;
 	private JButton btnDetallesDelVehiculo;
 	private VehicleDAO vehicleDAO;
-	private ButtonGroup G1;
-	private JRadioButton cocheRadioButton;
-	private JRadioButton motoRadioButton;
-	private JRadioButton cicloMotorRadioButton;
+	private ButtonGroup group1;
+	private JRadioButton carsRadioButton;
+	private JRadioButton motorcyclesRadioButton;
+	private JRadioButton mopedsRadioButton;
 
 	/**
 	 * Crea la aplicación
@@ -72,18 +70,65 @@ public class SalesSearchAndListVehiclesView {
 	 */
 	private void setControllers() {
 		var tableModel = (DefaultTableModel) vehicleTable.getModel();
-		cocheRadioButton.setEnabled(true);
+
 		// Al abrir la ventana se rellena con los datos de coche
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
 				// Insertar los vehiculos en la tabla vehiculos
-				var vehicleList = vehicleDAO.getCars();
-				if (vehicleList != null) {
-					for (var i = 0; i < vehicleList.size(); ++i) {
-						var tableModel = (DefaultTableModel) vehicleTable.getModel();
-						tableModel.addRow(new Object[] { vehicleList.get(i).getNum_bastidor(), vehicleList.get(i).getMarca(),
-								vehicleList.get(i).getModelo(), vehicleList.get(i).getCombustible(),
-								vehicleList.get(i).getPrecio() });
+				var vehiclesList = vehicleDAO.getCars();
+				if (vehiclesList != null) {
+					for (var i = 0; i < vehiclesList.size(); ++i) {
+						tableModel.addRow(new Object[] { vehiclesList.get(i).getNum_bastidor(),
+								vehiclesList.get(i).getMarca(), vehiclesList.get(i).getModelo(),
+								vehiclesList.get(i).getCombustible(), vehiclesList.get(i).getPrecio() });
+					}
+				}
+			}
+		});
+
+		// Radiobutton filtrado por coches
+		carsRadioButton.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				// Reiniciar el contenido de la tabla vehículos
+				clearTable(tableModel);
+				var carsList = vehicleDAO.getCars();
+				if (carsList != null) {
+					for (var i = 0; i < carsList.size(); ++i) {
+						tableModel.addRow(new Object[] { carsList.get(i).getNum_bastidor(),
+								carsList.get(i).getMarca(), carsList.get(i).getModelo(),
+								carsList.get(i).getCombustible(), carsList.get(i).getPrecio() });
+					}
+				}
+			}
+		});
+
+		// Radiobutton filtrado por coches
+		motorcyclesRadioButton.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				// Reiniciar el contenido de la tabla vehículos
+				clearTable(tableModel);
+				var motorcyclesList = vehicleDAO.getMotorcycles();
+				if (motorcyclesList != null) {
+					for (var i = 0; i < motorcyclesList.size(); ++i) {
+						tableModel.addRow(new Object[] { motorcyclesList.get(i).getNum_bastidor(),
+								motorcyclesList.get(i).getMarca(), motorcyclesList.get(i).getModelo(),
+								motorcyclesList.get(i).getCombustible(), motorcyclesList.get(i).getPrecio() });
+					}
+				}
+			}
+		});
+
+		// Radiobutton filtrado por coches
+		mopedsRadioButton.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				// Reiniciar el contenido de la tabla vehículos
+				clearTable(tableModel);
+				var mopedsList = vehicleDAO.getMopeds();
+				if (mopedsList != null) {
+					for (var i = 0; i < mopedsList.size(); ++i) {
+						tableModel.addRow(new Object[] { mopedsList.get(i).getNum_bastidor(),
+								mopedsList.get(i).getMarca(), mopedsList.get(i).getModelo(),
+								mopedsList.get(i).getCombustible(), mopedsList.get(i).getPrecio() });
 					}
 				}
 			}
@@ -93,13 +138,7 @@ public class SalesSearchAndListVehiclesView {
 		btnSearch.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				// Reiniciar el contenido de la tabla vehículos
-				var rows = vehicleTable.getRowCount();
-				// Si hay filas las elimina
-				if (rows > 0) {
-					for (var i = (rows - 1); i > -1; --i) {
-						tableModel.removeRow(i);
-					}
-				}
+				clearTable(tableModel);
 
 				// Buscar vehículo por num bastidor
 				var num_bastidor = textFieldSearch.getText();
@@ -110,21 +149,23 @@ public class SalesSearchAndListVehiclesView {
 					tableModel.addRow(new Object[] { vehicleResult.getNum_bastidor(), vehicleResult.getMarca(),
 							vehicleResult.getModelo(), vehicleResult.getCombustible(), vehicleResult.getPrecio() });
 				} else {
-					JOptionPane.showMessageDialog(frame, "Vehículo no encontrado, revise el número de bastidor", "Warning!",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Vehículo no encontrado, revise el número de bastidor",
+							"Warning!", JOptionPane.ERROR_MESSAGE);
 				}
 
 			}
 		});
-		
+
 		// Botón ver detalles del vehículo
 		btnDetallesDelVehiculo.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				if(vehicleTable.getSelectedRow() != -1) {
-					// new SalesVehicleDetailsView(tableModel.getValueAt(clientTable.getSelectedRow(), 0));
+				if (vehicleTable.getSelectedRow() != -1) {
+					// new
+					// SalesVehicleDetailsView(tableModel.getValueAt(clientTable.getSelectedRow(),
+					// 0));
 				} else {
-					JOptionPane.showMessageDialog(frame, "Haga clic en un cliente de la tabla para ver más detalles", "Warning!",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Haga clic en un cliente de la tabla para ver más detalles",
+							"Warning!", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -221,8 +262,6 @@ public class SalesSearchAndListVehiclesView {
 		gbc_searchPanel.gridy = 1;
 		mainPanel.add(searchPanel, gbc_searchPanel);
 		searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 50, 30));
-		
-		
 
 		JLabel lblSearch = new JLabel("Número de bastidor");
 		lblSearch.setFont(new Font("SansSerif", Font.BOLD, 18));
@@ -240,35 +279,35 @@ public class SalesSearchAndListVehiclesView {
 		btnSearch.setBorderPainted(false);
 		btnSearch.setBackground(new Color(231, 111, 81));
 		searchPanel.add(btnSearch);
-		
+
 		JPanel filterPanel = new JPanel();
 		searchPanel.add(filterPanel);
 		filterPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));
-		
+
 		JLabel lblTypes = new JLabel("Filtros");
 		lblTypes.setFont(new Font("SansSerif", Font.BOLD, 18));
 		filterPanel.add(lblTypes);
-		
-		cocheRadioButton = new JRadioButton();
-		cocheRadioButton.setText("Coches");
-		cocheRadioButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
-		
-		motoRadioButton = new JRadioButton();
-		motoRadioButton.setText("Motos");
-		motoRadioButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
-		
-		cicloMotorRadioButton = new JRadioButton();
-		cicloMotorRadioButton.setText("Ciclomotores");
-		cicloMotorRadioButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
-		
-		filterPanel.add(cocheRadioButton);
-		filterPanel.add(motoRadioButton);
-		filterPanel.add(cicloMotorRadioButton);
-		
-		G1 = new ButtonGroup();
-		G1.add(cocheRadioButton);
-		G1.add(motoRadioButton);
-		G1.add(cicloMotorRadioButton);
+
+		carsRadioButton = new JRadioButton();
+		carsRadioButton.setText("Coches");
+		carsRadioButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+
+		motorcyclesRadioButton = new JRadioButton();
+		motorcyclesRadioButton.setText("Motos");
+		motorcyclesRadioButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+
+		mopedsRadioButton = new JRadioButton();
+		mopedsRadioButton.setText("Ciclomotores");
+		mopedsRadioButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+
+		filterPanel.add(carsRadioButton);
+		filterPanel.add(motorcyclesRadioButton);
+		filterPanel.add(mopedsRadioButton);
+
+		group1 = new ButtonGroup();
+		group1.add(carsRadioButton);
+		group1.add(motorcyclesRadioButton);
+		group1.add(mopedsRadioButton);
 
 		JPanel listPanel = new JPanel();
 		listPanel.setBorder(new MatteBorder(0, 1, 0, 0, (Color) new Color(0, 0, 0)));
@@ -303,7 +342,7 @@ public class SalesSearchAndListVehiclesView {
 		vehicleTable.getColumnModel().getColumn(3).setMaxWidth(555);
 		vehicleTable.getColumnModel().getColumn(4).setPreferredWidth(100);
 		vehicleTable.getColumnModel().getColumn(4).setMaxWidth(555);
-		
+
 		btnDetallesDelVehiculo = new JButton("Detalles vehículo");
 		btnDetallesDelVehiculo.setForeground(Color.WHITE);
 		btnDetallesDelVehiculo.setFont(new Font("SansSerif", Font.BOLD, 15));
@@ -317,6 +356,22 @@ public class SalesSearchAndListVehiclesView {
 		tableScrollPane.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		listPanel.add(tableScrollPane);
 
+	}
+
+	/**
+	 * Elimina todas las filas de la tabla
+	 * 
+	 * @param tableModel DefaultTableModel
+	 */
+	private void clearTable(DefaultTableModel tableModel) {
+		// Reiniciar el contenido de la tabla vehículos
+		var rows = vehicleTable.getRowCount();
+		// Si hay filas las elimina
+		if (rows > 0) {
+			for (var i = (rows - 1); i > -1; --i) {
+				tableModel.removeRow(i);
+			}
+		}
 	}
 
 	public JFrame getFrame() {
