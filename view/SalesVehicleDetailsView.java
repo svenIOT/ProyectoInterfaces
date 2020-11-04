@@ -85,9 +85,29 @@ public class SalesVehicleDetailsView {
 					resultVehicleLicenseLbl.setText(car.getMat_coche());
 					
 				} else if (vehicleType.equalsIgnoreCase("motocicleta")) {
-					
+					var motorcycle = vehicleDAO.searchMotorcycle(numberFrame);
+					resultVehicleTypeLbl.setText("Motocicleta");
+					resultBrandLbl.setText(motorcycle.getMarca());
+					resultconcessionaireLbl.setText(motorcycle.getConcesionario());
+					resultFrameNumberLbl.setText(motorcycle.getNum_bastidor());
+					resultFuelVehicleLbl.setText(motorcycle.getCombustible());
+					resultModelLbl.setText(motorcycle.getModelo());
+					resultOwnerLbl.setText(motorcycle.getNombreCliente());
+					resultPriceLbl.setText(motorcycle.getPrecio());
+					resultSalesClientLbl.setText(motorcycle.getNombreVentas());
+					resultVehicleLicenseLbl.setText(motorcycle.getMat_moto());
 				} else {
-					
+					var moped = vehicleDAO.searchMoped(numberFrame);
+					resultVehicleTypeLbl.setText("Ciclomotor");
+					resultBrandLbl.setText(moped.getMarca());
+					resultconcessionaireLbl.setText(moped.getConcesionario());
+					resultFrameNumberLbl.setText(moped.getNum_bastidor());
+					resultFuelVehicleLbl.setText(moped.getCombustible());
+					resultModelLbl.setText(moped.getModelo());
+					resultOwnerLbl.setText(moped.getNombreCliente());
+					resultPriceLbl.setText(moped.getPrecio());
+					resultSalesClientLbl.setText(moped.getNombreVentas());
+					resultVehicleLicenseLbl.setText(moped.getMat_ciclo());
 				}
 				
 			}

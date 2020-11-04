@@ -75,29 +75,14 @@ public class VehicleDAO extends AbstractDAO {
 	}
 
 	/**
-	 * Devuelve una lista con todos los coches
+	 * Devuelve el coche con el número de bastidor indicado
 	 * 
-	 * @return
+	 * @param frameNumber
+	 * @return Objeto coche
 	 */
-	public List<Car> getCars() {
-		var cars = new ArrayList<Car>();
-		try {
-			stm = con.createStatement();
-			rs = stm.executeQuery(Constants.SELECT_CARS);
-			while (rs.next()) {
-				cars.add(new Car(rs.getString(1), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6),
-						rs.getString(2)));
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-		return cars;
-	}
-
 	public Car searchCar(String frameNumber) {
 		Car car = null;
-		String licenseNumber = "",
-				employeeSurnames = "", concesionaireName = "", brand = "", carModel = "", fuel = "",
+		String licenseNumber = "", employeeSurnames = "", concesionaireName = "", brand = "", carModel = "", fuel = "",
 				price = "", clientSurnames = "";
 		try {
 			stm = con.createStatement();
@@ -124,8 +109,8 @@ public class VehicleDAO extends AbstractDAO {
 			if (rs.next()) {
 				clientSurnames = rs.getString(1);
 			}
-			car = new Car(frameNumber, brand, carModel, fuel, price, licenseNumber, concesionaireName, clientSurnames,
-					employeeSurnames);
+			car = new Car(frameNumber, brand, carModel, fuel, price, concesionaireName, clientSurnames,
+					employeeSurnames, licenseNumber);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -133,9 +118,115 @@ public class VehicleDAO extends AbstractDAO {
 	}
 
 	/**
+	 * Devuelve la moto con el número de bastidor indicado
+	 * 
+	 * @param fameNumber
+	 * @return Objeto moto
+	 */
+	public Motorcycle searchMotorcycle(String frameNumber) {
+		Motorcycle motorcycle = null;
+		String licenseNumber = "", employeeSurnames = "", concesionaireName = "", brand = "", motorcycleModel = "", fuel = "",
+				price = "", clientSurnames = "";
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT motocicleta.mat_moto, persona.apellidos, concesionario.nombre, vehiculo.marca, vehiculo.modelo, vehiculo.combustible, vehiculo.precio FROM taller.vehiculo INNER JOIN taller.concesionario ON "
+							+ "vehiculo.cod_conce = concesionario.cod_conce INNER JOIN taller.motocicleta ON vehiculo.num_bastidor = motocicleta.num_bastidor INNER JOIN taller.ventas ON vehiculo.cod_ventas = ventas.cod_ventas "
+							+ "INNER JOIN taller.empleado ON ventas.cod_empleado = empleado.cod_empleado INNER JOIN taller.persona ON empleado.dni = persona.dni WHERE vehiculo.num_bastidor='"
+							+ frameNumber + "'");
+			if (rs.next()) {
+				licenseNumber = rs.getString(1);
+				employeeSurnames = rs.getString(2);
+				concesionaireName = rs.getString(3);
+				brand = rs.getString(4);
+				motorcycleModel = rs.getString(5);
+				fuel = rs.getString(6);
+				price = rs.getString(7);
+
+			}
+
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT persona.apellidos FROM taller.persona INNER JOIN taller.cliente ON persona.dni = cliente.dni INNER JOIN taller.vehiculo ON cliente.cod_cliente = vehiculo.cod_cliente WHERE vehiculo.num_bastidor='"
+							+ frameNumber + "'");
+			if (rs.next()) {
+				clientSurnames = rs.getString(1);
+			}
+			motorcycle = new Motorcycle(frameNumber, brand, motorcycleModel, fuel, price, concesionaireName, clientSurnames,
+					employeeSurnames, licenseNumber);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return motorcycle;
+	}
+
+	/**
+	 * Devuelve el ciclomotor con el número de bastidor indicado
+	 * 
+	 * @param frameNumber
+	 * @return Objeto ciclomotor
+	 */
+	public Moped searchMoped(String frameNumber) {
+		Moped moped = null;
+		String licenseNumber = "", employeeSurnames = "", concesionaireName = "", brand = "", mopedModel = "", fuel = "",
+				price = "", clientSurnames = "";
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT ciclomotor.mat_ciclo, persona.apellidos, concesionario.nombre, vehiculo.marca, vehiculo.modelo, vehiculo.combustible, vehiculo.precio FROM taller.vehiculo INNER JOIN taller.concesionario ON "
+							+ "vehiculo.cod_conce = concesionario.cod_conce INNER JOIN taller.ciclomotor ON vehiculo.num_bastidor = ciclomotor.num_bastidor INNER JOIN taller.ventas ON vehiculo.cod_ventas = ventas.cod_ventas "
+							+ "INNER JOIN taller.empleado ON ventas.cod_empleado = empleado.cod_empleado INNER JOIN taller.persona ON empleado.dni = persona.dni WHERE vehiculo.num_bastidor='"
+							+ frameNumber + "'");
+			if (rs.next()) {
+				licenseNumber = rs.getString(1);
+				employeeSurnames = rs.getString(2);
+				concesionaireName = rs.getString(3);
+				brand = rs.getString(4);
+				mopedModel = rs.getString(5);
+				fuel = rs.getString(6);
+				price = rs.getString(7);
+
+			}
+
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT persona.apellidos FROM taller.persona INNER JOIN taller.cliente ON persona.dni = cliente.dni INNER JOIN taller.vehiculo ON cliente.cod_cliente = vehiculo.cod_cliente WHERE vehiculo.num_bastidor='"
+							+ frameNumber + "'");
+			if (rs.next()) {
+				clientSurnames = rs.getString(1);
+			}
+			moped = new Moped(frameNumber, brand, mopedModel, fuel, price, concesionaireName, clientSurnames,
+					employeeSurnames, licenseNumber);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return moped;
+	}
+	
+	/**
+	 * Devuelve una lista con todos los coches
+	 * 
+	 * @return Lista de coches
+	 */
+	public List<Car> getCars() {
+		var cars = new ArrayList<Car>();
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(Constants.SELECT_CARS);
+			while (rs.next()) {
+				cars.add(new Car(rs.getString(1), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6),
+						rs.getString(2)));
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return cars;
+	}
+
+	/**
 	 * Devuelve una lista con todas las motocicletas
 	 * 
-	 * @return
+	 * @return Lista de motocicletas
 	 */
 	public List<Motorcycle> getMotorcycles() {
 		var motorcycles = new ArrayList<Motorcycle>();
@@ -156,7 +247,7 @@ public class VehicleDAO extends AbstractDAO {
 	/**
 	 * Devuelve una lista con todos los ciclomotores
 	 * 
-	 * @return
+	 * @return Lista de ciclomtores
 	 */
 	public List<Moped> getMopeds() {
 		var moped = new ArrayList<Moped>();
