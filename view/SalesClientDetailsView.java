@@ -59,7 +59,7 @@ public class SalesClientDetailsView {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 735, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setUIComponents();
@@ -129,6 +129,10 @@ public class SalesClientDetailsView {
 		frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 		bottomPanel.setBackground(new Color(233, 196, 106));
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+		
+		JLabel lblSpace = new JLabel(" ");
+		lblSpace.setFont(new Font("Tahoma", Font.PLAIN, 8));
+		bottomPanel.add(lblSpace);
 
 		/*
 		 * mainPanel. Dentro se crean otros paneles para añadir los distintos
@@ -259,7 +263,7 @@ public class SalesClientDetailsView {
 		clientTable.setPreferredScrollableViewportSize(new Dimension(950, 400));
 		clientTable.setFont(new Font("SansSerif", Font.BOLD, 15));
 		clientTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Número de bastidor", "Marca", "Modelo"}) {
+				new String[] { "Número bastidor", "Marca", "Modelo"}) {
 			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class };
 
 			public Class getColumnClass(int columnIndex) {
