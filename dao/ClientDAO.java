@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +20,21 @@ public class ClientDAO extends AbstractDAO {
 	 */
 	public void addClient(Client e) {
 		try {
+			con.setAutoCommit(false);
 			stm = con.createStatement();
 			stm.executeUpdate("INSERT INTO taller.persona (dni, nombre, apellidos, telefono) VALUES ('" + e.getDni()
 					+ "', '" + e.getNombre() + "', '" + e.getApellidos() + "', '" + e.getTelefono() + "')");
 			stm.executeUpdate("INSERT INTO taller.cliente (cod_cliente, dni) VALUES (0, '" + e.getDni() + "')");
+			con.commit();
 		} catch (Exception ex) {
+			try {
+				con.rollback();
+			} catch (SQLException e1) {}
 			ex.printStackTrace();
+		} finally {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException e1) {}
 		}
 	}
 
@@ -33,7 +43,7 @@ public class ClientDAO extends AbstractDAO {
 	 * 
 	 * @return Lista de clientes
 	 */
-	public List<Client> fillTable() {
+	public List<Client> getClients() {
 		var clients = new ArrayList<Client>();
 		try {
 			stm = con.createStatement();

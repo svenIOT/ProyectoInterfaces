@@ -32,6 +32,7 @@ public class SalesAddVehicleView {
 	private JFrame frame;
 	private JComboBox<?> vehicleTypeComboBox;
 	private JComboBox<?> fuelVehicleComboBox;
+	private JComboBox<?> concessionaireComboBox;
 	private JButton returnButton;
 	private JButton addVehicleButton;
 	private JButton btnLogOut;
@@ -191,6 +192,7 @@ public class SalesAddVehicleView {
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, vehicleTypeComboBox, 74, SpringLayout.EAST,
 				vehicleTypeLbl);
 		vehicleTypeComboBox.setModel(new DefaultComboBoxModel(new String[] { "Coche", "Motocicleta", "Ciclomotor" }));
+		vehicleTypeComboBox.setSelectedIndex(0);
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, vehicleTypeComboBox, -3, SpringLayout.NORTH,
 				vehicleTypeLbl);
 		vehicleTypeComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -205,8 +207,10 @@ public class SalesAddVehicleView {
 		vehiclesDatesPanelLeft.add(vehicleLicenseLbl);
 
 		vehicleLicenseTxt = new JTextField();
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, vehicleLicenseTxt, 126, SpringLayout.EAST, vehicleLicenseLbl);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, vehicleLicenseTxt, -106, SpringLayout.EAST, vehiclesDatesPanelLeft);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, vehicleLicenseTxt, 126, SpringLayout.EAST,
+				vehicleLicenseLbl);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, vehicleLicenseTxt, -106, SpringLayout.EAST,
+				vehiclesDatesPanelLeft);
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, vehicleTypeComboBox, 0, SpringLayout.EAST,
 				vehicleLicenseTxt);
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, vehicleLicenseTxt, -3, SpringLayout.NORTH,
@@ -227,8 +231,10 @@ public class SalesAddVehicleView {
 		frameNumberTxt = new JTextField();
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, frameNumberTxt, -3, SpringLayout.NORTH,
 				frameNumberLbl);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, frameNumberTxt, 53, SpringLayout.EAST, frameNumberLbl);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, frameNumberTxt, -106, SpringLayout.EAST, vehiclesDatesPanelLeft);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, frameNumberTxt, 53, SpringLayout.EAST,
+				frameNumberLbl);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, frameNumberTxt, -106, SpringLayout.EAST,
+				vehiclesDatesPanelLeft);
 		frameNumberTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		frameNumberTxt.setColumns(10);
 		vehiclesDatesPanelLeft.add(frameNumberTxt);
@@ -241,7 +247,8 @@ public class SalesAddVehicleView {
 
 		brandTxt = new JTextField();
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, brandTxt, 146, SpringLayout.EAST, brandLbl);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, brandTxt, -106, SpringLayout.EAST, vehiclesDatesPanelLeft);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, brandTxt, -106, SpringLayout.EAST,
+				vehiclesDatesPanelLeft);
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, brandTxt, -3, SpringLayout.NORTH, brandLbl);
 		brandTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		brandTxt.setColumns(10);
@@ -256,7 +263,8 @@ public class SalesAddVehicleView {
 		modelTxt = new JTextField();
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, modelTxt, -3, SpringLayout.NORTH, modelLbl);
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, modelTxt, 137, SpringLayout.EAST, modelLbl);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, modelTxt, -106, SpringLayout.EAST, vehiclesDatesPanelLeft);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, modelTxt, -106, SpringLayout.EAST,
+				vehiclesDatesPanelLeft);
 		modelTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		modelTxt.setColumns(10);
 		vehiclesDatesPanelLeft.add(modelTxt);
@@ -275,12 +283,11 @@ public class SalesAddVehicleView {
 		vehiclesDatesPanelRight.add(fuelVehicleLbl);
 
 		fuelVehicleComboBox = new JComboBox<>();
-		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, fuelVehicleComboBox, 74, SpringLayout.EAST, fuelVehicleLbl);
-		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, fuelVehicleComboBox, -81, SpringLayout.EAST, vehiclesDatesPanelRight);
-		fuelVehicleComboBox
-				.setModel(new DefaultComboBoxModel(new String[] { "Diesel", "Gasolina", "Eléctrico", "Híbrido" }));
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, fuelVehicleComboBox, -3, SpringLayout.NORTH,
 				fuelVehicleLbl);
+		fuelVehicleComboBox
+				.setModel(new DefaultComboBoxModel(new String[] { "Diesel", "Gasolina", "Eléctrico", "Híbrido" }));
+		fuelVehicleComboBox.setSelectedIndex(0);
 		fuelVehicleComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesDatesPanelRight.add(fuelVehicleComboBox);
 
@@ -291,12 +298,37 @@ public class SalesAddVehicleView {
 		vehiclesDatesPanelRight.add(priceLbl);
 
 		priceTxt = new JTextField();
-		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, priceTxt, 0, SpringLayout.EAST, fuelVehicleComboBox);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, fuelVehicleComboBox, 0, SpringLayout.EAST,
+				priceTxt);
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, priceTxt, 163, SpringLayout.EAST, priceLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, priceTxt, -81, SpringLayout.EAST,
+				vehiclesDatesPanelRight);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, fuelVehicleComboBox, 0, SpringLayout.WEST,
+				priceTxt);
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, priceTxt, -3, SpringLayout.NORTH, priceLbl);
 		priceTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		priceTxt.setColumns(10);
 		vehiclesDatesPanelRight.add(priceTxt);
+
+		JLabel concessionaireLbl = new JLabel("Concesionario:");
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, concessionaireLbl, 22, SpringLayout.SOUTH,
+				priceLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, concessionaireLbl, 0, SpringLayout.WEST,
+				fuelVehicleLbl);
+		concessionaireLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		vehiclesDatesPanelRight.add(concessionaireLbl);
+
+		concessionaireComboBox = new JComboBox<>();
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, concessionaireComboBox, -3, SpringLayout.NORTH,
+				concessionaireLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, concessionaireComboBox, 0, SpringLayout.WEST,
+				fuelVehicleComboBox);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, concessionaireComboBox, 0, SpringLayout.EAST,
+				fuelVehicleComboBox);
+		concessionaireComboBox.setModel(new DefaultComboBoxModel(new String[] { "Todo Ruedas" }));
+		concessionaireComboBox.setSelectedIndex(0);
+		concessionaireComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		vehiclesDatesPanelRight.add(concessionaireComboBox);
 
 		JPanel buttonPanel = new JPanel();
 		GridBagConstraints gbc_botonPanel = new GridBagConstraints();
@@ -332,6 +364,7 @@ public class SalesAddVehicleView {
 		var brand = brandTxt.getText();
 		var model = modelTxt.getText();
 		var fuel = fuelVehicleComboBox.getSelectedItem().toString();
+		var concessionaire = concessionaireComboBox.getSelectedIndex() + 1;
 		var price = priceTxt.getText();
 
 		if (frameNumberTxt.getText().isBlank() || brandTxt.getText().isBlank() || modelTxt.getText().isBlank()
@@ -339,7 +372,9 @@ public class SalesAddVehicleView {
 			JOptionPane.showMessageDialog(frame, "Error, los campos no pueden estar vacios, ni contener solo espacios",
 					"Warning!", JOptionPane.ERROR_MESSAGE);
 		} else {
-			vehicle = new Vehicle(numFrameCar, brand, model, fuel, price);
+			vehicle = new Vehicle(numFrameCar, brand, model, fuel, price, 1, 1, concessionaire); // TODO: Hacer códigos
+																									// dinámicos según
+																									// elección
 		}
 
 		return vehicle;

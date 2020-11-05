@@ -279,6 +279,7 @@ public class SalesAddClientView {
 	 */
 	private Client createClient() {
 		Client client = null;
+		var clientList = clientDAO.getClients();
 		var name = txtName.getText();
 		var surnames = txtSurnames.getText();
 		var dni = txtDni.getText();
@@ -289,7 +290,18 @@ public class SalesAddClientView {
 			JOptionPane.showMessageDialog(frame, "Error, los campos no pueden estar vacios, ni contener solo espacios",
 					"Warning!", JOptionPane.ERROR_MESSAGE);
 		} else {
-			client = new Client(dni, name, surnames, telephone);
+			// Comprobar si el cliente ya existe
+			var exist = false;
+			for (int i = 0; i < clientList.size(); ++i) {
+				if (dni.equalsIgnoreCase(clientList.get(i).getDni())) {
+					exist = true;
+					JOptionPane.showMessageDialog(frame, "Error, ya existe el DNI introducido", "Warning!",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			if (!exist) {
+				client = new Client(dni, name, surnames, telephone);
+			}
 		}
 
 		return client;

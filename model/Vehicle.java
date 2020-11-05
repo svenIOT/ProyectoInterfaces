@@ -5,7 +5,20 @@ public class Vehicle {
 	private String num_bastidor, marca, modelo, combustible, precio, concesionario, nombreCliente, nombreVentas;
 	private int cod_ventas, cod_cliente, cod_conce;
 
-	// Constructor con todos los campos
+	// Constructor con códigos
+	public Vehicle(String num_bastidor, String marca, String modelo, String combustible, String precio, int cod_ventas,
+			int cod_cliente, int cod_conce) {
+		this.num_bastidor = num_bastidor;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.combustible = combustible;
+		this.precio = precio;
+		this.cod_ventas = cod_ventas;
+		this.cod_cliente = cod_cliente;
+		this.cod_conce = cod_conce;
+	}
+
+	// Constructor con todos los campos excepto códigos
 	public Vehicle(String num_bastidor, String marca, String modelo, String combustible, String precio,
 			String concesionario, String nombreCliente, String nombreVentas) {
 		super();

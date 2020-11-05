@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -12,39 +13,45 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SpringLayout;
 import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableModel;
 
 import dao.ClientDAO;
-import model.Client;
+import dao.VehicleDAO;
 
 import javax.swing.SwingConstants;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class SalesClientDetailsView {
 
 	private JFrame frame;
 	private JButton backButton;
-	private JButton btnLogOut;
-	private JButton registerButton;
-	private JTextField txtCod;
-	private JTextField txtName;
-	private JTextField txtSurnames;
-	private JTextField txtDni;
-	private JTextField txtTelephone;
+	private JLabel lblCodResult;
+	private JLabel lblNameResult;
+	private JLabel lblSurnameResult;
+	private JLabel lblDniResult;
+	private JLabel lblTelephoneResult;
+	private JTable clientTable;
 	private ClientDAO clientDAO;
+	private VehicleDAO vehicleDAO;
+	private String Dni;
 
 	/**
 	 * Create the application.
 	 */
-	public SalesClientDetailsView() {
+	public SalesClientDetailsView(String dni) {
 		initialize();
 		clientDAO = new ClientDAO();
+		vehicleDAO = new VehicleDAO();
+		this.Dni = dni;
 	}
 
 	/**
@@ -52,7 +59,7 @@ public class SalesClientDetailsView {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(0, 0, 1100, 800);
+		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setUIComponents();
@@ -61,9 +68,37 @@ public class SalesClientDetailsView {
 	}
 
 	private void setControllers() {
+		var tableModel = (DefaultTableModel) clientTable.getModel();
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowOpened(WindowEvent e) {
+					var cliente = clientDAO.searchClient(Dni);
+					lblCodResult.setText(""+cliente.getClientCod());
+					lblNameResult.setText(cliente.getNombre());
+					lblSurnameResult.setText(cliente.getApellidos());
+					lblDniResult.setText(cliente.getDni());
+					lblTelephoneResult.setText(cliente.getTelefono());
 
 
+					//Rellenar tabla si existen vehículos del cliente
+					var clienList = vehicleDAO.getVehicleByClient(Dni);
+					if (clienList != null) {
+						for (var i = 0; i < clienList.size(); ++i) {
+							tableModel.addRow(new Object[] { clienList.get(i).getNum_bastidor(),
+									clienList.get(i).getMarca(), clienList.get(i).getModelo() });
+						}
+					}
+			}
+		});
+
+		// Botón cerrar
+		backButton.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				frame.dispose();
+			}
+		});
 	}
+
+
 
 	private void setUIComponents() {
 		frame.setTitle("Departamento de ventas");
@@ -89,17 +124,6 @@ public class SalesClientDetailsView {
 		frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 		bottomPanel.setBackground(new Color(233, 196, 106));
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
-		// Se añaden los componentes al bottomPanel
-		btnLogOut = new JButton("Cerrar Sesión");
-		btnLogOut.setBorder(null);
-		btnLogOut.setBackground(new Color(233, 196, 106));
-		btnLogOut.setFont(new Font("SansSerif", Font.BOLD, 12));
-		bottomPanel.add(btnLogOut);
-
-		JLabel lblLogOut = new JLabel("X");
-		lblLogOut.setForeground(new Color(220, 20, 60));
-		lblLogOut.setFont(new Font("SansSerif", Font.BOLD, 13));
-		bottomPanel.add(lblLogOut);
 
 		/*
 		 * mainPanel. Dentro se crean otros paneles para añadir los distintos
@@ -109,10 +133,8 @@ public class SalesClientDetailsView {
 		mainPanel.setBorder(new MatteBorder(2, 2, 1, 1, (Color) new Color(0, 0, 0)));
 		frame.getContentPane().add(mainPanel);
 		GridBagLayout gbl_mainPanel = new GridBagLayout();
-		gbl_mainPanel.columnWidths = new int[] { 1061, 0 };
-		gbl_mainPanel.rowHeights = new int[] { 137, 298, 328, 0 };
-		gbl_mainPanel.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-		gbl_mainPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_mainPanel.rowWeights = new double[]{0.0, 0.0, 0.0};
+		gbl_mainPanel.rowHeights = new int[]{64, 262, 50};
 		mainPanel.setLayout(gbl_mainPanel);
 
 		// Paneles que componen el mainPanel
@@ -151,81 +173,106 @@ public class SalesClientDetailsView {
 		// Componentes panel derecho
 		// Añadir Jlabel y JText para los distintos datos del ciente
 		JLabel lblCod = new JLabel("Código de cliente:");
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblCod, 26, SpringLayout.NORTH, clientDataPanelLeft);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblCod, 70, SpringLayout.WEST, clientDataPanelLeft);
-		lblCod.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblCod, 23, SpringLayout.NORTH, clientDataPanelLeft);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblCod, 10, SpringLayout.WEST, clientDataPanelLeft);
+		lblCod.setFont(new Font("SansSerif", Font.BOLD, 15));
 		clientDataPanelLeft.add(lblCod);
 
-		txtCod = new JTextField();
-		txtCod.setEnabled(false);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, txtCod, -3, SpringLayout.NORTH, lblCod);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, txtCod, 74, SpringLayout.EAST, lblCod);
-		txtCod.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		txtCod.setColumns(10);
-		clientDataPanelLeft.add(txtCod);
+		lblCodResult = new JLabel("");
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblCodResult, 0, SpringLayout.NORTH, lblCod);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblCodResult, 30, SpringLayout.EAST, lblCod);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.EAST, lblCodResult, 167, SpringLayout.EAST, lblCod);
+		lblCodResult.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		clientDataPanelLeft.add(lblCodResult);
 
 		// Añadir Jlabel y JText para los distintos datos del ciente
 		JLabel lblNombreCliente = new JLabel("Nombre:");
 		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblNombreCliente, 26, SpringLayout.SOUTH, lblCod);
 		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblNombreCliente, 0, SpringLayout.WEST, lblCod);
-		lblNombreCliente.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		lblNombreCliente.setFont(new Font("SansSerif", Font.BOLD, 15));
 		clientDataPanelLeft.add(lblNombreCliente);
 
-		txtName = new JTextField();
-		txtName.setEnabled(false);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, txtName, -3, SpringLayout.NORTH, lblNombreCliente);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, txtName, 0, SpringLayout.WEST, txtCod);
-		txtName.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		txtName.setColumns(10);
-		clientDataPanelLeft.add(txtName);
+		lblNameResult = new JLabel("");
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblNameResult, 0, SpringLayout.NORTH, lblNombreCliente);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblNameResult, 0, SpringLayout.WEST, lblCodResult);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.EAST, lblNameResult, 0, SpringLayout.EAST, lblCodResult);
+		lblNameResult.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		clientDataPanelLeft.add(lblNameResult);
 
 		// Añadir Jlabel y JText para los distintos datos del ciente
 		JLabel lblSurnames = new JLabel("Apellidos:");
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblSurnames, 26, SpringLayout.SOUTH,
-				lblNombreCliente);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblSurnames, 26, SpringLayout.SOUTH, lblNombreCliente);
 		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblSurnames, 0, SpringLayout.WEST, lblCod);
-		lblSurnames.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		lblSurnames.setFont(new Font("SansSerif", Font.BOLD, 15));
 		clientDataPanelLeft.add(lblSurnames);
 
-		txtSurnames = new JTextField();
-		txtSurnames.setEnabled(false);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, txtSurnames, -3, SpringLayout.NORTH, lblSurnames);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, txtSurnames, 0, SpringLayout.WEST, txtCod);
-		txtSurnames.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		txtSurnames.setColumns(10);
-		clientDataPanelLeft.add(txtSurnames);
+		lblSurnameResult = new JLabel("");
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblSurnameResult, 0, SpringLayout.NORTH, lblSurnames);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblSurnameResult, 0, SpringLayout.WEST, lblCodResult);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.EAST, lblSurnameResult, 0, SpringLayout.EAST, lblCodResult);
+		lblSurnameResult.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		clientDataPanelLeft.add(lblSurnameResult);
 
 		JLabel lblDni = new JLabel("DNI:");
 		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblDni, 26, SpringLayout.SOUTH, lblSurnames);
 		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblDni, 0, SpringLayout.WEST, lblCod);
-		lblDni.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		lblDni.setFont(new Font("SansSerif", Font.BOLD, 15));
 		clientDataPanelLeft.add(lblDni);
 
-		txtDni = new JTextField();
-		txtDni.setEnabled(false);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, txtDni, -3, SpringLayout.NORTH, lblDni);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, txtDni, 0, SpringLayout.WEST, txtCod);
-		txtDni.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		txtDni.setColumns(10);
-		clientDataPanelLeft.add(txtDni);
+		lblDniResult = new JLabel("");
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblDniResult, 0, SpringLayout.NORTH, lblDni);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblDniResult, 0, SpringLayout.WEST, lblCodResult);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.EAST, lblDniResult, 0, SpringLayout.EAST, lblCodResult);
+		lblDniResult.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		clientDataPanelLeft.add(lblDniResult);
 
 		// Añadir Jlabel y JText para los distintos datos del ciente
 		JLabel lblTelephone = new JLabel("Teléfono:");
 		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblTelephone, 26, SpringLayout.SOUTH, lblDni);
 		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblTelephone, 0, SpringLayout.WEST, lblCod);
-		lblTelephone.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		lblTelephone.setFont(new Font("SansSerif", Font.BOLD, 15));
 		clientDataPanelLeft.add(lblTelephone);
 
-		txtTelephone = new JTextField();
-		txtTelephone.setEnabled(false);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, txtTelephone, -3, SpringLayout.NORTH, lblTelephone);
-		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, txtTelephone, 0, SpringLayout.WEST, txtCod);
-		txtTelephone.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		txtTelephone.setColumns(10);
-		clientDataPanelLeft.add(txtTelephone);
+		lblTelephoneResult = new JLabel("");
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.NORTH, lblTelephoneResult, 0, SpringLayout.NORTH, lblTelephone);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.WEST, lblTelephoneResult, 0, SpringLayout.WEST, lblCodResult);
+		sl_datosClientePanelLeft.putConstraint(SpringLayout.EAST, lblTelephoneResult, 0, SpringLayout.EAST, lblCodResult);
+		lblTelephoneResult.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		clientDataPanelLeft.add(lblTelephoneResult);
 
 		JPanel clientDataPanelRight = new JPanel();
 		clientDataPanel.add(clientDataPanelRight);
+
+		JLabel lblVehiclesClient = new JLabel("Vehículos del cliente");
+		lblVehiclesClient.setFont(new Font("SansSerif", Font.BOLD, 15));
+		clientDataPanelRight.add(lblVehiclesClient);
+
+		clientTable = new JTable();
+		clientTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 15));
+		clientTable.getTableHeader().setForeground(Color.WHITE);
+		clientTable.getTableHeader().setBackground(new Color(244, 162, 97));
+		clientTable.setPreferredScrollableViewportSize(new Dimension(950, 400));
+		clientTable.setFont(new Font("SansSerif", Font.BOLD, 15));
+		clientTable.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "Número de bastidor", "Marca", "Modelo"}) {
+			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class };
+
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		clientTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+		clientTable.getColumnModel().getColumn(0).setMaxWidth(150);
+		clientTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+		clientTable.getColumnModel().getColumn(1).setMaxWidth(100);
+		clientTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+		clientTable.getColumnModel().getColumn(2).setMaxWidth(100);
+
+		JScrollPane tableScrollPane = new JScrollPane(clientTable);
+		tableScrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		tableScrollPane.setPreferredSize(new Dimension(325, 200));
+		tableScrollPane.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		clientDataPanelRight.add(tableScrollPane);
 
 		JPanel bottonPanel = new JPanel();
 		GridBagConstraints gbc_botonPanel = new GridBagConstraints();
@@ -233,16 +280,20 @@ public class SalesClientDetailsView {
 		gbc_botonPanel.gridx = 0;
 		gbc_botonPanel.gridy = 2;
 		mainPanel.add(bottonPanel, gbc_botonPanel);
-		bottonPanel.setLayout(new FlowLayout(1, 250, 100));
+		bottonPanel.setLayout(new FlowLayout(1, 300, 50));
 
 		// Botones
-		backButton = new JButton("Volver al menú");
+		backButton = new JButton("Volver");
 		backButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 		backButton.setBackground(new Color(244, 162, 97));
 		backButton.setForeground(Color.WHITE);
 		bottonPanel.add(backButton);
 
 
+	}
+
+	public JFrame getFrame() {
+		return frame;
 	}
 
 }

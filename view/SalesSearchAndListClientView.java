@@ -68,7 +68,7 @@ public class SalesSearchAndListClientView {
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
 				// Insertar los clientes en la tabla clientes
-				var clientList = clientDAO.fillTable();
+				var clientList = clientDAO.getClients();
 				if (clientList != null) {
 					for (var i = 0; i < clientList.size(); ++i) {
 						var tableModel = (DefaultTableModel) clientTable.getModel();
@@ -113,7 +113,7 @@ public class SalesSearchAndListClientView {
 			public void mouseClicked(MouseEvent e) {
 				String dni ="";
 				if(clientTable.getSelectedRow() != -1) {
-					new SalesClientDetailsView(String.valueOf(tableModel.getValueAt(clientTable.getSelectedRow(), 1))).getFrame().setVisible(true);;
+					new SalesClientDetailsView(String.valueOf(tableModel.getValueAt(clientTable.getSelectedRow(), 1))).getFrame().setVisible(true);
 				} else {
 					JOptionPane.showMessageDialog(frame, "Haga clic en un cliente de la tabla para ver más detalles", "Warning!",
 							JOptionPane.ERROR_MESSAGE);
