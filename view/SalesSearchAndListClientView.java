@@ -111,9 +111,9 @@ public class SalesSearchAndListClientView {
 		// Botón ver detalles del cliente
 		btnDetallesDelCliente.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
+				String dni ="";
 				if(clientTable.getSelectedRow() != -1) {
-					// new SalesClientDetailsView(tableModel.getValueAt(clientTable.getSelectedRow(), 0));
-					//frame.dispose();
+					new SalesClientDetailsView(String.valueOf(tableModel.getValueAt(clientTable.getSelectedRow(), 1))).getFrame().setVisible(true);;
 				} else {
 					JOptionPane.showMessageDialog(frame, "Haga clic en un cliente de la tabla para ver más detalles", "Warning!",
 							JOptionPane.ERROR_MESSAGE);
