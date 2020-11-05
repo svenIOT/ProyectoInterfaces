@@ -67,6 +67,9 @@ public class SalesClientDetailsView {
 
 	}
 
+	/**
+	 * Contiene los controladores
+	 */
 	private void setControllers() {
 		var tableModel = (DefaultTableModel) clientTable.getModel();
 		frame.addWindowListener(new WindowAdapter() {
@@ -99,7 +102,9 @@ public class SalesClientDetailsView {
 	}
 
 
-
+	/**
+	 * Contiene los componentes de la interfaz de usuario
+	 */
 	private void setUIComponents() {
 		frame.setTitle("Departamento de ventas");
 		frame.setMinimumSize(new Dimension(700, 500));

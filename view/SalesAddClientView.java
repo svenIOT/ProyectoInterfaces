@@ -60,6 +60,9 @@ public class SalesAddClientView {
 
 	}
 
+	/**
+	 * Contiene los controladores
+	 */
 	private void setControllers() {
 		// Añadir cliente
 		registerButton.addMouseListener(new MouseAdapter() {
@@ -91,6 +94,9 @@ public class SalesAddClientView {
 
 	}
 
+	/**
+	 * Contiene los componentes de la interfaz de usuario
+	 */
 	private void setUIComponents() {
 		frame.setTitle("Departamento de ventas");
 		frame.setMinimumSize(new Dimension(700, 500));
@@ -273,13 +279,13 @@ public class SalesAddClientView {
 	}
 
 	/**
-	 * Crea un usuario con los datos de los textField
+	 * Crea un usuario con los datos de los textField y comprueba si ya existe
 	 * 
-	 * @return
+	 * @return Si no existe devuelve un cliente, sino null
 	 */
 	private Client createClient() {
 		Client client = null;
-		var clientList = clientDAO.getClients();
+		var clientsList = clientDAO.getClients();
 		var name = txtName.getText();
 		var surnames = txtSurnames.getText();
 		var dni = txtDni.getText();
@@ -292,8 +298,8 @@ public class SalesAddClientView {
 		} else {
 			// Comprobar si el cliente ya existe
 			var exist = false;
-			for (int i = 0; i < clientList.size(); ++i) {
-				if (dni.equalsIgnoreCase(clientList.get(i).getDni())) {
+			for (int i = 0; i < clientsList.size(); ++i) {
+				if (dni.equalsIgnoreCase(clientsList.get(i).getDni())) {
 					exist = true;
 					JOptionPane.showMessageDialog(frame, "Error, ya existe el DNI introducido", "Warning!",
 							JOptionPane.ERROR_MESSAGE);

@@ -73,7 +73,6 @@ public class VehicleDAO extends AbstractDAO {
 
 		return vehiculo;
 	}
-	
 
 	/**
 	 * Devuelve el coche con el número de bastidor indicado
@@ -126,8 +125,8 @@ public class VehicleDAO extends AbstractDAO {
 	 */
 	public Motorcycle searchMotorcycle(String frameNumber) {
 		Motorcycle motorcycle = null;
-		String licenseNumber = "", employeeSurnames = "", concesionaireName = "", brand = "", motorcycleModel = "", fuel = "",
-				price = "", clientSurnames = "";
+		String licenseNumber = "", employeeSurnames = "", concesionaireName = "", brand = "", motorcycleModel = "",
+				fuel = "", price = "", clientSurnames = "";
 		try {
 			stm = con.createStatement();
 			rs = stm.executeQuery(
@@ -153,8 +152,8 @@ public class VehicleDAO extends AbstractDAO {
 			if (rs.next()) {
 				clientSurnames = rs.getString(1);
 			}
-			motorcycle = new Motorcycle(frameNumber, brand, motorcycleModel, fuel, price, concesionaireName, clientSurnames,
-					employeeSurnames, licenseNumber);
+			motorcycle = new Motorcycle(frameNumber, brand, motorcycleModel, fuel, price, concesionaireName,
+					clientSurnames, employeeSurnames, licenseNumber);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -169,8 +168,8 @@ public class VehicleDAO extends AbstractDAO {
 	 */
 	public Moped searchMoped(String frameNumber) {
 		Moped moped = null;
-		String licenseNumber = "", employeeSurnames = "", concesionaireName = "", brand = "", mopedModel = "", fuel = "",
-				price = "", clientSurnames = "";
+		String licenseNumber = "", employeeSurnames = "", concesionaireName = "", brand = "", mopedModel = "",
+				fuel = "", price = "", clientSurnames = "";
 		try {
 			stm = con.createStatement();
 			rs = stm.executeQuery(
@@ -203,7 +202,7 @@ public class VehicleDAO extends AbstractDAO {
 		}
 		return moped;
 	}
-	
+
 	/**
 	 * Devuelve una lista con todos los coches
 	 * 
@@ -265,13 +264,40 @@ public class VehicleDAO extends AbstractDAO {
 		return moped;
 	}
 	
+	/**
+	 * Devuelve una lista con todos los vehículos
+	 * 
+	 * @return Lista de vehículos
+	 */
+	public List<Vehicle> getVehicles() {
+		var vehicles = new ArrayList<Vehicle>();
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(Constants.SELECT_VEHICLES);
+			while (rs.next()) {
+				vehicles.add(new Vehicle(rs.getString("num_bastidor"), rs.getString("marca"), rs.getString("modelo"), rs.getString("combustible"), 
+						rs.getString("precio"),rs.getInt("cod_ventas"), rs.getInt("cod_cliente"), rs.getInt("cod_conce")));
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return vehicles;
+	}
+
+	/**
+	 * Devuelve una lista de vehículos según el DNI
+	 * 
+	 * @param dni String
+	 * @return Lista de vehículos
+	 */
 	public List<Vehicle> getVehicleByClient(String dni) {
 		var vehicle = new ArrayList<Vehicle>();
 		try {
 			stm = con.createStatement();
 			rs = stm.executeQuery(
 					"SELECT num_bastidor, marca, modelo FROM taller.persona INNER JOIN taller.cliente ON persona.dni = cliente.dni INNER JOIN taller.vehiculo ON cliente.cod_cliente = vehiculo.cod_cliente WHERE persona.dni = '"
-							+ dni + "'");while (rs.next()) {
+							+ dni + "'");
+			while (rs.next()) {
 				vehicle.add(new Vehicle(rs.getString(1), rs.getString(2), rs.getString(3), null, null));
 			}
 		} catch (SQLException ex) {

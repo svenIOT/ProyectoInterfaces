@@ -63,7 +63,10 @@ public class SalesAddVehicleView {
 		setControllers();
 
 	}
-
+	
+	/**
+	 * Contiene los controladores
+	 */
 	private void setControllers() {
 		// Añadir vehículo
 		addVehicleButton.addMouseListener(new MouseAdapter() {
@@ -95,6 +98,9 @@ public class SalesAddVehicleView {
 		});
 	}
 
+	/**
+	 * Contiene los componentes de la interfaz de usuario
+	 */
 	private void setUIComponents() {
 		frame.setTitle("Departamento de ventas");
 		frame.setMinimumSize(new Dimension(700, 500));
@@ -354,12 +360,13 @@ public class SalesAddVehicleView {
 	}
 
 	/**
-	 * Crea un vehículo con los datos de los campos de texto y comboBox
+	 * Crea un vehículo con los datos de los campos de texto, comboBox y comprueba si ya existe
 	 * 
-	 * @return Objeto vehículo
+	 * @return Si no existe devuelve un vehículo, sino null
 	 */
 	private Vehicle createVehicle() {
 		Vehicle vehicle = null;
+		var vehiclesList = vehicleDAO.getVehicles();
 		var numFrameCar = frameNumberTxt.getText();
 		var brand = brandTxt.getText();
 		var model = modelTxt.getText();
@@ -372,11 +379,19 @@ public class SalesAddVehicleView {
 			JOptionPane.showMessageDialog(frame, "Error, los campos no pueden estar vacios, ni contener solo espacios",
 					"Warning!", JOptionPane.ERROR_MESSAGE);
 		} else {
-			vehicle = new Vehicle(numFrameCar, brand, model, fuel, price, 1, 1, concessionaire); // TODO: Hacer códigos
-																									// dinámicos según
-																									// elección
+			// Comprobar si el vehículo ya existe
+			var exist = false;
+			for (int i = 0; i < vehiclesList.size(); ++i) {
+				if (numFrameCar.equalsIgnoreCase(vehiclesList.get(i).getNum_bastidor())) {
+					exist = true;
+					JOptionPane.showMessageDialog(frame, "Error, ya existe el número de bastidor del vehículo introducido", "Warning!",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			if (!exist) {
+				vehicle = new Vehicle(numFrameCar, brand, model, fuel, price, 1, 1, concessionaire); // TODO: Hacer códigos dinámicos según elección
+			}
 		}
-
 		return vehicle;
 	}
 
