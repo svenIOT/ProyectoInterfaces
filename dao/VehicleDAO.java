@@ -73,6 +73,7 @@ public class VehicleDAO extends AbstractDAO {
 
 		return vehiculo;
 	}
+	
 
 	/**
 	 * Devuelve el coche con el número de bastidor indicado
@@ -262,6 +263,21 @@ public class VehicleDAO extends AbstractDAO {
 			ex.printStackTrace();
 		}
 		return moped;
+	}
+	
+	public List<Vehicle> getVehicleByClient(String dni) {
+		var vehicle = new ArrayList<Vehicle>();
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT num_bastidor, marca, modelo FROM taller.persona INNER JOIN taller.cliente ON persona.dni = cliente.dni INNER JOIN taller.vehiculo ON cliente.cod_cliente = vehiculo.cod_cliente WHERE persona.dni = '"
+							+ dni + "'");while (rs.next()) {
+				vehicle.add(new Vehicle(rs.getString(1), rs.getString(2), rs.getString(3), null, null));
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return vehicle;
 	}
 
 }
