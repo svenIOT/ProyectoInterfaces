@@ -209,8 +209,8 @@ ALTER TABLE Ventas
 
 
 ALTER TABLE Reparacion
-	ADD FOREIGN KEY (cod_mecanico)
-	REFERENCES Mecanico (cod_mecanico)
+	ADD FOREIGN KEY (cod_mecanico) REFERENCES Mecanico (cod_mecanico),
+    ADD FOREIGN KEY (num_bastidor) REFERENCES Vehiculo (num_bastidor)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
@@ -225,32 +225,21 @@ ALTER TABLE Cliente
 
 
 ALTER TABLE Ciclomotor
-	ADD FOREIGN KEY (num_bastidor)
-	REFERENCES Vehiculo (num_bastidor)
+	ADD FOREIGN KEY (num_bastidor) REFERENCES Vehiculo (num_bastidor)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
 
 
 ALTER TABLE Coche
-	ADD FOREIGN KEY (num_bastidor)
-	REFERENCES Vehiculo (num_bastidor)
+	ADD FOREIGN KEY (num_bastidor) REFERENCES Vehiculo (num_bastidor)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
 
 
 ALTER TABLE Motocicleta
-	ADD FOREIGN KEY (num_bastidor)
-	REFERENCES Vehiculo (num_bastidor)
-	ON UPDATE RESTRICT
-	ON DELETE RESTRICT
-;
-
-
-ALTER TABLE Reparacion
-	ADD FOREIGN KEY (num_bastidor)
-	REFERENCES Vehiculo (num_bastidor)
+	ADD FOREIGN KEY (num_bastidor) REFERENCES Vehiculo (num_bastidor)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
