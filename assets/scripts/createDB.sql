@@ -126,7 +126,9 @@ CREATE TABLE Reparacion
 	cod_reparacion int NOT NULL AUTO_INCREMENT,
 	cod_mecanico int NOT NULL,
 	num_bastidor varchar(10) NOT NULL,
-	piezas varchar(50),
+    fecha_entrada date,
+    fecha_salida date,
+	piezas varchar(500),
 	PRIMARY KEY (cod_reparacion)
 );
 
@@ -137,6 +139,7 @@ CREATE TABLE Vehiculo
 	cod_ventas int NOT NULL,
 	cod_cliente int NOT NULL,
 	cod_conce int NOT NULL,
+    tipo_vehiculo varchar(11),
 	marca varchar(10),
 	modelo varchar(15),
 	combustible varchar(10),
@@ -157,72 +160,49 @@ CREATE TABLE Ventas
 /* Create Foreign Keys */
 
 ALTER TABLE Propuesta
-	ADD FOREIGN KEY (cod_cliente)
-	REFERENCES Cliente (cod_cliente)
+	ADD FOREIGN KEY (cod_cliente) REFERENCES Cliente (cod_cliente),
+    ADD FOREIGN KEY (num_bastidor) REFERENCES Vehiculo (num_bastidor),
+    ADD FOREIGN KEY (cod_ventas) REFERENCES Ventas (cod_ventas)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
 
 
 ALTER TABLE Vehiculo
-	ADD FOREIGN KEY (cod_cliente)
-	REFERENCES Cliente (cod_cliente)
+	ADD FOREIGN KEY (cod_cliente) REFERENCES Cliente (cod_cliente),
+    ADD FOREIGN KEY (cod_conce) REFERENCES Concesionario (cod_conce),
+    ADD FOREIGN KEY (cod_ventas) REFERENCES Ventas (cod_ventas)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
 
 
 ALTER TABLE Empleado
-	ADD FOREIGN KEY (cod_conce)
-	REFERENCES Concesionario (cod_conce)
-	ON UPDATE RESTRICT
-	ON DELETE RESTRICT
-;
-
-
-ALTER TABLE Vehiculo
-	ADD FOREIGN KEY (cod_conce)
-	REFERENCES Concesionario (cod_conce)
+	ADD FOREIGN KEY (cod_conce) REFERENCES Concesionario (cod_conce),
+    ADD FOREIGN KEY (dni) REFERENCES Persona (dni)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
 
 
 ALTER TABLE Jefe
-	ADD FOREIGN KEY (cod_empleado)
-	REFERENCES Empleado (cod_empleado)
+	ADD FOREIGN KEY (cod_empleado) REFERENCES Empleado (cod_empleado)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
 
 
 ALTER TABLE Mecanico
-	ADD FOREIGN KEY (cod_empleado)
-	REFERENCES Empleado (cod_empleado)
+	ADD FOREIGN KEY (cod_empleado) REFERENCES Empleado (cod_empleado),
+    ADD FOREIGN KEY (cod_especialidad) REFERENCES Especialidad (cod_especialidad),
+    ADD FOREIGN KEY (cod_mecanico_jefe) REFERENCES Mecanico (cod_mecanico)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
 
 
 ALTER TABLE Ventas
-	ADD FOREIGN KEY (cod_empleado)
-	REFERENCES Empleado (cod_empleado)
-	ON UPDATE RESTRICT
-	ON DELETE RESTRICT
-;
-
-
-ALTER TABLE Mecanico
-	ADD FOREIGN KEY (cod_especialidad)
-	REFERENCES Especialidad (cod_especialidad)
-	ON UPDATE RESTRICT
-	ON DELETE RESTRICT
-;
-
-
-ALTER TABLE Mecanico
-	ADD FOREIGN KEY (cod_mecanico_jefe)
-	REFERENCES Mecanico (cod_mecanico)
+	ADD FOREIGN KEY (cod_empleado) REFERENCES Empleado (cod_empleado)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
@@ -237,14 +217,6 @@ ALTER TABLE Reparacion
 
 
 ALTER TABLE Cliente
-	ADD FOREIGN KEY (dni)
-	REFERENCES Persona (dni)
-	ON UPDATE RESTRICT
-	ON DELETE RESTRICT
-;
-
-
-ALTER TABLE Empleado
 	ADD FOREIGN KEY (dni)
 	REFERENCES Persona (dni)
 	ON UPDATE RESTRICT
@@ -276,36 +248,9 @@ ALTER TABLE Motocicleta
 ;
 
 
-ALTER TABLE Propuesta
-	ADD FOREIGN KEY (num_bastidor)
-	REFERENCES Vehiculo (num_bastidor)
-	ON UPDATE RESTRICT
-	ON DELETE RESTRICT
-;
-
-
 ALTER TABLE Reparacion
 	ADD FOREIGN KEY (num_bastidor)
 	REFERENCES Vehiculo (num_bastidor)
 	ON UPDATE RESTRICT
 	ON DELETE RESTRICT
 ;
-
-
-ALTER TABLE Propuesta
-	ADD FOREIGN KEY (cod_ventas)
-	REFERENCES Ventas (cod_ventas)
-	ON UPDATE RESTRICT
-	ON DELETE RESTRICT
-;
-
-
-ALTER TABLE Vehiculo
-	ADD FOREIGN KEY (cod_ventas)
-	REFERENCES Ventas (cod_ventas)
-	ON UPDATE RESTRICT
-	ON DELETE RESTRICT
-;
-
-
-

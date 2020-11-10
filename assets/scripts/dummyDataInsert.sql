@@ -35,25 +35,25 @@ INSERT INTO taller.especialidad (cod_especialidad, nombre_esp) VALUES
 (2, 'motocicleta'),
 (3, 'ciclomotor');
 
--- MECANICO Arreglar error con cod_empleado_jefe (relación reflexiva)
-/* INSERT INTO taller.mecanico (cod_mecanico, cod_empleado_jefe, cod_especialidad, cod_empleado) VALUES 
+-- MECANICO 
+INSERT INTO taller.mecanico (cod_mecanico, cod_mecanico_jefe, cod_especialidad, cod_empleado) VALUES 
 (1, 1, 1, 3),
-(2, 1, 2, 2); */
+(2, 1, 2, 2);
 
 -- VENTAS
 INSERT INTO taller.ventas (cod_ventas, cod_empleado) VALUES 
 (1, 1);
 
 -- VEHÍCULO
-INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, marca, modelo, combustible, precio) VALUES 
-('1234567890', 1, 2, 1, 'Subaru', 'WRX STI', 'Gasolina', 37000),
-('9876543210', 1, 3, 1, 'Nissan', '370Z Nismo', 'Gasolina', 35000),
-('4328457431', 1, 1, 1, 'Honda', 'CRX 1000', 'Gasolina', 6900),
-('5486079685', 1, 1, 1, 'Piaggio', 'SH', 'Gasolina', 2900);
+INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, tipo_vehiculo, marca, modelo, combustible, precio) VALUES 
+('1234567890', 1, 2, 1, 'Coche', 'Subaru', 'WRX STI', 'Gasolina', 37000),
+('9876543210', 1, 3, 1, 'Coche', 'Nissan', '370Z Nismo', 'Gasolina', 35000),
+('4328457431', 1, 1, 1, 'Motocicleta', 'Honda', 'CRX 1000', 'Gasolina', 6900),
+('5486079685', 1, 1, 1, 'Ciclomotor', 'Piaggio', 'SH', 'Gasolina', 2900);
 
 -- REPARACION
-INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, piezas) VALUES
-(1, 1, '1234567890', 'Turbo K04 híbrido, downpipe, pintura rally blue');
+INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas) VALUES
+(1, 1, '1234567890', '2021-10-9', '2021-10-11', 'Turbo K04 híbrido, downpipe, pintura rally blue');
 
 -- COCHE
 INSERT INTO taller.coche (mat_coche, num_bastidor) VALUES
