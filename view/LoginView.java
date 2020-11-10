@@ -60,8 +60,11 @@ public class LoginView {
 					if (userDAO.isSalesEmployee(user)) {
 						new SalesLandingView().getFrame().setVisible(true);
 						frame.dispose();
-					} else { // si es de mecánica (próximamente en otro sprint)
-						//new MechanicalLadingView().getFrame().setVisible(true);
+					} else if (userDAO.isBossMechanical(user)) {
+						new MechanicalBossLandingView().getFrame().setVisible(true);
+						frame.dispose();
+					} else {
+						//new MechanicalLandingView().getFrame().setVisible(true);
 						frame.dispose();
 					}
 				} else {
@@ -102,7 +105,7 @@ public class LoginView {
 		mainPanel.add(txtPassword);
 		
 		JLabel lblLogo = new JLabel("");
-		lblLogo.setIcon(new ImageIcon(LoginView.class.getResource("/img/logo.png")));
+		lblLogo.setIcon(new ImageIcon(LoginView.class.getResource("/assets/img/logo.png")));
 		lblLogo.setBounds(-21, 10, 817, 307);
 		mainPanel.add(lblLogo);
 	}
