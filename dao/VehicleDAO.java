@@ -276,7 +276,7 @@ public class VehicleDAO extends AbstractDAO {
 			rs = stm.executeQuery(Constants.SELECT_VEHICLES);
 			while (rs.next()) {
 				vehicles.add(new Vehicle(rs.getString("num_bastidor"), rs.getString("marca"), rs.getString("modelo"), rs.getString("combustible"), 
-						rs.getString("precio"),rs.getInt("cod_ventas"), rs.getInt("cod_cliente"), rs.getInt("cod_conce")));
+						rs.getString("precio"),rs.getInt("cod_ventas"), rs.getInt("cod_cliente"), rs.getInt("cod_conce"), rs.getString("tipo_vehiculo")));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();

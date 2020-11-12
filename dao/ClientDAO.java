@@ -80,5 +80,28 @@ public class ClientDAO extends AbstractDAO {
 		}
 		return client;
 	}
+	
+	/**
+	 * Busca un cliente con el número de bastidor y si existe devuelve un objeto cliente 
+	 * 
+	 * 
+	 * @param String
+	 * @return Objeto cliente
+	 */
+	public Client searchClientByFrameNumber(String num_bastidor) {
+		Client client = null;
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					""
+							);
+			if (rs.next()) {
+				//client = new Client();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return client;
+	}
 
 }

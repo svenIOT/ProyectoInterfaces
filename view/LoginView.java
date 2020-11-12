@@ -61,10 +61,11 @@ public class LoginView {
 						new SalesLandingView().getFrame().setVisible(true);
 						frame.dispose();
 					} else if (userDAO.isBossMechanical(user)) {
-						new MechanicalBossLandingView().getFrame().setVisible(true);
+						// Envía boolean para saber si es mecánico jefe o no
+						new MechanicalLandingView(true).getFrame().setVisible(true);
 						frame.dispose();
 					} else {
-						//new MechanicalLandingView().getFrame().setVisible(true);
+						new MechanicalLandingView(false).getFrame().setVisible(true);
 						frame.dispose();
 					}
 				} else {
@@ -103,20 +104,21 @@ public class LoginView {
 		txtPassword = new JPasswordField("Usuario");
 		txtPassword.setBounds(300, 376, 191, 30);
 		mainPanel.add(txtPassword);
-		
+
 		JLabel lblLogo = new JLabel("");
 		lblLogo.setIcon(new ImageIcon(LoginView.class.getResource("/assets/img/logo.png")));
 		lblLogo.setBounds(-21, 10, 817, 307);
 		mainPanel.add(lblLogo);
 	}
-	
+
 	/**
 	 * Crea un usuario con los datos de los textField
+	 * 
 	 * @return
 	 */
 	private Employee createEmployee() {
 		var username = txtUser.getText();
-		var password = new String (txtPassword.getPassword());
+		var password = new String(txtPassword.getPassword());
 		return new Employee(username, password);
 	}
 

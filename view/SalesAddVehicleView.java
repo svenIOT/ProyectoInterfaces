@@ -373,6 +373,7 @@ public class SalesAddVehicleView {
 		var fuel = fuelVehicleComboBox.getSelectedItem().toString();
 		var concessionaire = concessionaireComboBox.getSelectedIndex() + 1;
 		var price = priceTxt.getText();
+		var vehicleType = vehicleTypeComboBox.getSelectedItem().toString();
 
 		if (frameNumberTxt.getText().isBlank() || brandTxt.getText().isBlank() || modelTxt.getText().isBlank()
 				|| priceTxt.getText().isBlank()) {
@@ -389,7 +390,7 @@ public class SalesAddVehicleView {
 				}
 			}
 			if (!exist) {
-				vehicle = new Vehicle(numFrameCar, brand, model, fuel, price, 1, 1, concessionaire); // TODO: Hacer códigos dinámicos según elección
+				vehicle = new Vehicle(numFrameCar, brand, model, fuel, price, 1, 1, concessionaire, vehicleType); // TODO: Hacer códigos dinámicos según elección
 			}
 		}
 		return vehicle;
