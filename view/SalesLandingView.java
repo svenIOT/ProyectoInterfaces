@@ -78,12 +78,12 @@ public class SalesLandingView {
 				}
 			}
 		});
-		
+
 		// Combobox de propuesta de venta
 		salesComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (salesComboBox.getSelectedItem().toString().equalsIgnoreCase("Añadir propuesta")) {
-					// new SalesAddSellingPropositionView().getFrame().setVisible(true);
+					new SalesAddSellingPropositionView().getFrame().setVisible(true);
 					frame.dispose();
 				}
 				if (salesComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar propuestas")) {
@@ -191,7 +191,8 @@ public class SalesLandingView {
 		salesPanel.add(lblSales);
 
 		salesComboBox = new JComboBox<>();
-		salesComboBox.setModel(new DefaultComboBoxModel(new String[] {"Elige una", "Añadir propuesta", "Listar propuestas"}));
+		salesComboBox.setModel(
+				new DefaultComboBoxModel(new String[] { "Elige una", "Añadir propuesta", "Listar propuestas" }));
 		salesComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		salesPanel.add(salesComboBox);
 

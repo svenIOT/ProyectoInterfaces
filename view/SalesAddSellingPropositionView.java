@@ -12,10 +12,12 @@ import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -24,14 +26,20 @@ import javax.swing.border.MatteBorder;
 
 import com.toedter.calendar.JCalendar;
 
+import dao.ClientDAO;
 import dao.VehicleDAO;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SalesAddSellingPropositionView {
 
 	private JFrame frame;
-	private JComboBox<?> sellingPropositionComboBox;
-	private JButton returnButton;
-	private JButton addVehicleButton;
+	private JComboBox<?> clientsComboBox;
+	private JButton backMenuBtn;
+	private JButton addPropositionBtn;
 	private JButton btnLogOut;
 	private JTextField frameNumberTxt;
 	private JTextField priceTxt;
@@ -39,6 +47,7 @@ public class SalesAddSellingPropositionView {
 	
 
 	private VehicleDAO vehicleDAO;
+	private ClientDAO clientDAO;
 
 	/**
 	 * Create the application.
@@ -46,6 +55,7 @@ public class SalesAddSellingPropositionView {
 	public SalesAddSellingPropositionView() {
 		initialize();
 		vehicleDAO = new VehicleDAO();
+		clientDAO = new ClientDAO();
 	}
 
 	/**
@@ -65,10 +75,46 @@ public class SalesAddSellingPropositionView {
 	 * Contiene los controladores
 	 */
 	private void setControllers() {
+		// Al abrir la ventana se rellena el combobox con los clientes
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowOpened(WindowEvent e) {
+				var clients = clientDAO.getClients();
+				var comboboxModel = new DefaultComboBoxModel();
+				
+				for(var client: clients) {
+					comboboxModel.addElement(client.getNombre() + " " + client.getApellidos());
+				}
+				clientsComboBox.setModel(comboboxModel);
+			}
+		});
 		
+		// Añadir propuesta
+		addPropositionBtn.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				var vehicles = vehicleDAO.getVehicles();
+				var frameNumber = frameNumberTxt.getText();
+				var price = priceTxt.getText();
+				
+				// Cambiar formato de la fecha
+				var date = new SimpleDateFormat("yyyy/MM/dd").format(calendar.getDate());
+				
+				
+				// Comprobar que existe el número de bastidor introducido
+				var frameNumberExist = vehicles.stream().filter((vehicle) -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber));
+				if(frameNumberExist == null) {
+					JOptionPane.showMessageDialog(frame, "Error, no existe el número de bastidor introducido", "Warning!",
+							JOptionPane.ERROR_MESSAGE);
+				} else if(!isNumber(price)) {
+					JOptionPane.showMessageDialog(frame, "Error, el precio debe ser un número", "Warning!",
+							JOptionPane.ERROR_MESSAGE);
+				} else {
+					// TODO: insert BBDD ProposingDAO
+				}
+			}
+		});
 
 		// Volver al menú principal
-		returnButton.addMouseListener(new MouseAdapter() {
+		backMenuBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				new SalesLandingView().getFrame().setVisible(true);
 				frame.dispose();
@@ -172,47 +218,31 @@ public class SalesAddSellingPropositionView {
 
 		// Componentes panel derecho
 		// Añadir Jlabel y JText para los distintos datos del ciente
-		JLabel sellingPropositionLbl = new JLabel("Cliente:");
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, sellingPropositionLbl, 26, SpringLayout.NORTH,
+		JLabel clientLbl = new JLabel("Cliente:");
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, clientLbl, 26, SpringLayout.NORTH,
 				sellingPropositionPanelLeft);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, sellingPropositionLbl, 70, SpringLayout.WEST,
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, clientLbl, 70, SpringLayout.WEST,
 				sellingPropositionPanelLeft);
-		sellingPropositionLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		sellingPropositionPanelLeft.add(sellingPropositionLbl);
+		clientLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		sellingPropositionPanelLeft.add(clientLbl);
 
-		sellingPropositionComboBox = new JComboBox<>();
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, sellingPropositionComboBox, -106, SpringLayout.EAST, sellingPropositionPanelLeft);
-		sellingPropositionComboBox.setSelectedIndex(0);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, sellingPropositionComboBox, -3, SpringLayout.NORTH,
-				sellingPropositionLbl);
-		sellingPropositionComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		sellingPropositionPanelLeft.add(sellingPropositionComboBox);
+		clientsComboBox = new JComboBox<>();
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, clientsComboBox, 140, SpringLayout.EAST, clientLbl);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, clientsComboBox, -106, SpringLayout.EAST, sellingPropositionPanelLeft);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, clientsComboBox, -3, SpringLayout.NORTH,
+				clientLbl);
+		clientsComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		sellingPropositionPanelLeft.add(clientsComboBox);
 
-		JLabel dateLbl = new JLabel("Válido hasta:");
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, dateLbl, 26, SpringLayout.SOUTH,
-				sellingPropositionLbl);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, dateLbl, 0, SpringLayout.WEST,
-				sellingPropositionLbl);
-		dateLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		sellingPropositionPanelLeft.add(dateLbl);
-		
-		
-
-		// Añadir Jlabel y JText para los distintos datos del ciente
 		JLabel frameNumberLbl = new JLabel("Número de bastidor:");
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, frameNumberLbl, 26, SpringLayout.SOUTH,
-				dateLbl);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, frameNumberLbl, 0, SpringLayout.WEST,
-				sellingPropositionLbl);
 		frameNumberLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		sellingPropositionPanelLeft.add(frameNumberLbl);
 
 		frameNumberTxt = new JTextField();
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, sellingPropositionComboBox, 0, SpringLayout.WEST, frameNumberTxt);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, frameNumberTxt, -3, SpringLayout.NORTH,
-				frameNumberLbl);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, frameNumberTxt, 53, SpringLayout.EAST,
-				frameNumberLbl);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, frameNumberLbl, 3, SpringLayout.NORTH, frameNumberTxt);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, frameNumberLbl, -52, SpringLayout.WEST, frameNumberTxt);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, frameNumberTxt, 26, SpringLayout.SOUTH, clientsComboBox);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, frameNumberTxt, 0, SpringLayout.WEST, clientsComboBox);
 		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, frameNumberTxt, -106, SpringLayout.EAST,
 				sellingPropositionPanelLeft);
 		frameNumberTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -220,23 +250,44 @@ public class SalesAddSellingPropositionView {
 		sellingPropositionPanelLeft.add(frameNumberTxt);
 		
 		JLabel priceLbl = new JLabel("Precio:");
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, priceLbl, 33, SpringLayout.SOUTH, frameNumberLbl);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, priceLbl, 0, SpringLayout.WEST, sellingPropositionLbl);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, priceLbl, 0, SpringLayout.WEST, clientLbl);
 		priceLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		sellingPropositionPanelLeft.add(priceLbl);
 		
 		priceTxt = new JTextField();
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, priceTxt, 0, SpringLayout.WEST, sellingPropositionComboBox);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.SOUTH, priceTxt, 0, SpringLayout.SOUTH, priceLbl);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, priceTxt, 0, SpringLayout.EAST, sellingPropositionComboBox);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, priceLbl, 3, SpringLayout.NORTH, priceTxt);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, priceTxt, 24, SpringLayout.SOUTH, frameNumberTxt);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, priceTxt, 0, SpringLayout.WEST, clientsComboBox);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, priceTxt, 0, SpringLayout.EAST, clientsComboBox);
 		priceTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		priceTxt.setColumns(10);
 		sellingPropositionPanelLeft.add(priceTxt);
 
 		JPanel sellingPropositionPanelRight = new JPanel();
 		bodyPanel.add(sellingPropositionPanelRight);
-		SpringLayout sl_sellingPropositionPanelRight = new SpringLayout();
-		sellingPropositionPanelRight.setLayout(sl_sellingPropositionPanelRight);
+		GridBagLayout gbl_sellingPropositionPanelRight = new GridBagLayout();
+		gbl_sellingPropositionPanelRight.columnWidths = new int[]{220, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_sellingPropositionPanelRight.rowHeights = new int[]{173, 0};
+		gbl_sellingPropositionPanelRight.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_sellingPropositionPanelRight.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		sellingPropositionPanelRight.setLayout(gbl_sellingPropositionPanelRight);
+		
+		JLabel dateLbl = new JLabel("Válido hasta:");
+		dateLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		GridBagConstraints gbc_dateLbl = new GridBagConstraints();
+		gbc_dateLbl.insets = new Insets(0, 0, 0, 5);
+		gbc_dateLbl.gridx = 0;
+		gbc_dateLbl.gridy = 0;
+		sellingPropositionPanelRight.add(dateLbl, gbc_dateLbl);
+		
+		calendar = new JCalendar();
+		GridBagConstraints gbc_calendar = new GridBagConstraints();
+		gbc_calendar.insets = new Insets(0, 0, 0, 5);
+		gbc_calendar.anchor = GridBagConstraints.NORTHWEST;
+		gbc_calendar.gridx = 2;
+		gbc_calendar.gridy = 0;
+		calendar.setMinSelectableDate(new Date());
+		sellingPropositionPanelRight.add(calendar, gbc_calendar);
 
 		JPanel buttonPanel = new JPanel();
 		GridBagConstraints gbc_botonPanel = new GridBagConstraints();
@@ -247,22 +298,36 @@ public class SalesAddSellingPropositionView {
 		buttonPanel.setLayout(new FlowLayout(1, 250, 100));
 
 		// Botones
-		returnButton = new JButton("Volver al menú");
-		returnButton.setFont(new Font("SansSerif", Font.BOLD, 15));
-		returnButton.setBackground(new Color(244, 162, 97));
-		returnButton.setForeground(Color.WHITE);
-		buttonPanel.add(returnButton);
+		backMenuBtn = new JButton("Volver al menú");
+		backMenuBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
+		backMenuBtn.setBackground(new Color(244, 162, 97));
+		backMenuBtn.setForeground(Color.WHITE);
+		buttonPanel.add(backMenuBtn);
 
-		addVehicleButton = new JButton("Añadir vehículo");
-		addVehicleButton.setFont(new Font("SansSerif", Font.BOLD, 15));
-		addVehicleButton.setBackground(new Color(231, 111, 81));
-		addVehicleButton.setForeground(Color.WHITE);
-		buttonPanel.add(addVehicleButton);
+		addPropositionBtn = new JButton("Añadir propuesta");
+		addPropositionBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
+		addPropositionBtn.setBackground(new Color(231, 111, 81));
+		addPropositionBtn.setForeground(Color.WHITE);
+		buttonPanel.add(addPropositionBtn);
 
 	}
-
 	
-
+	/**
+	 * Comprueba si el String es un numero
+	 * @param number
+	 * @return
+	 */
+	 private boolean isNumber(String number) {
+	        boolean numeric;
+	        try {
+	            Integer.parseInt(number);
+	            numeric = true;
+	        } catch (NumberFormatException e) {
+	            numeric = false;
+	        }
+	        return numeric;
+	    }
+	
 	public JFrame getFrame() {
 		return frame;
 	}
