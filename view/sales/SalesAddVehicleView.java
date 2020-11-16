@@ -1,4 +1,4 @@
-package view;
+package view.sales;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,7 +25,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
 import dao.VehicleDAO;
+import model.Employee;
+import model.Sales;
 import model.Vehicle;
+import view.LoginView;
 
 public class SalesAddVehicleView {
 
@@ -41,12 +44,16 @@ public class SalesAddVehicleView {
 	private JTextField brandTxt;
 	private JTextField modelTxt;
 	private JTextField priceTxt;
+	
 	private VehicleDAO vehicleDAO;
 
+	private Sales user;
+	
 	/**
 	 * Create the application.
 	 */
-	public SalesAddVehicleView() {
+	public SalesAddVehicleView(Sales user) {
+		this.user = user;
 		initialize();
 		vehicleDAO = new VehicleDAO();
 	}
@@ -84,7 +91,7 @@ public class SalesAddVehicleView {
 		// Volver al menú principal
 		returnButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				new SalesLandingView().getFrame().setVisible(true);
+				new SalesLandingView(user).getFrame().setVisible(true);
 				frame.dispose();
 			}
 		});

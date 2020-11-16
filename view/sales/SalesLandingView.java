@@ -1,4 +1,4 @@
-package view;
+package view.sales;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,6 +16,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
+
+import model.Sales;
+import view.LoginView;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -26,11 +30,14 @@ public class SalesLandingView {
 	private JComboBox<?> customerComboBox;
 	private JComboBox<?> vehicleComboBox;
 	private JComboBox<?> salesComboBox;
+	
+	private Sales user; // TODO: mostrar usuario en la vista
 
 	/**
 	 * Crea la aplicación
 	 */
-	public SalesLandingView() {
+	public SalesLandingView(Sales user) {
+		this.user = user;
 		initialize();
 	}
 
@@ -55,11 +62,11 @@ public class SalesLandingView {
 		customerComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (customerComboBox.getSelectedItem().toString().equalsIgnoreCase("Alta cliente")) {
-					new SalesAddClientView().getFrame().setVisible(true);
+					new SalesAddClientView(user).getFrame().setVisible(true);
 					frame.dispose();
 				}
 				if (customerComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar cliente")) {
-					new SalesSearchAndListClientView().getFrame().setVisible(true);
+					new SalesSearchAndListClientView(user).getFrame().setVisible(true);
 					frame.dispose();
 				}
 			}
@@ -69,11 +76,11 @@ public class SalesLandingView {
 		vehicleComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Alta vehículo")) {
-					new SalesAddVehicleView().getFrame().setVisible(true);
+					new SalesAddVehicleView(user).getFrame().setVisible(true);
 					frame.dispose();
 				}
 				if (vehicleComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar vehículo")) {
-					new SalesSearchAndListVehiclesView().getFrame().setVisible(true);
+					new SalesSearchAndListVehiclesView(user).getFrame().setVisible(true);
 					frame.dispose();
 				}
 			}
@@ -83,11 +90,11 @@ public class SalesLandingView {
 		salesComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (salesComboBox.getSelectedItem().toString().equalsIgnoreCase("Añadir propuesta")) {
-					new SalesAddSellingPropositionView().getFrame().setVisible(true);
+					new SalesAddSellingPropositionView(user).getFrame().setVisible(true);
 					frame.dispose();
 				}
 				if (salesComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar propuestas")) {
-					// new SalesSearchAndListSellingPropositionView().getFrame().setVisible(true);
+					new SalesSearchAndListSellingPropositionView().getFrame().setVisible(true);
 					frame.dispose();
 				}
 			}

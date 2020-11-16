@@ -47,7 +47,7 @@ public class ClientDAO extends AbstractDAO {
 		var clients = new ArrayList<Client>();
 		try {
 			stm = con.createStatement();
-			rs = stm.executeQuery(Constants.SELECT_CLIENTS);
+			rs = stm.executeQuery(Constants.SELECT_CLIENTS_ALL_DATA);
 			while (rs.next()) {
 				clients.add(
 						new Client(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));

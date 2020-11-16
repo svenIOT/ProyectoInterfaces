@@ -1,4 +1,4 @@
-package view;
+package view.sales;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,6 +20,9 @@ import javax.swing.border.MatteBorder;
 
 import dao.ClientDAO;
 import model.Client;
+import model.Employee;
+import model.Sales;
+import view.LoginView;
 
 import javax.swing.SwingConstants;
 import java.awt.Insets;
@@ -37,12 +40,16 @@ public class SalesAddClientView {
 	private JTextField txtSurnames;
 	private JTextField txtDni;
 	private JTextField txtTelephone;
+	
 	private ClientDAO clientDAO;
 
+	private Sales user;
+	
 	/**
 	 * Create the application.
 	 */
-	public SalesAddClientView() {
+	public SalesAddClientView(Sales user) {
+		this.user = user;
 		initialize();
 		clientDAO = new ClientDAO();
 	}
@@ -79,7 +86,7 @@ public class SalesAddClientView {
 		// Volver al menú principal
 		backButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				new SalesLandingView().getFrame().setVisible(true);
+				new SalesLandingView(user).getFrame().setVisible(true);
 				frame.dispose();
 			}
 		});

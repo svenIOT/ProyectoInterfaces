@@ -212,7 +212,7 @@ public class VehicleDAO extends AbstractDAO {
 		var cars = new ArrayList<Car>();
 		try {
 			stm = con.createStatement();
-			rs = stm.executeQuery(Constants.SELECT_CARS);
+			rs = stm.executeQuery(Constants.SELECT_CARS_AlL_DATA);
 			while (rs.next()) {
 				cars.add(new Car(rs.getString(1), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6),
 						rs.getString(2)));
@@ -232,7 +232,7 @@ public class VehicleDAO extends AbstractDAO {
 		var motorcycles = new ArrayList<Motorcycle>();
 		try {
 			stm = con.createStatement();
-			rs = stm.executeQuery(Constants.SELECT_MOTORCICLES);
+			rs = stm.executeQuery(Constants.SELECT_MOTORCICLES_ALL_DATA);
 			while (rs.next()) {
 				motorcycles.add(new Motorcycle(rs.getString(1), rs.getString(3), rs.getString(4), rs.getString(5),
 						rs.getString(6), rs.getString(2)));
@@ -253,7 +253,7 @@ public class VehicleDAO extends AbstractDAO {
 		var moped = new ArrayList<Moped>();
 		try {
 			stm = con.createStatement();
-			rs = stm.executeQuery(Constants.SELECT_MOPEDS);
+			rs = stm.executeQuery(Constants.SELECT_MOPEDS_ALL_DATA);
 			while (rs.next()) {
 				moped.add(new Moped(rs.getString(1), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6),
 						rs.getString(2)));

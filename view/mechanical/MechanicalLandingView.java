@@ -1,5 +1,5 @@
 
-package view;
+package view.mechanical;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,7 +19,11 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 
 import dao.ClientDAO;
+import dao.RepairDAO;
+import dao.UserDAO;
 import dao.VehicleDAO;
+import model.Mechanical;
+import view.LoginView;
 
 import javax.swing.SwingConstants;
 import java.awt.Insets;
@@ -27,6 +31,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Date;
+import java.util.stream.Collectors;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -43,18 +49,25 @@ public class MechanicalLandingView {
 
 	private VehicleDAO vehicleDAO;
 	private ClientDAO clientDAO;
+	private UserDAO userDAO;
+	private RepairDAO repairDAO;
 
+	private Mechanical user;
 	private boolean isBoss;
 
 	/**
 	 * Create the application.
+	 * 
+	 * @param user
 	 */
-	public MechanicalLandingView(boolean isBoss) {
+	public MechanicalLandingView(Mechanical user, boolean isBoss) {
+		this.user = user;
 		this.isBoss = isBoss;
-		initialize();
 		vehicleDAO = new VehicleDAO();
 		clientDAO = new ClientDAO();
-		
+		repairDAO = new RepairDAO();
+		userDAO = new UserDAO();
+		initialize();
 	}
 
 	/**
@@ -76,17 +89,28 @@ public class MechanicalLandingView {
 	private void setControllers() {
 		var tableModel = (DefaultTableModel) vehiclesRepairTable.getModel();
 
-		// Al abrir la ventana se rellena con los datos de todos los vehículos posibles
-		// para reparar
+		// Al abrir la ventana se rellena con los datos de todas las reparaciones
+		// posibles
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
-				// Insertar los vehiculos en la tabla vehiculos
-				var vehiclesList = vehicleDAO.getVehicles();
-				if (vehiclesList != null) {
-					for (var i = 0; i < vehiclesList.size(); ++i) {
-						tableModel.addRow(new Object[] { vehiclesList.get(i).getTipoVehiculo(),
-								vehiclesList.get(i).getNum_bastidor(), vehiclesList.get(i).getMarca(),
-								vehiclesList.get(i).getModelo(), vehiclesList.get(i).getCombustible() });
+				// Obtener todas las reparaciones
+				var repairsList = repairDAO.getRepairs();
+				if (repairsList != null) {
+					// Obtener todos los mecánicos
+					var mechanicals = userDAO.getMechanicals();
+					// Insertar las reparaciones en la tabla
+					for (var i = 0; i < repairsList.size(); ++i) {
+						// Conseguir datos (apellidos) del mecánico desde su código de mecánico
+						var mechanicalCod = repairsList.get(i).getCod_mecanico();
+						// Filtra el mecánico con el código de la iteración actual del bucle for (para
+						// añadirlo en la tabla con sus datos y no con código)
+						var selectedMechanical = mechanicals.stream()
+								.filter(mech -> mech.getCod_mecanico() == mechanicalCod).collect(Collectors.toList());
+
+						tableModel.addRow(new Object[] { repairsList.get(i).getCod_reparacion(),
+								selectedMechanical.get(0).getApellidos(), repairsList.get(i).getNum_bastidor(),
+								repairsList.get(i).getFecha_entrada(), repairsList.get(i).getFecha_salida(),
+								repairsList.get(i).getPiezas() });
 					}
 				}
 			}
@@ -95,7 +119,9 @@ public class MechanicalLandingView {
 		// Reparar vehículo
 		repairBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// Estaría bien implementar que si selecciona un vehículo de la tabla, se cargan esos datos en la nueva
+				// Estaría bien implementar que si selecciona una reparación de la tabla, se
+				// cargan
+				// el número de bastidor en la siguiente
 				// ventana, sino los campos estarán vacíos
 				if (vehiclesRepairTable.getSelectedRow() != -1) {
 					// TODO: new MechanicalVehicleRepairView(params).getFrame().setVisible(true);
@@ -109,7 +135,17 @@ public class MechanicalLandingView {
 		// Finalizar reparación
 		finishRepairBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// TODO
+				if (vehiclesRepairTable.getSelectedRow() != -1) {
+					var lastCheck = JOptionPane.showConfirmDialog(frame,
+							"¿Está seguro de que desea finalizar esta reparación? Se avisará al cliente para que pase a recogerlo", "¡Atención!", 1, 0);
+					// 1 sí, 0 no
+					if(lastCheck == 1) {
+						repairDAO.finishRepair((int) tableModel.getValueAt(vehiclesRepairTable.getSelectedRow(), 1));
+					}
+				} else {
+					JOptionPane.showMessageDialog(frame, "Seleccione la reparación de la tabla que desea finalizar",
+							"Warning!", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 
@@ -206,7 +242,7 @@ public class MechanicalLandingView {
 		gbc_bodyPanel.gridy = 1;
 		mainPanel.add(bodyPanel, gbc_bodyPanel);
 		GridBagLayout gbl_bodyPanel = new GridBagLayout();
-		gbl_bodyPanel.columnWidths = new int[] { 398, 661, 0 };
+		gbl_bodyPanel.columnWidths = new int[] { 227, 751, 0 };
 		gbl_bodyPanel.rowHeights = new int[] { 586, 0 };
 		gbl_bodyPanel.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
 		gbl_bodyPanel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
@@ -223,26 +259,26 @@ public class MechanicalLandingView {
 		mainActionsPanelLeft.setLayout(sl_mainActionsPanelLeft);
 
 		repairBtn = new JButton("Nueva reparación");
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, repairBtn, 109, SpringLayout.NORTH,
+				mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, repairBtn, 10, SpringLayout.WEST,
+				mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, repairBtn, 174, SpringLayout.NORTH,
+				mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, repairBtn, 214, SpringLayout.WEST,
+				mainActionsPanelLeft);
 		// Comprobar si es jefe o no para desactivar el botón añadir vehículo a reparar
 		repairBtn.setEnabled(isBoss);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, repairBtn, 106, SpringLayout.NORTH,
-				mainActionsPanelLeft);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, repairBtn, 88, SpringLayout.WEST,
-				mainActionsPanelLeft);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, repairBtn, 171, SpringLayout.NORTH,
-				mainActionsPanelLeft);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, repairBtn, 291, SpringLayout.WEST,
-				mainActionsPanelLeft);
 		repairBtn.setForeground(Color.WHITE);
 		repairBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
 		repairBtn.setBackground(new Color(231, 111, 81));
 		mainActionsPanelLeft.add(repairBtn);
 
 		clientBtn = new JButton("Ficha cliente");
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, clientBtn, -194, SpringLayout.SOUTH,
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, clientBtn, 395, SpringLayout.NORTH,
 				mainActionsPanelLeft);
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, clientBtn, 0, SpringLayout.WEST, repairBtn);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, clientBtn, -129, SpringLayout.SOUTH,
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, clientBtn, -126, SpringLayout.SOUTH,
 				mainActionsPanelLeft);
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, clientBtn, 0, SpringLayout.EAST, repairBtn);
 		clientBtn.setForeground(Color.WHITE);
@@ -253,7 +289,7 @@ public class MechanicalLandingView {
 		finishRepairBtn = new JButton("Acabar reparación");
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, finishRepairBtn, 77, SpringLayout.SOUTH, repairBtn);
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, finishRepairBtn, 0, SpringLayout.WEST, repairBtn);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, finishRepairBtn, -79, SpringLayout.NORTH, clientBtn);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, finishRepairBtn, -76, SpringLayout.NORTH, clientBtn);
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, finishRepairBtn, 0, SpringLayout.EAST, repairBtn);
 		finishRepairBtn.setForeground(Color.WHITE);
 		finishRepairBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
@@ -267,7 +303,7 @@ public class MechanicalLandingView {
 		gbc_todayWorkPanelRight.gridy = 0;
 		bodyPanel.add(todayWorkPanelRight, gbc_todayWorkPanelRight);
 		GridBagLayout gbl_todayWorkPanelRight = new GridBagLayout();
-		gbl_todayWorkPanelRight.columnWidths = new int[] { 0, 0 };
+		gbl_todayWorkPanelRight.columnWidths = new int[] { 832, 0 };
 		gbl_todayWorkPanelRight.rowHeights = new int[] { 0, 0 };
 		gbl_todayWorkPanelRight.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
 		gbl_todayWorkPanelRight.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
@@ -283,9 +319,10 @@ public class MechanicalLandingView {
 		vehiclesRepairTable = new JTable();
 		vehiclesRepairTable.setRowHeight(30);
 		vehiclesRepairTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		vehiclesRepairTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Tipo veh\u00EDculo", "N\u00FAmero de bastidor", "Marca", "Modelo", "Combustible" }) {
-			Class[] columnTypes = new Class[] { String.class, Integer.class, String.class, String.class, String.class };
+		vehiclesRepairTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Código reparación",
+				"Mecánico asignado", "N\u00FAmero de bastidor", "Fecha entrada", "Fecha salida", "Piezas" }) {
+			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, Date.class, Date.class,
+					String.class };
 
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
@@ -300,7 +337,7 @@ public class MechanicalLandingView {
 		vehiclesRepairTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 15));
 		vehiclesRepairTable.getTableHeader().setForeground(Color.WHITE);
 		vehiclesRepairTable.getTableHeader().setBackground(new Color(244, 162, 97));
-		vehiclesRepairTable.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		vehiclesRepairTable.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		tableScrollPane.setViewportView(vehiclesRepairTable);
 
 	}

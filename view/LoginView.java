@@ -15,6 +15,9 @@ import javax.swing.JTextField;
 
 import dao.UserDAO;
 import model.Employee;
+import view.mechanical.MechanicalLandingView;
+import view.sales.SalesLandingView;
+
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 
@@ -56,16 +59,20 @@ public class LoginView {
 			public void mouseClicked(MouseEvent e) {
 				var user = createEmployee();
 				if (userDAO.login(user)) {
-					// Comprobar que tipo de usuario entra (ventas o mecánico)
+					// Comprobar que tipo de usuario entra (ventas o mecánico, para cada nueva view se le pasará un objeto con su modelo y sus datos)
 					if (userDAO.isSalesEmployee(user)) {
-						new SalesLandingView().getFrame().setVisible(true);
+						var salesUser = userDAO.getSalesEmployee(user);
+						new SalesLandingView(salesUser).getFrame().setVisible(true);
 						frame.dispose();
 					} else if (userDAO.isBossMechanical(user)) {
-						// Envía boolean para saber si es mecánico jefe o no
-						new MechanicalLandingView(true).getFrame().setVisible(true);
+						// Se le pasa true para saber que es jefe
+						var mechanicalBossUser = userDAO.getMechanicalEmployee(user);
+						new MechanicalLandingView(mechanicalBossUser, true).getFrame().setVisible(true);
 						frame.dispose();
 					} else {
-						new MechanicalLandingView(false).getFrame().setVisible(true);
+						// Si no es jefe false
+						var mechanicalUser = userDAO.getMechanicalEmployee(user);
+						new MechanicalLandingView(mechanicalUser, false).getFrame().setVisible(true);
 						frame.dispose();
 					}
 				} else {

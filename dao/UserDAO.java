@@ -1,6 +1,13 @@
 package dao;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import common.Constants;
 import model.Employee;
+import model.Mechanical;
+import model.Sales;
 
 public class UserDAO extends AbstractDAO {
 
@@ -61,7 +68,7 @@ public class UserDAO extends AbstractDAO {
 					"SELECT * FROM taller.empleado INNER JOIN taller.mecanico ON empleado.cod_empleado = mecanico.cod_empleado WHERE usuario='"
 							+ e.getUsername() + "' AND contrasena='" + e.getPassword() + "'");
 			// Comprobar si el código de jefe y el de mecánico es igual (es jefe)
-			if(rs.next() && rs.getInt("cod_mecanico") == rs.getInt("cod_mecanico_jefe")) {
+			if (rs.next() && rs.getInt("cod_mecanico") == rs.getInt("cod_mecanico_jefe")) {
 				isBoss = true;
 			}
 		} catch (Exception ex) {
@@ -70,4 +77,73 @@ public class UserDAO extends AbstractDAO {
 		return isBoss;
 	}
 
+	/**
+	 * Devuelve el empleado de ventas que coincida con el empleado (usuario y
+	 * contraseña) que se le pasa como parámetro
+	 * 
+	 * @param e Empelado
+	 * @return Empleado de ventas
+	 */
+	public Sales getSalesEmployee(Employee e) {
+		Sales salesEmployee = null;
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT * FROM taller.persona INNER JOIN taller.empleado ON persona.dni = empleado.dni INNER JOIN taller.ventas ON empleado.cod_empleado = ventas.cod_empleado WHERE usuario='"
+							+ e.getUsername() + "' AND contrasena='" + e.getPassword() + "';");
+			if (rs.next()) {
+				salesEmployee = new Sales(rs.getString("dni"), rs.getString("nombre"), rs.getString("apellidos"),
+						rs.getString("telefono"), rs.getInt("cod_ventas"), rs.getInt("cod_empleado"));
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return salesEmployee;
+	}
+
+	/**
+	 * Devuelve el empleado de mecánica que coincida con el empleado (usuario y
+	 * contraseña) que se le pasa como parámetro
+	 * 
+	 * @param e Empelado
+	 * @return Empleado de mecánica
+	 */
+	public Mechanical getMechanicalEmployee(Employee e) {
+		Mechanical mechanicalEmployee = null;
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT * FROM taller.persona INNER JOIN taller.empleado ON persona.dni = empleado.dni INNER JOIN taller.mecanico ON empleado.cod_empleado = mecanico.cod_empleado WHERE usuario='"
+							+ e.getUsername() + "' AND contrasena='" + e.getPassword() + "';");
+			if (rs.next()) {
+				mechanicalEmployee = new Mechanical(rs.getString("dni"), rs.getString("nombre"),
+						rs.getString("apellidos"), rs.getString("telefono"), rs.getInt("cod_mecanico"),
+						rs.getInt("cod_mecanico_jefe"), rs.getInt("cod_especialidad"), rs.getInt("cod_empleado"));
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return mechanicalEmployee;
+	}
+
+	/**
+	 * Devuelve una lista con todos los mecánicos y sus datos
+	 * 
+	 * @return Lista de mecánicos
+	 */
+	public List<Mechanical> getMechanicals() {
+		var mechanicals = new ArrayList<Mechanical>();
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(Constants.SELECT_MECHANICALS_ALL_DATA);
+			while (rs.next()) {
+				mechanicals.add(new Mechanical(rs.getString("dni"), rs.getString("nombre"), rs.getString("apellidos"),
+						rs.getString("telefono"), rs.getInt("cod_mecanico"), rs.getInt("cod_mecanico_jefe"),
+						rs.getInt("cod_especialidad"), rs.getInt("cod_empleado")));
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return mechanicals;
+	}
 }

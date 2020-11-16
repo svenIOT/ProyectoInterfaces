@@ -1,4 +1,4 @@
-package view;
+package view.sales;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,6 +18,10 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import dao.ClientDAO;
+import model.Employee;
+import model.Sales;
+import view.LoginView;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.GridBagLayout;
@@ -35,12 +39,16 @@ public class SalesSearchAndListClientView {
 	private JTable clientTable;
 	private JButton btnSearch;
 	private JButton btnDetallesDelCliente;
+	
 	private ClientDAO clientDAO;
 
+	private Sales user;
+	
 	/**
 	 * Crea la aplicación
 	 */
-	public SalesSearchAndListClientView() {
+	public SalesSearchAndListClientView(Sales user) {
+		this.user = user;
 		initialize();
 		clientDAO = new ClientDAO();
 	}
@@ -124,7 +132,7 @@ public class SalesSearchAndListClientView {
 		// Volver al menú principal
 		btnBackToMenu.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				new SalesLandingView().getFrame().setVisible(true);
+				new SalesLandingView(user).getFrame().setVisible(true);
 				frame.dispose();
 			}
 		});

@@ -1,4 +1,4 @@
-package view;
+package view.sales;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -27,12 +27,20 @@ import javax.swing.border.MatteBorder;
 import com.toedter.calendar.JCalendar;
 
 import dao.ClientDAO;
+import dao.SellingPropositionDAO;
 import dao.VehicleDAO;
+import model.Client;
+import model.Sales;
+import model.SellingProposition;
+import model.Vehicle;
+import view.LoginView;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SalesAddSellingPropositionView {
 
@@ -44,18 +52,22 @@ public class SalesAddSellingPropositionView {
 	private JTextField frameNumberTxt;
 	private JTextField priceTxt;
 	private JCalendar calendar;
-	
 
 	private VehicleDAO vehicleDAO;
 	private ClientDAO clientDAO;
+	private SellingPropositionDAO sellingPropositionDAO;
+	
+	private Sales user;
 
 	/**
 	 * Create the application.
 	 */
-	public SalesAddSellingPropositionView() {
-		initialize();
+	public SalesAddSellingPropositionView(Sales user) {
+		this.user = user;
 		vehicleDAO = new VehicleDAO();
 		clientDAO = new ClientDAO();
+		sellingPropositionDAO = new SellingPropositionDAO();
+		initialize();
 	}
 
 	/**
@@ -70,45 +82,33 @@ public class SalesAddSellingPropositionView {
 		setControllers();
 
 	}
-	
+
 	/**
 	 * Contiene los controladores
 	 */
 	private void setControllers() {
+		// Obtener datos del DAO
+		var clients = clientDAO.getClients();
+		var vehicles = vehicleDAO.getVehicles();
+
 		// Al abrir la ventana se rellena el combobox con los clientes
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
-				var clients = clientDAO.getClients();
 				var comboboxModel = new DefaultComboBoxModel();
-				
-				for(var client: clients) {
+
+				for (var client : clients) {
 					comboboxModel.addElement(client.getNombre() + " " + client.getApellidos());
 				}
 				clientsComboBox.setModel(comboboxModel);
 			}
 		});
-		
+
 		// Añadir propuesta
 		addPropositionBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				var vehicles = vehicleDAO.getVehicles();
-				var frameNumber = frameNumberTxt.getText();
-				var price = priceTxt.getText();
-				
-				// Cambiar formato de la fecha
-				var date = new SimpleDateFormat("yyyy/MM/dd").format(calendar.getDate());
-				
-				
-				// Comprobar que existe el número de bastidor introducido
-				var frameNumberExist = vehicles.stream().filter((vehicle) -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber));
-				if(frameNumberExist == null) {
-					JOptionPane.showMessageDialog(frame, "Error, no existe el número de bastidor introducido", "Warning!",
-							JOptionPane.ERROR_MESSAGE);
-				} else if(!isNumber(price)) {
-					JOptionPane.showMessageDialog(frame, "Error, el precio debe ser un número", "Warning!",
-							JOptionPane.ERROR_MESSAGE);
-				} else {
-					// TODO: insert BBDD ProposingDAO
+				var proposition = createProposition(clients, vehicles);
+				if (proposition != null) {
+					sellingPropositionDAO.addSellingProposition(proposition);
 				}
 			}
 		});
@@ -116,7 +116,7 @@ public class SalesAddSellingPropositionView {
 		// Volver al menú principal
 		backMenuBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				new SalesLandingView().getFrame().setVisible(true);
+				new SalesLandingView(user).getFrame().setVisible(true);
 				frame.dispose();
 			}
 		});
@@ -227,8 +227,10 @@ public class SalesAddSellingPropositionView {
 		sellingPropositionPanelLeft.add(clientLbl);
 
 		clientsComboBox = new JComboBox<>();
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, clientsComboBox, 140, SpringLayout.EAST, clientLbl);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, clientsComboBox, -106, SpringLayout.EAST, sellingPropositionPanelLeft);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, clientsComboBox, 140, SpringLayout.EAST,
+				clientLbl);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, clientsComboBox, -106, SpringLayout.EAST,
+				sellingPropositionPanelLeft);
 		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, clientsComboBox, -3, SpringLayout.NORTH,
 				clientLbl);
 		clientsComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -239,26 +241,33 @@ public class SalesAddSellingPropositionView {
 		sellingPropositionPanelLeft.add(frameNumberLbl);
 
 		frameNumberTxt = new JTextField();
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, frameNumberLbl, 3, SpringLayout.NORTH, frameNumberTxt);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, frameNumberLbl, -52, SpringLayout.WEST, frameNumberTxt);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, frameNumberTxt, 26, SpringLayout.SOUTH, clientsComboBox);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, frameNumberTxt, 0, SpringLayout.WEST, clientsComboBox);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, frameNumberLbl, 3, SpringLayout.NORTH,
+				frameNumberTxt);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, frameNumberLbl, -52, SpringLayout.WEST,
+				frameNumberTxt);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, frameNumberTxt, 26, SpringLayout.SOUTH,
+				clientsComboBox);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, frameNumberTxt, 0, SpringLayout.WEST,
+				clientsComboBox);
 		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, frameNumberTxt, -106, SpringLayout.EAST,
 				sellingPropositionPanelLeft);
 		frameNumberTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		frameNumberTxt.setColumns(10);
 		sellingPropositionPanelLeft.add(frameNumberTxt);
-		
+
 		JLabel priceLbl = new JLabel("Precio:");
 		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, priceLbl, 0, SpringLayout.WEST, clientLbl);
 		priceLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		sellingPropositionPanelLeft.add(priceLbl);
-		
+
 		priceTxt = new JTextField();
 		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, priceLbl, 3, SpringLayout.NORTH, priceTxt);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, priceTxt, 24, SpringLayout.SOUTH, frameNumberTxt);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, priceTxt, 0, SpringLayout.WEST, clientsComboBox);
-		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, priceTxt, 0, SpringLayout.EAST, clientsComboBox);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.NORTH, priceTxt, 24, SpringLayout.SOUTH,
+				frameNumberTxt);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.WEST, priceTxt, 0, SpringLayout.WEST,
+				clientsComboBox);
+		sl_sellingPropositionPanelLeft.putConstraint(SpringLayout.EAST, priceTxt, 0, SpringLayout.EAST,
+				clientsComboBox);
 		priceTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		priceTxt.setColumns(10);
 		sellingPropositionPanelLeft.add(priceTxt);
@@ -266,12 +275,13 @@ public class SalesAddSellingPropositionView {
 		JPanel sellingPropositionPanelRight = new JPanel();
 		bodyPanel.add(sellingPropositionPanelRight);
 		GridBagLayout gbl_sellingPropositionPanelRight = new GridBagLayout();
-		gbl_sellingPropositionPanelRight.columnWidths = new int[]{220, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_sellingPropositionPanelRight.rowHeights = new int[]{173, 0};
-		gbl_sellingPropositionPanelRight.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_sellingPropositionPanelRight.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		gbl_sellingPropositionPanelRight.columnWidths = new int[] { 220, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_sellingPropositionPanelRight.rowHeights = new int[] { 173, 0 };
+		gbl_sellingPropositionPanelRight.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				Double.MIN_VALUE };
+		gbl_sellingPropositionPanelRight.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 		sellingPropositionPanelRight.setLayout(gbl_sellingPropositionPanelRight);
-		
+
 		JLabel dateLbl = new JLabel("Válido hasta:");
 		dateLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_dateLbl = new GridBagConstraints();
@@ -279,7 +289,7 @@ public class SalesAddSellingPropositionView {
 		gbc_dateLbl.gridx = 0;
 		gbc_dateLbl.gridy = 0;
 		sellingPropositionPanelRight.add(dateLbl, gbc_dateLbl);
-		
+
 		calendar = new JCalendar();
 		GridBagConstraints gbc_calendar = new GridBagConstraints();
 		gbc_calendar.insets = new Insets(0, 0, 0, 5);
@@ -311,23 +321,60 @@ public class SalesAddSellingPropositionView {
 		buttonPanel.add(addPropositionBtn);
 
 	}
-	
+
+	/**
+	 * Crea una propuesta de venta con los datos de la vista
+	 * 
+	 * @param clients Lista
+	 * 
+	 * @return Objeto propuesta de venta
+	 */
+	private SellingProposition createProposition(List<Client> clients, List<Vehicle> vehicles) {
+		SellingProposition sellingProposition = null;
+		
+		// Obtener los datos de la vista
+		var selectedClient = clients.stream().filter(client -> clientsComboBox.getSelectedItem().toString()
+				.equalsIgnoreCase(client.getNombre() + " " + client.getApellidos())).collect(Collectors.toList());
+		var frameNumber = frameNumberTxt.getText();
+		var price = priceTxt.getText();
+
+		// Cambiar formato de la fecha introducida
+		var date = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getDate());
+
+		// Comprobar que existe el número de bastidor introducido
+		var frameNumberExist = vehicles.stream()
+				.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber));
+		if (frameNumberExist == null) {
+			JOptionPane.showMessageDialog(frame, "Error, no existe el número de bastidor introducido", "Warning!",
+					JOptionPane.ERROR_MESSAGE);
+		} else if (!isNumber(price)) {
+			JOptionPane.showMessageDialog(frame, "Error, el precio debe ser un número", "Warning!",
+					JOptionPane.ERROR_MESSAGE);
+		} else {
+			// TODO: Arreglar campo fecha
+			//sellingProposition = new SellingProposition(0, selectedClient.get(0).getClientCod(), user.getCod_ventas(), frameNumber, date);
+		}
+
+		return sellingProposition;
+	}
+
 	/**
 	 * Comprueba si el String es un numero
-	 * @param number
-	 * @return
+	 * 
+	 * @param number String
+	 * @return true si es un número, false si no lo es
 	 */
-	 private boolean isNumber(String number) {
-	        boolean numeric;
-	        try {
-	            Integer.parseInt(number);
-	            numeric = true;
-	        } catch (NumberFormatException e) {
-	            numeric = false;
-	        }
-	        return numeric;
-	    }
-	
+	private boolean isNumber(String number) {
+		boolean numeric;
+		try {
+			Integer.parseInt(number);
+			numeric = true;
+		} catch (NumberFormatException e) {
+			numeric = false;
+		}
+		return numeric;
+	}
+
 	public JFrame getFrame() {
 		return frame;
 	}
