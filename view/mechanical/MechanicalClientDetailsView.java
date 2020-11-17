@@ -1,4 +1,4 @@
-package view.sales;
+package view.mechanical;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,8 +20,8 @@ import javax.swing.SpringLayout;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 
-import dao.ClientDAO;
 import dao.VehicleDAO;
+import model.Client;
 
 import javax.swing.SwingConstants;
 import java.awt.Insets;
@@ -30,7 +30,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class SalesClientDetailsView {
+public class MechanicalClientDetailsView {
 
 	private JFrame frame;
 	private JButton backButton;
@@ -40,17 +40,17 @@ public class SalesClientDetailsView {
 	private JLabel lblDniResult;
 	private JLabel lblTelephoneResult;
 	private JTable clientTable;
-	private ClientDAO clientDAO;
+	
 	private VehicleDAO vehicleDAO;
-	private String Dni;
+
+	private Client client;
 
 	/**
 	 * Create the application.
 	 */
-	public SalesClientDetailsView(String dni) {
-		clientDAO = new ClientDAO();
-		vehicleDAO = new VehicleDAO();
-		this.Dni = dni;
+	public MechanicalClientDetailsView(Client client) {
+		this.vehicleDAO = new VehicleDAO();
+		this.client = client;
 		initialize();
 	}
 
@@ -72,17 +72,17 @@ public class SalesClientDetailsView {
 	 */
 	private void setControllers() {
 		var tableModel = (DefaultTableModel) clientTable.getModel();
+		// Al abrir la ventana se cargan los datos del cliente
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
-				var cliente = clientDAO.searchClient(Dni);
-				lblCodResult.setText("" + cliente.getClientCod());
-				lblNameResult.setText(cliente.getNombre());
-				lblSurnameResult.setText(cliente.getApellidos());
-				lblDniResult.setText(cliente.getDni());
-				lblTelephoneResult.setText(cliente.getTelefono());
-
-				// Rellenar tabla si existen vehículos del cliente
-				var clienList = vehicleDAO.getVehicleByClient(Dni);
+				lblCodResult.setText(client.getClientCod() + "");
+				lblNameResult.setText(client.getNombre());
+				lblSurnameResult.setText(client.getApellidos());
+				lblDniResult.setText(client.getDni());
+				lblTelephoneResult.setText(client.getTelefono());
+				
+				//Rellenar tabla si existen vehículos del cliente
+				var clienList = vehicleDAO.getVehicleByClient(client.getDni());
 				if (clienList != null) {
 					for (var i = 0; i < clienList.size(); ++i) {
 						tableModel.addRow(new Object[] { clienList.get(i).getNum_bastidor(),

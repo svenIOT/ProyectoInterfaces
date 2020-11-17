@@ -109,6 +109,8 @@ public class SalesAddSellingPropositionView {
 				var proposition = createProposition(clients, vehicles);
 				if (proposition != null) {
 					sellingPropositionDAO.addSellingProposition(proposition);
+					JOptionPane.showMessageDialog(frame, "Propuesta de venta añadida",
+							"Success!", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
@@ -332,27 +334,28 @@ public class SalesAddSellingPropositionView {
 	private SellingProposition createProposition(List<Client> clients, List<Vehicle> vehicles) {
 		SellingProposition sellingProposition = null;
 		
-		// Obtener los datos de la vista
+		// Obtener los datos de la vista y obtener datos de clientes mediante su código
 		var selectedClient = clients.stream().filter(client -> clientsComboBox.getSelectedItem().toString()
 				.equalsIgnoreCase(client.getNombre() + " " + client.getApellidos())).collect(Collectors.toList());
 		var frameNumber = frameNumberTxt.getText();
 		var price = priceTxt.getText();
+		Date date = null;
 
 		// Cambiar formato de la fecha introducida
-		var date = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getDate());
+		var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		var dateString = dateFormat.format(calendar.getDate());
 
 		// Comprobar que existe el número de bastidor introducido
 		var frameNumberExist = vehicles.stream()
-				.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber));
-		if (frameNumberExist == null) {
+				.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber)).collect(Collectors.toList());
+		if (frameNumberExist.size() == 0) {
 			JOptionPane.showMessageDialog(frame, "Error, no existe el número de bastidor introducido", "Warning!",
 					JOptionPane.ERROR_MESSAGE);
 		} else if (!isNumber(price)) {
 			JOptionPane.showMessageDialog(frame, "Error, el precio debe ser un número", "Warning!",
 					JOptionPane.ERROR_MESSAGE);
 		} else {
-			// TODO: Arreglar campo fecha
-			//sellingProposition = new SellingProposition(0, selectedClient.get(0).getClientCod(), user.getCod_ventas(), frameNumber, date);
+			sellingProposition = new SellingProposition(0, selectedClient.get(0).getClientCod(), user.getCod_ventas(), frameNumber, dateString);
 		}
 
 		return sellingProposition;

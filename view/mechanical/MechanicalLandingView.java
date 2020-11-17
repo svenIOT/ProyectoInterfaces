@@ -21,7 +21,6 @@ import javax.swing.table.DefaultTableModel;
 import dao.ClientDAO;
 import dao.RepairDAO;
 import dao.UserDAO;
-import dao.VehicleDAO;
 import model.Mechanical;
 import view.LoginView;
 
@@ -47,7 +46,6 @@ public class MechanicalLandingView {
 	private JButton finishRepairBtn;
 	private JTable vehiclesRepairTable;
 
-	private VehicleDAO vehicleDAO;
 	private ClientDAO clientDAO;
 	private UserDAO userDAO;
 	private RepairDAO repairDAO;
@@ -63,7 +61,6 @@ public class MechanicalLandingView {
 	public MechanicalLandingView(Mechanical user, boolean isBoss) {
 		this.user = user;
 		this.isBoss = isBoss;
-		vehicleDAO = new VehicleDAO();
 		clientDAO = new ClientDAO();
 		repairDAO = new RepairDAO();
 		userDAO = new UserDAO();
@@ -88,6 +85,9 @@ public class MechanicalLandingView {
 	 */
 	private void setControllers() {
 		var tableModel = (DefaultTableModel) vehiclesRepairTable.getModel();
+		
+		// Datos del DAO
+		var clients = clientDAO.getClients();
 
 		// Al abrir la ventana se rellena con los datos de todas las reparaciones
 		// posibles
@@ -153,9 +153,10 @@ public class MechanicalLandingView {
 		clientBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (vehiclesRepairTable.getSelectedRow() != -1) {
-					var client = clientDAO.searchClientByFrameNumber(
-							String.valueOf(tableModel.getValueAt(vehiclesRepairTable.getSelectedRow(), 2)));
-					// TODO: new MechanicalClientDetailsView(client);
+					var ClientId = (int) tableModel.getValueAt(vehiclesRepairTable.getSelectedRow(), 2); // TODO: Arreglar este guiso
+					// Buscar cliente por su código (seleccionado de la tabla)
+					var selectedClient = clients.stream().filter(client -> client.getClientCod() == ClientId).collect(Collectors.toList());
+					new MechanicalClientDetailsView(selectedClient.get(0));
 					frame.dispose();
 				} else {
 					JOptionPane.showMessageDialog(frame, "Seleccione un elemento de la tabla para ver el cliente",
