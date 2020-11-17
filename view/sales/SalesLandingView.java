@@ -94,7 +94,7 @@ public class SalesLandingView {
 					frame.dispose();
 				}
 				if (salesComboBox.getSelectedItem().toString().equalsIgnoreCase("Listar propuestas")) {
-					new SalesSearchAndListSellingPropositionView().getFrame().setVisible(true);
+					new SalesSearchAndListSellingPropositionView(user).getFrame().setVisible(true);
 					frame.dispose();
 				}
 			}
