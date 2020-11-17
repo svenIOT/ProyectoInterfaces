@@ -36,4 +36,5 @@ public class SellingProposition {
 		return fecha_validez;
 	}
 	
+	
 }
