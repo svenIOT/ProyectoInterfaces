@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.Constants;
-import model.Car;
 import model.SellingProposition;
 
 public class SellingPropositionDAO extends AbstractDAO {
@@ -49,6 +48,38 @@ public class SellingPropositionDAO extends AbstractDAO {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	public String getDni_cliente(Integer cod_cliente) {
+		String dni="";
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery("SELECT cliente.dni from taller.cliente where cliente.cod_cliente = " + cod_cliente+";");
+			if(rs.next()) {
+				dni = rs.getString(1);
+			}
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		return dni;
+	}
+	
+	
+	public SellingProposition searchProposition(String dni) {
+		SellingProposition proposition = null;
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery("SELECT * from taller.propuesta inner join taller.cliente where cliente.dni ='" + dni + "'"
+					+ "AND cliente.cod_cliente = propuesta.cod_cliente;");
+			if (rs.next()) {
+				proposition = new SellingProposition(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4), rs.getDate(5));
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return proposition;
 	}
 
 }
