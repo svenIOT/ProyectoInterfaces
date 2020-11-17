@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 import javax.swing.JButton;
@@ -14,17 +15,27 @@ import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import common.Constants;
 import dao.ClientDAO;
 import dao.SellingPropositionDAO;
+import model.Sales;
+import model.SellingProposition;
+import view.LoginView;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JScrollPane;
 import java.awt.Cursor;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 
 public class SalesSearchAndListSellingPropositionView {
@@ -33,15 +44,18 @@ public class SalesSearchAndListSellingPropositionView {
 	private JButton btnLogOut;
 	private JButton btnBackToMenu;
 	private JTextField textFieldSearch;
-	private JTable clientTable;
+	private JTable sellingPropositionTable;
 	private JButton btnSearch;
 	private ClientDAO clientDAO;
 	private SellingPropositionDAO sellingPropositionDAO;
-
+	
+	private Sales user;
+	
 	/**
 	 * Crea la aplicación
 	 */
-	public SalesSearchAndListSellingPropositionView() {
+	public SalesSearchAndListSellingPropositionView(Sales user) {
+		this.user = user;
 		clientDAO = new ClientDAO();
 		sellingPropositionDAO = new SellingPropositionDAO();
 		initialize();
@@ -64,16 +78,16 @@ public class SalesSearchAndListSellingPropositionView {
 	 * Contiene los controladores
 	 */
 	private void setControllers() {
-		var tableModel = (DefaultTableModel) clientTable.getModel();
+		var tableModel = (DefaultTableModel) sellingPropositionTable.getModel();
 		
-		// Al abrir la ventana se rellena la tabla con TODOS los clientes
+		// Al abrir la ventana se rellena la tabla con las propuestas de venta
 		frame.addWindowListener(new WindowAdapter() {
-			public void windowOpened(WindowEvent e) {
+			public void windowOpened(WindowEvent e) {				
 				// Insertar los clientes en la tabla clientes
 				var propositionList = sellingPropositionDAO.getSellingProposition();
 				if (propositionList != null) {
 					for (var i = 0; i < propositionList.size(); ++i) {
-						tableModel.addRow(new Object[] { propositionList.get(i).getCod_cliente(), propositionList.get(i).getCod_propuesta(),
+						tableModel.addRow(new Object[] { sellingPropositionDAO.getDni_cliente(propositionList.get(i).getCod_cliente()), propositionList.get(i).getCod_propuesta(),
 								propositionList.get(i).getCod_cliente(), propositionList.get(i).getCod_ventas(),
 								propositionList.get(i).getNum_bastidor(), propositionList.get(i).getFecha_validez() });
 					}
@@ -81,6 +95,49 @@ public class SalesSearchAndListSellingPropositionView {
 			}
 		});
 		
+		//Volver atrás
+		btnBackToMenu.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				new SalesLandingView(user).getFrame().setVisible(true);
+				frame.dispose();
+			}
+		});
+		
+		//Volver al login
+		btnLogOut.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				new LoginView().getFrame().setVisible(true);
+				frame.dispose();
+			}
+		});
+		
+		//Buscar propuesta por dni
+		btnSearch.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				// Reiniciar el contenido de la tabla propuestas
+				var rows = sellingPropositionTable.getRowCount();
+				// Si hay filas las elimina
+				if (rows > 0) {
+					for (var i = (rows - 1); i > -1; --i) {
+						tableModel.removeRow(i);
+					}
+				}
+
+				// Buscar cliente por dni
+				var dni = textFieldSearch.getText();
+				var propositionResult = sellingPropositionDAO.searchProposition(dni);
+
+				// Insertar el cliente devuelto en la tabla clientes
+				if (propositionResult != null) {
+					tableModel.addRow(new Object[] {sellingPropositionDAO.getDni_cliente(propositionResult.getCod_cliente()), propositionResult.getCod_cliente(), propositionResult.getCod_propuesta(),
+							propositionResult.getCod_ventas(), propositionResult.getNum_bastidor(), propositionResult.getFecha_validez() });
+				} else {
+					JOptionPane.showMessageDialog(frame, "Cliente no encontrado, revise el DNI", "Warning!",
+							JOptionPane.ERROR_MESSAGE);
+				}
+
+			}
+		});
 		
 	}
 
@@ -201,13 +258,13 @@ public class SalesSearchAndListSellingPropositionView {
 		mainPanel.add(listPanel, gbc_listPanel);
 		listPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 20));
 
-		clientTable = new JTable();
-		clientTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 15));
-		clientTable.getTableHeader().setForeground(Color.WHITE);
-		clientTable.getTableHeader().setBackground(new Color(244, 162, 97));
-		clientTable.setPreferredScrollableViewportSize(new Dimension(950, 400));
-		clientTable.setFont(new Font("SansSerif", Font.BOLD, 15));
-		clientTable.setModel(new DefaultTableModel(new Object[][] {},
+		sellingPropositionTable = new JTable();
+		sellingPropositionTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 15));
+		sellingPropositionTable.getTableHeader().setForeground(Color.WHITE);
+		sellingPropositionTable.getTableHeader().setBackground(new Color(244, 162, 97));
+		sellingPropositionTable.setPreferredScrollableViewportSize(new Dimension(950, 400));
+		sellingPropositionTable.setFont(new Font("SansSerif", Font.BOLD, 15));
+		sellingPropositionTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "DNI Cliente", "Código propuesta", "Código cliente", "Código venta", "Número de bastidor", "Fecha de validez" }) {
 			Class[] columnTypes = new Class[] { String.class, Integer.class, Integer.class, Integer.class, String.class, String.class };
 
@@ -215,21 +272,21 @@ public class SalesSearchAndListSellingPropositionView {
 				return columnTypes[columnIndex];
 			}
 		});
-		clientTable.getColumnModel().getColumn(0).setPreferredWidth(150);
-		clientTable.getColumnModel().getColumn(0).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(1).setPreferredWidth(80);
-		clientTable.getColumnModel().getColumn(1).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(2).setPreferredWidth(80);
-		clientTable.getColumnModel().getColumn(2).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(3).setPreferredWidth(80);
-		clientTable.getColumnModel().getColumn(3).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(4).setPreferredWidth(150);
-		clientTable.getColumnModel().getColumn(4).setMaxWidth(555);
-		clientTable.getColumnModel().getColumn(5).setPreferredWidth(100);
-		clientTable.getColumnModel().getColumn(5).setMaxWidth(555);
+		sellingPropositionTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+		sellingPropositionTable.getColumnModel().getColumn(0).setMaxWidth(555);
+		sellingPropositionTable.getColumnModel().getColumn(1).setPreferredWidth(80);
+		sellingPropositionTable.getColumnModel().getColumn(1).setMaxWidth(555);
+		sellingPropositionTable.getColumnModel().getColumn(2).setPreferredWidth(80);
+		sellingPropositionTable.getColumnModel().getColumn(2).setMaxWidth(555);
+		sellingPropositionTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+		sellingPropositionTable.getColumnModel().getColumn(3).setMaxWidth(555);
+		sellingPropositionTable.getColumnModel().getColumn(4).setPreferredWidth(150);
+		sellingPropositionTable.getColumnModel().getColumn(4).setMaxWidth(555);
+		sellingPropositionTable.getColumnModel().getColumn(5).setPreferredWidth(100);
+		sellingPropositionTable.getColumnModel().getColumn(5).setMaxWidth(555);
 		
 
-		JScrollPane tableScrollPane = new JScrollPane(clientTable);
+		JScrollPane tableScrollPane = new JScrollPane(sellingPropositionTable);
 		tableScrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		tableScrollPane.setPreferredSize(new Dimension(1000, 402));
 		tableScrollPane.setFont(new Font("SansSerif", Font.PLAIN, 15));
