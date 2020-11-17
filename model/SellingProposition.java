@@ -1,13 +1,12 @@
 package model;
 
-import java.sql.Date;
 
 public class SellingProposition {
 	Integer cod_propuesta, cod_cliente, cod_ventas;
 	String num_bastidor;
-	Date fecha_validez;
+	String fecha_validez;
 
-	public SellingProposition(int cod_propuesta, int cod_cliente, int cod_ventas, String num_bastidor, Date fecha_validez) {
+	public SellingProposition(int cod_propuesta, int cod_cliente, int cod_ventas, String num_bastidor, String fecha_validez) {
 		this.cod_propuesta = cod_propuesta;
 		this.cod_cliente = cod_cliente;
 		this.cod_ventas = cod_ventas;
@@ -32,7 +31,7 @@ public class SellingProposition {
 		return num_bastidor;
 	}
 
-	public Date getFecha_validez() {
+	public String getFecha_validez() {
 		return fecha_validez;
 	}
 	

@@ -25,7 +25,7 @@ public class SellingPropositionDAO extends AbstractDAO {
 			rs = stm.executeQuery(Constants.SELECT_PROPOSITION);
 			while (rs.next()) {
 				sellingProposition.add(new SellingProposition(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4),
-						rs.getDate(5)));
+						rs.getString(5)));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -74,7 +74,7 @@ public class SellingPropositionDAO extends AbstractDAO {
 			rs = stm.executeQuery("SELECT * from taller.propuesta inner join taller.cliente where cliente.dni ='" + dni + "'"
 					+ "AND cliente.cod_cliente = propuesta.cod_cliente;");
 			if (rs.next()) {
-				proposition = new SellingProposition(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4), rs.getDate(5));
+				proposition = new SellingProposition(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4), rs.getString(5));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

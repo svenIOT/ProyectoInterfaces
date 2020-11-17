@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 import dao.ClientDAO;
 import dao.RepairDAO;
 import dao.UserDAO;
+import dao.VehicleDAO;
 import model.Mechanical;
 import view.LoginView;
 
@@ -49,6 +50,7 @@ public class MechanicalLandingView {
 	private ClientDAO clientDAO;
 	private UserDAO userDAO;
 	private RepairDAO repairDAO;
+	private VehicleDAO vehicleDAO;
 
 	private Mechanical user;
 	private boolean isBoss;
@@ -63,6 +65,7 @@ public class MechanicalLandingView {
 		this.isBoss = isBoss;
 		clientDAO = new ClientDAO();
 		repairDAO = new RepairDAO();
+		vehicleDAO = new VehicleDAO();
 		userDAO = new UserDAO();
 		initialize();
 	}
@@ -88,6 +91,7 @@ public class MechanicalLandingView {
 		
 		// Datos del DAO
 		var clients = clientDAO.getClients();
+		var vehicles = vehicleDAO.getVehicles();
 
 		// Al abrir la ventana se rellena con los datos de todas las reparaciones
 		// posibles
@@ -100,8 +104,10 @@ public class MechanicalLandingView {
 					var mechanicals = userDAO.getMechanicals();
 					// Insertar las reparaciones en la tabla
 					for (var i = 0; i < repairsList.size(); ++i) {
+						
 						// Conseguir datos (apellidos) del mecánico desde su código de mecánico
 						var mechanicalCod = repairsList.get(i).getCod_mecanico();
+						
 						// Filtra el mecánico con el código de la iteración actual del bucle for (para
 						// añadirlo en la tabla con sus datos y no con código)
 						var selectedMechanical = mechanicals.stream()
@@ -116,18 +122,16 @@ public class MechanicalLandingView {
 			}
 		});
 
-		// Reparar vehículo
+		// Añadir reparación de vehículo
 		repairBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// Estaría bien implementar que si selecciona una reparación de la tabla, se
-				// cargan
-				// el número de bastidor en la siguiente
-				// ventana, sino los campos estarán vacíos
 				if (vehiclesRepairTable.getSelectedRow() != -1) {
-					// TODO: new MechanicalVehicleRepairView(params).getFrame().setVisible(true);
+					// TODO: autocargar datos al seleccionar un elemento de la tabla
+					new MechanicalAddRepairView(user, isBoss).getFrame().setVisible(true); 
 					frame.dispose();
 				} else {
-					// TODO: new MechanicalVehicleRepairView().getFrame().setVisible(true);
+					new MechanicalAddRepairView(user, isBoss).getFrame().setVisible(true);
+					frame.dispose();
 				}
 			}
 		});
@@ -149,15 +153,20 @@ public class MechanicalLandingView {
 			}
 		});
 
-		// Ficha del cliente
+		// Ficha con los datos del cliente
 		clientBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (vehiclesRepairTable.getSelectedRow() != -1) {
-					var ClientId = (int) tableModel.getValueAt(vehiclesRepairTable.getSelectedRow(), 2); // TODO: Arreglar este guiso
-					// Buscar cliente por su código (seleccionado de la tabla)
-					var selectedClient = clients.stream().filter(client -> client.getClientCod() == ClientId).collect(Collectors.toList());
-					new MechanicalClientDetailsView(selectedClient.get(0));
-					frame.dispose();
+					// Buscar datos del cliente desde el número de bastidor del vehículo seleccionado
+					var vehicleNumber = String.valueOf(tableModel.getValueAt(vehiclesRepairTable.getSelectedRow(), 2));
+					
+					// Filtro el vehículo con el número de bastidor seleccionado
+					var selectedVehicle = vehicles.stream().filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(vehicleNumber)).collect(Collectors.toList());
+					
+					// Filtro el cliente propietario del vehículo anterior
+					var selectedClient = clients.stream().filter(client -> client.getClientCod() == selectedVehicle.get(0).getCod_cliente()).collect(Collectors.toList());
+					
+					new MechanicalClientDetailsView(selectedClient.get(0)).getFrame().setVisible(true);
 				} else {
 					JOptionPane.showMessageDialog(frame, "Seleccione un elemento de la tabla para ver el cliente",
 							"Warning!", JOptionPane.ERROR_MESSAGE);
