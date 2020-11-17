@@ -277,9 +277,9 @@ public class SalesAddSellingPropositionView {
 		JPanel sellingPropositionPanelRight = new JPanel();
 		bodyPanel.add(sellingPropositionPanelRight);
 		GridBagLayout gbl_sellingPropositionPanelRight = new GridBagLayout();
-		gbl_sellingPropositionPanelRight.columnWidths = new int[] { 220, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_sellingPropositionPanelRight.columnWidths = new int[] { 220, 0, 265, 0 };
 		gbl_sellingPropositionPanelRight.rowHeights = new int[] { 173, 0 };
-		gbl_sellingPropositionPanelRight.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+		gbl_sellingPropositionPanelRight.columnWeights = new double[] { 0.0, 0.0, 0.0,
 				Double.MIN_VALUE };
 		gbl_sellingPropositionPanelRight.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 		sellingPropositionPanelRight.setLayout(gbl_sellingPropositionPanelRight);
@@ -294,7 +294,6 @@ public class SalesAddSellingPropositionView {
 
 		calendar = new JCalendar();
 		GridBagConstraints gbc_calendar = new GridBagConstraints();
-		gbc_calendar.insets = new Insets(0, 0, 0, 5);
 		gbc_calendar.anchor = GridBagConstraints.NORTHWEST;
 		gbc_calendar.gridx = 2;
 		gbc_calendar.gridy = 0;
@@ -339,7 +338,6 @@ public class SalesAddSellingPropositionView {
 				.equalsIgnoreCase(client.getNombre() + " " + client.getApellidos())).collect(Collectors.toList());
 		var frameNumber = frameNumberTxt.getText();
 		var price = priceTxt.getText();
-		Date date = null;
 
 		// Cambiar formato de la fecha introducida
 		var dateFormat = new SimpleDateFormat("yyyy-MM-dd");

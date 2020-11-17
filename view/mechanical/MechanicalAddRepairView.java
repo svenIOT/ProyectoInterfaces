@@ -42,7 +42,8 @@ public class MechanicalAddRepairView {
 	private JDateChooser inicialDateChooser;
 	private JDateChooser finishDateChooser;
 	private JComboBox<Object> vehicleTypeComboBox;
-	
+	private JComboBox<Object> mechanicalComboBox;
+
 	private UserDAO userDAO;
 
 	private Mechanical user;
@@ -77,16 +78,37 @@ public class MechanicalAddRepairView {
 	private void setControllers() {
 		// Obtener datos DAO
 		var mechanicals = userDAO.getMechanicals();
-		
+
 		// Rellenar el comboBox con los mecánicos según el tipo de vehículo elegido
 		vehicleTypeComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-				
-				
-				
-				
-				
+				var comboboxModel = new DefaultComboBoxModel<>();
+
+				// Si selecciona coche carga los mecanicos con especialidad de coche
+				if (vehicleTypeComboBox.getSelectedItem().toString().equalsIgnoreCase("Coche")) {
+					
+					// Filtra los mecánicos con especialidad de coche y para cada uno los inserta en el comboBox
+					mechanicals.stream().filter(mechanical -> mechanical.getCod_especialdiad() == 1)
+							.forEach(mechanical -> comboboxModel.addElement(mechanical.getNombre() + " " + mechanical.getApellidos()));
+					
+					// Inserta el modelo del comboBox con los datos
+					mechanicalComboBox.setModel(comboboxModel);
+
+				} else if (vehicleTypeComboBox.getSelectedItem().toString().equalsIgnoreCase("Ciclomotor")) {
+					// IDEM
+					mechanicals.stream().filter(mechanical -> mechanical.getCod_especialdiad() == 2)
+					.forEach(mechanical -> comboboxModel.addElement(mechanical.getNombre() + " " + mechanical.getApellidos()));
+					
+					mechanicalComboBox.setModel(comboboxModel);
+					
+				} else {
+					// IDEM 
+					mechanicals.stream().filter(mechanical -> mechanical.getCod_especialdiad() == 3)
+					.forEach(mechanical -> comboboxModel.addElement(mechanical.getNombre() + " " + mechanical.getApellidos()));
+					
+					mechanicalComboBox.setModel(comboboxModel);
+				}
+
 			}
 		});
 
@@ -181,16 +203,16 @@ public class MechanicalAddRepairView {
 		gbc_bodyPanel.gridy = 1;
 		mainPanel.add(bodyPanel, gbc_bodyPanel);
 		bodyPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		
+
 		JPanel leftDataPanel = new JPanel();
 		bodyPanel.add(leftDataPanel);
 		GridBagLayout gbl_leftDataPanel = new GridBagLayout();
-		gbl_leftDataPanel.columnWidths = new int[]{499, 0};
-		gbl_leftDataPanel.rowHeights = new int[]{112, 334, 0, 0};
-		gbl_leftDataPanel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_leftDataPanel.rowWeights = new double[]{0.0, 1.0, 1.0, Double.MIN_VALUE};
+		gbl_leftDataPanel.columnWidths = new int[] { 499, 0 };
+		gbl_leftDataPanel.rowHeights = new int[] { 112, 334, 0, 0 };
+		gbl_leftDataPanel.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+		gbl_leftDataPanel.rowWeights = new double[] { 0.0, 1.0, 1.0, Double.MIN_VALUE };
 		leftDataPanel.setLayout(gbl_leftDataPanel);
-		
+
 		JLabel lblTextArea = new JLabel("Descripción de la reparación (piezas):");
 		lblTextArea.setFont(new Font("SansSerif", Font.BOLD, 18));
 		GridBagConstraints gbc_lblTextArea = new GridBagConstraints();
@@ -198,7 +220,7 @@ public class MechanicalAddRepairView {
 		gbc_lblTextArea.gridx = 0;
 		gbc_lblTextArea.gridy = 0;
 		leftDataPanel.add(lblTextArea, gbc_lblTextArea);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
@@ -206,20 +228,20 @@ public class MechanicalAddRepairView {
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 1;
 		leftDataPanel.add(scrollPane, gbc_scrollPane);
-		
+
 		JTextArea textArea = new JTextArea();
 		textArea.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		scrollPane.setViewportView(textArea);
-		
+
 		JPanel rightDataPanel = new JPanel();
 		bodyPanel.add(rightDataPanel);
 		GridBagLayout gbl_rightDataPanel = new GridBagLayout();
-		gbl_rightDataPanel.columnWidths = new int[]{257, 236, 0};
-		gbl_rightDataPanel.rowHeights = new int[]{114, 85, 75, 75, 76, 70, 0};
-		gbl_rightDataPanel.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_rightDataPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_rightDataPanel.columnWidths = new int[] { 257, 236, 0 };
+		gbl_rightDataPanel.rowHeights = new int[] { 114, 85, 75, 75, 76, 70, 0 };
+		gbl_rightDataPanel.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+		gbl_rightDataPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		rightDataPanel.setLayout(gbl_rightDataPanel);
-		
+
 		JLabel lblRepairData = new JLabel("Datos de la reparación:");
 		lblRepairData.setFont(new Font("SansSerif", Font.BOLD, 18));
 		GridBagConstraints gbc_lblRepairData = new GridBagConstraints();
@@ -228,7 +250,7 @@ public class MechanicalAddRepairView {
 		gbc_lblRepairData.gridx = 0;
 		gbc_lblRepairData.gridy = 0;
 		rightDataPanel.add(lblRepairData, gbc_lblRepairData);
-		
+
 		JLabel vehicleTypeLbl = new JLabel("Tipo de vehículo:");
 		vehicleTypeLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		vehicleTypeLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -238,9 +260,10 @@ public class MechanicalAddRepairView {
 		gbc_vehicleTypeLbl.gridx = 0;
 		gbc_vehicleTypeLbl.gridy = 1;
 		rightDataPanel.add(vehicleTypeLbl, gbc_vehicleTypeLbl);
-		
+
 		vehicleTypeComboBox = new JComboBox<Object>();
-		vehicleTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"Elige uno", "Coche", "Motocicleta", "Ciclomotor"}));
+		vehicleTypeComboBox
+				.setModel(new DefaultComboBoxModel<>(new String[] {"Coche", "Motocicleta", "Ciclomotor"}));
 		vehicleTypeComboBox.setSelectedIndex(-1);
 		vehicleTypeComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_vehicleTypeComboBox = new GridBagConstraints();
@@ -249,7 +272,7 @@ public class MechanicalAddRepairView {
 		gbc_vehicleTypeComboBox.gridx = 1;
 		gbc_vehicleTypeComboBox.gridy = 1;
 		rightDataPanel.add(vehicleTypeComboBox, gbc_vehicleTypeComboBox);
-		
+
 		JLabel frameNumberLbl = new JLabel("Número de bastidor:");
 		frameNumberLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_frameNumberLbl = new GridBagConstraints();
@@ -258,7 +281,7 @@ public class MechanicalAddRepairView {
 		gbc_frameNumberLbl.gridx = 0;
 		gbc_frameNumberLbl.gridy = 2;
 		rightDataPanel.add(frameNumberLbl, gbc_frameNumberLbl);
-		
+
 		textField = new JTextField();
 		textField.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		textField.setColumns(10);
@@ -268,7 +291,7 @@ public class MechanicalAddRepairView {
 		gbc_textField.gridx = 1;
 		gbc_textField.gridy = 2;
 		rightDataPanel.add(textField, gbc_textField);
-		
+
 		JLabel lblStartDate = new JLabel("Fecha comienzo:");
 		lblStartDate.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_lblStartDate = new GridBagConstraints();
@@ -277,7 +300,7 @@ public class MechanicalAddRepairView {
 		gbc_lblStartDate.gridx = 0;
 		gbc_lblStartDate.gridy = 3;
 		rightDataPanel.add(lblStartDate, gbc_lblStartDate);
-		
+
 		inicialDateChooser = new JDateChooser();
 		inicialDateChooser.getCalendarButton().setPreferredSize(new Dimension(50, 25));
 		inicialDateChooser.getCalendarButton().setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -286,7 +309,7 @@ public class MechanicalAddRepairView {
 		gbc_dateChooser.gridx = 1;
 		gbc_dateChooser.gridy = 3;
 		rightDataPanel.add(inicialDateChooser, gbc_dateChooser);
-		
+
 		JLabel lblFinishDate = new JLabel("Fecha finalización:");
 		lblFinishDate.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_lblFinishDate = new GridBagConstraints();
@@ -295,17 +318,17 @@ public class MechanicalAddRepairView {
 		gbc_lblFinishDate.gridx = 0;
 		gbc_lblFinishDate.gridy = 4;
 		rightDataPanel.add(lblFinishDate, gbc_lblFinishDate);
-		
+
 		finishDateChooser = new JDateChooser();
 		finishDateChooser.getCalendarButton().setPreferredSize(new Dimension(50, 25));
 		finishDateChooser.getCalendarButton().setFont(new Font("SansSerif", Font.PLAIN, 15));
-		
+
 		GridBagConstraints gbc_finishDateChooser = new GridBagConstraints();
 		gbc_finishDateChooser.insets = new Insets(0, 0, 5, 0);
 		gbc_finishDateChooser.gridx = 1;
 		gbc_finishDateChooser.gridy = 4;
 		rightDataPanel.add(finishDateChooser, gbc_finishDateChooser);
-		
+
 		JLabel lblMecnicoAsignado = new JLabel("Mecánico asignado:");
 		lblMecnicoAsignado.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_lblMecnicoAsignado = new GridBagConstraints();
@@ -314,8 +337,8 @@ public class MechanicalAddRepairView {
 		gbc_lblMecnicoAsignado.gridx = 0;
 		gbc_lblMecnicoAsignado.gridy = 5;
 		rightDataPanel.add(lblMecnicoAsignado, gbc_lblMecnicoAsignado);
-		
-		JComboBox<Object> mechanicalComboBox = new JComboBox<Object>();
+
+		mechanicalComboBox = new JComboBox<Object>();
 		mechanicalComboBox.setSelectedIndex(-1);
 		mechanicalComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_mechanicalComboBox = new GridBagConstraints();
