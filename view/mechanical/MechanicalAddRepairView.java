@@ -12,8 +12,12 @@ import javax.swing.border.MatteBorder;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import model.Mechanical;
+import model.Repair;
 import view.LoginView;
 
 import java.awt.GridBagLayout;
@@ -27,6 +31,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import com.toedter.calendar.JDateChooser;
 
+import dao.RepairDAO;
 import dao.UserDAO;
 
 import javax.swing.DefaultComboBoxModel;
@@ -38,13 +43,16 @@ public class MechanicalAddRepairView {
 	private JFrame frame;
 	private JButton btnLogOut;
 	private JButton btnBackToMenu;
-	private JTextField textField;
+	private JTextField numberTextField;
+	private JTextArea partsTextArea;
 	private JDateChooser inicialDateChooser;
 	private JDateChooser finishDateChooser;
 	private JComboBox<Object> vehicleTypeComboBox;
 	private JComboBox<Object> mechanicalComboBox;
+	private JButton addRepairBtn;
 
 	private UserDAO userDAO;
+	private RepairDAO repairDAO;
 
 	private Mechanical user;
 	private boolean isBoss;
@@ -56,6 +64,7 @@ public class MechanicalAddRepairView {
 		this.user = user;
 		this.isBoss = isBoss;
 		this.userDAO = new UserDAO();
+		this.repairDAO = new RepairDAO();
 		initialize();
 	}
 
@@ -111,6 +120,17 @@ public class MechanicalAddRepairView {
 
 			}
 		});
+		
+		// Botón añadir reparación
+		addRepairBtn.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				var repair = createRepair(mechanicals);
+				if (repair != null) {
+					repairDAO.addRepair(repair);
+				}
+			}
+		});
+		
 
 		// Volver al menú principal
 		btnBackToMenu.addMouseListener(new MouseAdapter() {
@@ -229,17 +249,17 @@ public class MechanicalAddRepairView {
 		gbc_scrollPane.gridy = 1;
 		leftDataPanel.add(scrollPane, gbc_scrollPane);
 
-		JTextArea textArea = new JTextArea();
-		textArea.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		scrollPane.setViewportView(textArea);
+		partsTextArea = new JTextArea();
+		partsTextArea.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		scrollPane.setViewportView(partsTextArea);
 
 		JPanel rightDataPanel = new JPanel();
 		bodyPanel.add(rightDataPanel);
 		GridBagLayout gbl_rightDataPanel = new GridBagLayout();
 		gbl_rightDataPanel.columnWidths = new int[] { 257, 236, 0 };
-		gbl_rightDataPanel.rowHeights = new int[] { 114, 85, 75, 75, 76, 70, 0 };
+		gbl_rightDataPanel.rowHeights = new int[] { 114, 85, 75, 75, 76, 70, 59, 0 };
 		gbl_rightDataPanel.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-		gbl_rightDataPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_rightDataPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		rightDataPanel.setLayout(gbl_rightDataPanel);
 
 		JLabel lblRepairData = new JLabel("Datos de la reparación:");
@@ -282,15 +302,15 @@ public class MechanicalAddRepairView {
 		gbc_frameNumberLbl.gridy = 2;
 		rightDataPanel.add(frameNumberLbl, gbc_frameNumberLbl);
 
-		textField = new JTextField();
-		textField.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		textField.setColumns(10);
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(0, 0, 5, 0);
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 2;
-		rightDataPanel.add(textField, gbc_textField);
+		numberTextField = new JTextField();
+		numberTextField.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		numberTextField.setColumns(10);
+		GridBagConstraints gbc_numberTextField = new GridBagConstraints();
+		gbc_numberTextField.insets = new Insets(0, 0, 5, 0);
+		gbc_numberTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_numberTextField.gridx = 1;
+		gbc_numberTextField.gridy = 2;
+		rightDataPanel.add(numberTextField, gbc_numberTextField);
 
 		JLabel lblStartDate = new JLabel("Fecha comienzo:");
 		lblStartDate.setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -333,7 +353,7 @@ public class MechanicalAddRepairView {
 		lblMecnicoAsignado.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_lblMecnicoAsignado = new GridBagConstraints();
 		gbc_lblMecnicoAsignado.anchor = GridBagConstraints.CENTER;
-		gbc_lblMecnicoAsignado.insets = new Insets(0, 0, 0, 5);
+		gbc_lblMecnicoAsignado.insets = new Insets(0, 0, 5, 5);
 		gbc_lblMecnicoAsignado.gridx = 0;
 		gbc_lblMecnicoAsignado.gridy = 5;
 		rightDataPanel.add(lblMecnicoAsignado, gbc_lblMecnicoAsignado);
@@ -342,11 +362,42 @@ public class MechanicalAddRepairView {
 		mechanicalComboBox.setSelectedIndex(-1);
 		mechanicalComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_mechanicalComboBox = new GridBagConstraints();
+		gbc_mechanicalComboBox.insets = new Insets(0, 0, 5, 0);
 		gbc_mechanicalComboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_mechanicalComboBox.gridx = 1;
 		gbc_mechanicalComboBox.gridy = 5;
 		rightDataPanel.add(mechanicalComboBox, gbc_mechanicalComboBox);
+		
+		addRepairBtn = new JButton("Añadir reparación");
+		addRepairBtn.setForeground(Color.WHITE);
+		addRepairBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
+		addRepairBtn.setBackground(new Color(231, 111, 81));
+		GridBagConstraints gbc_addRepairBtn = new GridBagConstraints();
+		gbc_addRepairBtn.gridx = 1;
+		gbc_addRepairBtn.gridy = 6;
+		rightDataPanel.add(addRepairBtn, gbc_addRepairBtn);
 
+	}
+	
+	private Repair createRepair(List<Mechanical> mechanicals) {
+		Repair repair = null;
+		var frameNumber = numberTextField.getText();
+		var carParts = partsTextArea.getText();
+		// Cambiar formato de la fecha
+		var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		var initialDate = dateFormat.format(inicialDateChooser.getDate());
+		var finishDate = dateFormat.format(finishDateChooser.getDate());
+		
+		// Obtener código de mecanico desde su nombre y apellidos
+		var mechanicalNameAndSurnames = mechanicalComboBox.getSelectedItem().toString();
+		var selectedMechanical = mechanicals.stream()
+				.filter(mechanical -> mechanicalNameAndSurnames.equalsIgnoreCase(mechanical.getNombre() + " " + mechanical.getApellidos())).collect(Collectors.toList());
+		
+		// Crear instancia de reparación con los datos de la vista
+		// TODO: Control de errores
+		repair = new Repair(0, selectedMechanical.get(0).getCod_mecanico(), frameNumber, carParts, initialDate, finishDate);
+		
+		return repair;
 	}
 
 	public JFrame getFrame() {

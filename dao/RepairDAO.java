@@ -26,7 +26,7 @@ public class RepairDAO extends AbstractDAO {
 			while (rs.next()) {
 				repairs.add(
 						new Repair(rs.getInt("cod_reparacion"), rs.getInt("cod_mecanico"), rs.getString("num_bastidor"),
-								rs.getString("piezas"), rs.getDate("fecha_entrada"), rs.getDate("fecha_salida")));
+								rs.getString("piezas"), rs.getString("fecha_entrada"), rs.getString("fecha_salida")));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -35,9 +35,18 @@ public class RepairDAO extends AbstractDAO {
 	}
 
 	/**
+	 * Inserta la reparación en la BBDD
+	 * 
+	 * @param repair
+	 */
+	public void addRepair(Repair repair) {
+
+	}
+
+	/**
 	 * Elimina la reparación con el código pasado por parámetro
 	 * 
-	 * @param repairId
+	 * @param repairId (Código de reparación)
 	 */
 	public void finishRepair(int repairId) {
 		try {
