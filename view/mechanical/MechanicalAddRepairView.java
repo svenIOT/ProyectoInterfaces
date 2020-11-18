@@ -109,7 +109,7 @@ public class MechanicalAddRepairView {
 					// Inserta el modelo del comboBox con los datos
 					mechanicalComboBox.setModel(comboboxModel);
 
-				} else if (vehicleTypeComboBox.getSelectedItem().toString().equalsIgnoreCase("Ciclomotor")) {
+				} else if (vehicleTypeComboBox.getSelectedItem().toString().equalsIgnoreCase("Motocicleta")) {
 					// IDEM especialidad motocicleta
 					mechanicals.stream().filter(mechanical -> mechanical.getCod_especialdiad() == 2)
 					.forEach(mechanical -> comboboxModel.addElement(mechanical.getNombre() + " " + mechanical.getApellidos()));
@@ -132,6 +132,8 @@ public class MechanicalAddRepairView {
 				var repair = createRepair(mechanicals, vehicles);
 				if (repair != null) {
 					repairDAO.addRepair(repair);
+					JOptionPane.showMessageDialog(frame, "Reparación añadida", "Info",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
@@ -388,10 +390,6 @@ public class MechanicalAddRepairView {
 		Repair repair = null;
 		var frameNumber = numberTextField.getText();
 		var carParts = partsTextArea.getText();
-		// Cambiar formato de la fecha
-		var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		var initialDate = dateFormat.format(initialDateChooser.getDate());
-		var finishDate = dateFormat.format(finishDateChooser.getDate());
 		
 		// Obtener código de mecanico desde su nombre y apellidos
 		var mechanicalNameAndSurnames = mechanicalComboBox.getSelectedItem().toString();
@@ -416,10 +414,20 @@ public class MechanicalAddRepairView {
 			JOptionPane.showMessageDialog(frame, "Seleccione las fechas de entrada y estimación de salida", "Warning!",
 					JOptionPane.ERROR_MESSAGE);
 			initialDateChooser.requestFocus();
-		
+			
+		} else if(!frameNumberExist.get(0).getTipoVehiculo().equalsIgnoreCase(vehicleTypeComboBox.getSelectedItem().toString())) {
+			JOptionPane.showMessageDialog(frame, "Debes asignar un vehículo compatible con la especialidad del mecánico elegido", "Warning!",
+					JOptionPane.ERROR_MESSAGE);
+			numberTextField.requestFocus();
+			
 		} else {
+			// Cambiar formato de la fecha
+			var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			var initialDate = dateFormat.format(initialDateChooser.getDate());
+			var finishDate = dateFormat.format(finishDateChooser.getDate());
+			
 			// Crear instancia de reparación con los datos de la vista
-			repair = new Repair(0, selectedMechanical.get(0).getCod_mecanico(), frameNumber, carParts, initialDate, finishDate);	
+			repair = new Repair(0, selectedMechanical.get(0).getCod_mecanico(), frameNumber, carParts, initialDate, finishDate);
 		}
 		
 		return repair;

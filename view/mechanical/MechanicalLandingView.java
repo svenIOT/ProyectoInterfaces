@@ -317,8 +317,8 @@ public class MechanicalLandingView {
 				mainActionsPanelLeft);
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, repairBtn, 214, SpringLayout.WEST,
 				mainActionsPanelLeft);
-		// Comprobar si es jefe o no para desactivar el botón añadir vehículo a reparar
-		repairBtn.setEnabled(isBoss);
+		// Comprobar si es jefe o no para ocultar el botón añadir vehículo a reparar
+		repairBtn.setVisible(isBoss);
 		repairBtn.setForeground(Color.WHITE);
 		repairBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
 		repairBtn.setBackground(new Color(231, 111, 81));
@@ -384,6 +384,9 @@ public class MechanicalLandingView {
 				return columnEditables[column];
 			}
 		});
+		vehiclesRepairTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+		vehiclesRepairTable.getColumnModel().getColumn(0).setMaxWidth(555);
+		
 		vehiclesRepairTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 15));
 		vehiclesRepairTable.getTableHeader().setForeground(Color.WHITE);
 		vehiclesRepairTable.getTableHeader().setBackground(new Color(244, 162, 97));
