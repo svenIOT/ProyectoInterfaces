@@ -32,6 +32,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import javax.swing.JScrollPane;
@@ -90,41 +91,56 @@ public class MechanicalLandingView {
 	 */
 	private void setControllers() {
 		var tableModel = (DefaultTableModel) vehiclesRepairTable.getModel();
-		
+
 		// Datos del DAO
 		var clients = clientDAO.getClients();
 		var vehicles = vehicleDAO.getVehicles();
+		var repairs = repairDAO.getRepairs();
+		var mechanicals = userDAO.getMechanicals();
 
-		// Al abrir la ventana se rellena con los datos de todas las reparaciones
-		// posibles, también cargan los datos del usuario en la vista
+		// Al abrir la ventana se rellena con los datos de las reparaciones según si es
+		// jefe (si es jefe podrá ver todas) o no
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
-				// Obtener todas las reparaciones
-				var repairsList = repairDAO.getRepairs();
-				if (repairsList != null) {
-					// Obtener todos los mecánicos
-					var mechanicals = userDAO.getMechanicals();
+				if (isBoss) {
+					// Ordenadar por fecha de salida (para el trabajo del día del jefe)
+					repairs.stream().sorted(Comparator.comparing(Repair::getFecha_salida)).collect(Collectors.toList());
+
 					// Insertar las reparaciones en la tabla
-					for (var i = 0; i < repairsList.size(); ++i) {
-						
+					for (var i = 0; i < repairs.size(); ++i) {
+
 						// Conseguir datos (apellidos) del mecánico desde su código de mecánico
-						var mechanicalCod = repairsList.get(i).getCod_mecanico();
-						
+						var mechanicalCod = repairs.get(i).getCod_mecanico();
+
 						// Filtra el mecánico con el código de la iteración actual del bucle for (para
 						// añadirlo en la tabla con sus datos y no con código)
 						var selectedMechanical = mechanicals.stream()
 								.filter(mech -> mech.getCod_mecanico() == mechanicalCod).collect(Collectors.toList());
-						
-						// Ordenadar por fecha de salida (para el trabajo del día)
-						repairsList.stream().map(Repair::getFecha_salida).collect(Collectors.toList());
-						
-						tableModel.addRow(new Object[] { repairsList.get(i).getCod_reparacion(),
-								selectedMechanical.get(0).getApellidos(), repairsList.get(i).getNum_bastidor(),
-								repairsList.get(i).getFecha_entrada(), repairsList.get(i).getFecha_salida(),
-								repairsList.get(i).getPiezas() });
+
+						tableModel.addRow(new Object[] { repairs.get(i).getCod_reparacion(),
+								selectedMechanical.get(0).getNombre() + " " + selectedMechanical.get(0).getApellidos(),
+								repairs.get(i).getNum_bastidor(), repairs.get(i).getFecha_entrada(),
+								repairs.get(i).getFecha_salida(), repairs.get(i).getPiezas() });
+					}
+
+				} else {
+					// Filtra las reparaciones que tiene el mecánico logeado (no jefe)
+					var filteredByMechanicalRepairs = repairs.stream()
+							.filter(repair -> repair.getCod_mecanico() == user.getCod_mecanico())
+							.collect(Collectors.toList());
+
+					// Inserta las reparaciones en la tabla
+					for (int i = 0; i < filteredByMechanicalRepairs.size(); ++i) {
+
+						tableModel.addRow(new Object[] { filteredByMechanicalRepairs.get(i).getCod_reparacion(),
+								user.getNombre() + " " + user.getApellidos(),
+								filteredByMechanicalRepairs.get(i).getNum_bastidor(),
+								filteredByMechanicalRepairs.get(i).getFecha_entrada(),
+								filteredByMechanicalRepairs.get(i).getFecha_salida(),
+								filteredByMechanicalRepairs.get(i).getPiezas() });
 					}
 				}
-				
+
 				// Cargar datos de usuario
 				lblUser.setText("Bienvenido/a " + user.getNombre() + " " + user.getApellidos());
 			}
@@ -133,7 +149,7 @@ public class MechanicalLandingView {
 		// Añadir reparación de vehículo
 		repairBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				new MechanicalAddRepairView(user, isBoss).getFrame().setVisible(true); 
+				new MechanicalAddRepairView(user, isBoss).getFrame().setVisible(true);
 				frame.dispose();
 			}
 		});
@@ -143,10 +159,16 @@ public class MechanicalLandingView {
 			public void mouseClicked(MouseEvent e) {
 				if (vehiclesRepairTable.getSelectedRow() != -1) {
 					var lastCheck = JOptionPane.showConfirmDialog(frame,
-							"¿Está seguro de que desea finalizar esta reparación? Se avisará al cliente para que pase a recogerlo", "¡Atención!", 1, 0);
-					// 1 sí, 0 no
-					if(lastCheck == 1) {
-						repairDAO.finishRepair((int) tableModel.getValueAt(vehiclesRepairTable.getSelectedRow(), 1));
+							"¿Está seguro de que desea finalizar esta reparación? Se avisará al cliente para que pase a recogerlo",
+							"¡Atención!", 0, 1);
+					// 0 sí, 1 no
+					if (lastCheck == 0) {
+						repairDAO.finishRepair((int) tableModel.getValueAt(vehiclesRepairTable.getSelectedRow(), 0));
+						JOptionPane.showMessageDialog(frame, "Reparación termianda, aviso envíado al cliente", "Info",
+								JOptionPane.INFORMATION_MESSAGE);
+						// Actualizar datos de la vista (reabrir)
+						new MechanicalLandingView(user, isBoss).getFrame().setVisible(true);
+						frame.dispose();
 					}
 				} else {
 					JOptionPane.showMessageDialog(frame, "Seleccione la reparación de la tabla que desea finalizar",
@@ -159,15 +181,20 @@ public class MechanicalLandingView {
 		clientBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (vehiclesRepairTable.getSelectedRow() != -1) {
-					// Buscar datos del cliente desde el número de bastidor del vehículo seleccionado
+					// Buscar datos del cliente desde el número de bastidor del vehículo
+					// seleccionado
 					var vehicleNumber = String.valueOf(tableModel.getValueAt(vehiclesRepairTable.getSelectedRow(), 2));
-					
+
 					// Filtro el vehículo con el número de bastidor seleccionado
-					var selectedVehicle = vehicles.stream().filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(vehicleNumber)).collect(Collectors.toList());
-					
+					var selectedVehicle = vehicles.stream()
+							.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(vehicleNumber))
+							.collect(Collectors.toList());
+
 					// Filtro el cliente propietario del vehículo anterior
-					var selectedClient = clients.stream().filter(client -> client.getClientCod() == selectedVehicle.get(0).getCod_cliente()).collect(Collectors.toList());
-					
+					var selectedClient = clients.stream()
+							.filter(client -> client.getClientCod() == selectedVehicle.get(0).getCod_cliente())
+							.collect(Collectors.toList());
+
 					new MechanicalClientDetailsView(selectedClient.get(0)).getFrame().setVisible(true);
 				} else {
 					JOptionPane.showMessageDialog(frame, "Seleccione un elemento de la tabla para ver el cliente",
@@ -197,14 +224,14 @@ public class MechanicalLandingView {
 		frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 		topPanel.setBackground(new Color(233, 196, 106));
 		topPanel.setBounds(100, 100, 100, 100);
-		
+
 		JLabel lblIconUser = new JLabel("");
 		lblIconUser.setIcon(new ImageIcon(MechanicalLandingView.class.getResource("/assets/img/icon_user.png")));
 		lblIconUser.setAlignmentY(0.0f);
 		lblIconUser.setLocation(5, 0);
 		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 5));
 		topPanel.add(lblIconUser);
-		
+
 		lblUser = new JLabel("");
 		lblUser.setFont(new Font("SansSerif", Font.BOLD, 15));
 		topPanel.add(lblUser);
@@ -362,7 +389,7 @@ public class MechanicalLandingView {
 		vehiclesRepairTable.getTableHeader().setBackground(new Color(244, 162, 97));
 		vehiclesRepairTable.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		tableScrollPane.setViewportView(vehiclesRepairTable);
-		
+
 		JLabel label = new JLabel("New label");
 		tableScrollPane.setColumnHeaderView(label);
 
