@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 import javax.swing.JButton;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 import model.Mechanical;
 import model.Repair;
+import model.Vehicle;
 import view.LoginView;
 
 import java.awt.GridBagLayout;
@@ -33,6 +35,7 @@ import com.toedter.calendar.JDateChooser;
 
 import dao.RepairDAO;
 import dao.UserDAO;
+import dao.VehicleDAO;
 
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
@@ -45,7 +48,7 @@ public class MechanicalAddRepairView {
 	private JButton btnBackToMenu;
 	private JTextField numberTextField;
 	private JTextArea partsTextArea;
-	private JDateChooser inicialDateChooser;
+	private JDateChooser initialDateChooser;
 	private JDateChooser finishDateChooser;
 	private JComboBox<Object> vehicleTypeComboBox;
 	private JComboBox<Object> mechanicalComboBox;
@@ -53,6 +56,7 @@ public class MechanicalAddRepairView {
 
 	private UserDAO userDAO;
 	private RepairDAO repairDAO;
+	private VehicleDAO vehicleDAO;
 
 	private Mechanical user;
 	private boolean isBoss;
@@ -65,6 +69,7 @@ public class MechanicalAddRepairView {
 		this.isBoss = isBoss;
 		this.userDAO = new UserDAO();
 		this.repairDAO = new RepairDAO();
+		this.vehicleDAO = new VehicleDAO();
 		initialize();
 	}
 
@@ -87,6 +92,7 @@ public class MechanicalAddRepairView {
 	private void setControllers() {
 		// Obtener datos DAO
 		var mechanicals = userDAO.getMechanicals();
+		var vehicles = vehicleDAO.getVehicles();
 
 		// Rellenar el comboBox con los mecánicos según el tipo de vehículo elegido
 		vehicleTypeComboBox.addActionListener(new ActionListener() {
@@ -104,27 +110,26 @@ public class MechanicalAddRepairView {
 					mechanicalComboBox.setModel(comboboxModel);
 
 				} else if (vehicleTypeComboBox.getSelectedItem().toString().equalsIgnoreCase("Ciclomotor")) {
-					// IDEM
+					// IDEM especialidad motocicleta
 					mechanicals.stream().filter(mechanical -> mechanical.getCod_especialdiad() == 2)
 					.forEach(mechanical -> comboboxModel.addElement(mechanical.getNombre() + " " + mechanical.getApellidos()));
 					
 					mechanicalComboBox.setModel(comboboxModel);
 					
 				} else {
-					// IDEM 
+					// IDEM especialidad ciclomotor
 					mechanicals.stream().filter(mechanical -> mechanical.getCod_especialdiad() == 3)
 					.forEach(mechanical -> comboboxModel.addElement(mechanical.getNombre() + " " + mechanical.getApellidos()));
 					
 					mechanicalComboBox.setModel(comboboxModel);
 				}
-
 			}
 		});
 		
 		// Botón añadir reparación
 		addRepairBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				var repair = createRepair(mechanicals);
+				var repair = createRepair(mechanicals, vehicles);
 				if (repair != null) {
 					repairDAO.addRepair(repair);
 				}
@@ -321,14 +326,14 @@ public class MechanicalAddRepairView {
 		gbc_lblStartDate.gridy = 3;
 		rightDataPanel.add(lblStartDate, gbc_lblStartDate);
 
-		inicialDateChooser = new JDateChooser();
-		inicialDateChooser.getCalendarButton().setPreferredSize(new Dimension(50, 25));
-		inicialDateChooser.getCalendarButton().setFont(new Font("SansSerif", Font.PLAIN, 15));
+		initialDateChooser = new JDateChooser();
+		initialDateChooser.getCalendarButton().setPreferredSize(new Dimension(50, 25));
+		initialDateChooser.getCalendarButton().setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_dateChooser = new GridBagConstraints();
 		gbc_dateChooser.insets = new Insets(0, 0, 5, 0);
 		gbc_dateChooser.gridx = 1;
 		gbc_dateChooser.gridy = 3;
-		rightDataPanel.add(inicialDateChooser, gbc_dateChooser);
+		rightDataPanel.add(initialDateChooser, gbc_dateChooser);
 
 		JLabel lblFinishDate = new JLabel("Fecha finalización:");
 		lblFinishDate.setFont(new Font("SansSerif", Font.PLAIN, 15));
@@ -379,13 +384,13 @@ public class MechanicalAddRepairView {
 
 	}
 	
-	private Repair createRepair(List<Mechanical> mechanicals) {
+	private Repair createRepair(List<Mechanical> mechanicals, List<Vehicle> vehicles) {
 		Repair repair = null;
 		var frameNumber = numberTextField.getText();
 		var carParts = partsTextArea.getText();
 		// Cambiar formato de la fecha
 		var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		var initialDate = dateFormat.format(inicialDateChooser.getDate());
+		var initialDate = dateFormat.format(initialDateChooser.getDate());
 		var finishDate = dateFormat.format(finishDateChooser.getDate());
 		
 		// Obtener código de mecanico desde su nombre y apellidos
@@ -393,9 +398,29 @@ public class MechanicalAddRepairView {
 		var selectedMechanical = mechanicals.stream()
 				.filter(mechanical -> mechanicalNameAndSurnames.equalsIgnoreCase(mechanical.getNombre() + " " + mechanical.getApellidos())).collect(Collectors.toList());
 		
-		// Crear instancia de reparación con los datos de la vista
-		// TODO: Control de errores
-		repair = new Repair(0, selectedMechanical.get(0).getCod_mecanico(), frameNumber, carParts, initialDate, finishDate);
+		// Control de errores
+		var frameNumberExist = vehicles.stream()
+				.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber)).collect(Collectors.toList());
+		
+		if (frameNumberExist.size() == 0) {
+			JOptionPane.showMessageDialog(frame, "Error, no existe el número de bastidor introducido", "Warning!",
+					JOptionPane.ERROR_MESSAGE);
+			numberTextField.requestFocus();
+			
+		} else if(carParts.length() > 500) {
+			JOptionPane.showMessageDialog(frame, "Error, la descripción no puede contener más de 500 carácteres", "Warning!",
+					JOptionPane.ERROR_MESSAGE);
+			partsTextArea.requestFocus();
+		
+		} else if(initialDateChooser.getDate() == null || finishDateChooser.getDate() == null) {
+			JOptionPane.showMessageDialog(frame, "Seleccione las fechas de entrada y estimación de salida", "Warning!",
+					JOptionPane.ERROR_MESSAGE);
+			initialDateChooser.requestFocus();
+		
+		} else {
+			// Crear instancia de reparación con los datos de la vista
+			repair = new Repair(0, selectedMechanical.get(0).getCod_mecanico(), frameNumber, carParts, initialDate, finishDate);	
+		}
 		
 		return repair;
 	}

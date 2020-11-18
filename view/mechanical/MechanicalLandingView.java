@@ -23,6 +23,7 @@ import dao.RepairDAO;
 import dao.UserDAO;
 import dao.VehicleDAO;
 import model.Mechanical;
+import model.Repair;
 import view.LoginView;
 
 import javax.swing.SwingConstants;
@@ -31,12 +32,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Date;
 import java.util.stream.Collectors;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.Cursor;
+import javax.swing.ImageIcon;
 
 public class MechanicalLandingView {
 
@@ -46,6 +47,7 @@ public class MechanicalLandingView {
 	private JButton clientBtn;
 	private JButton finishRepairBtn;
 	private JTable vehiclesRepairTable;
+	private JLabel lblUser;
 
 	private ClientDAO clientDAO;
 	private UserDAO userDAO;
@@ -94,7 +96,7 @@ public class MechanicalLandingView {
 		var vehicles = vehicleDAO.getVehicles();
 
 		// Al abrir la ventana se rellena con los datos de todas las reparaciones
-		// posibles
+		// posibles, también cargan los datos del usuario en la vista
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
 				// Obtener todas las reparaciones
@@ -112,27 +114,27 @@ public class MechanicalLandingView {
 						// añadirlo en la tabla con sus datos y no con código)
 						var selectedMechanical = mechanicals.stream()
 								.filter(mech -> mech.getCod_mecanico() == mechanicalCod).collect(Collectors.toList());
-
+						
+						// Ordenadar por fecha de salida (para el trabajo del día)
+						repairsList.stream().map(Repair::getFecha_salida).collect(Collectors.toList());
+						
 						tableModel.addRow(new Object[] { repairsList.get(i).getCod_reparacion(),
 								selectedMechanical.get(0).getApellidos(), repairsList.get(i).getNum_bastidor(),
 								repairsList.get(i).getFecha_entrada(), repairsList.get(i).getFecha_salida(),
 								repairsList.get(i).getPiezas() });
 					}
 				}
+				
+				// Cargar datos de usuario
+				lblUser.setText("Bienvenido/a " + user.getNombre() + " " + user.getApellidos());
 			}
 		});
 
 		// Añadir reparación de vehículo
 		repairBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				if (vehiclesRepairTable.getSelectedRow() != -1) {
-					// TODO: autocargar datos al seleccionar un elemento de la tabla
-					new MechanicalAddRepairView(user, isBoss).getFrame().setVisible(true); 
-					frame.dispose();
-				} else {
-					new MechanicalAddRepairView(user, isBoss).getFrame().setVisible(true);
-					frame.dispose();
-				}
+				new MechanicalAddRepairView(user, isBoss).getFrame().setVisible(true); 
+				frame.dispose();
 			}
 		});
 
@@ -195,6 +197,17 @@ public class MechanicalLandingView {
 		frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 		topPanel.setBackground(new Color(233, 196, 106));
 		topPanel.setBounds(100, 100, 100, 100);
+		
+		JLabel lblIconUser = new JLabel("");
+		lblIconUser.setIcon(new ImageIcon(MechanicalLandingView.class.getResource("/assets/img/icon_user.png")));
+		lblIconUser.setAlignmentY(0.0f);
+		lblIconUser.setLocation(5, 0);
+		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 5));
+		topPanel.add(lblIconUser);
+		
+		lblUser = new JLabel("");
+		lblUser.setFont(new Font("SansSerif", Font.BOLD, 15));
+		topPanel.add(lblUser);
 
 		JPanel leftPanel = new JPanel();
 		frame.getContentPane().add(leftPanel, BorderLayout.WEST);
@@ -331,7 +344,7 @@ public class MechanicalLandingView {
 		vehiclesRepairTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		vehiclesRepairTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Código reparación",
 				"Mecánico asignado", "N\u00FAmero de bastidor", "Fecha entrada", "Fecha salida", "Piezas" }) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, Date.class, Date.class,
+			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class,
 					String.class };
 
 			public Class getColumnClass(int columnIndex) {
@@ -349,6 +362,9 @@ public class MechanicalLandingView {
 		vehiclesRepairTable.getTableHeader().setBackground(new Color(244, 162, 97));
 		vehiclesRepairTable.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		tableScrollPane.setViewportView(vehiclesRepairTable);
+		
+		JLabel label = new JLabel("New label");
+		tableScrollPane.setColumnHeaderView(label);
 
 	}
 

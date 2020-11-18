@@ -59,10 +59,11 @@ INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, t
 ('0006079000', 1, 3, 1, 'Ciclomotor', 'Piaggio', 'ZIP', 'Gasolina', 1000),
 ('9996079999', 1, 2, 1, 'Motocicleta', 'Yamaha', 'SR', 'Gasolina', 4900);
 
-
 -- REPARACION
 INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas) VALUES
-(1, 1, '1234567890', '2021-10-9', '2021-10-11', 'Turbo K04 híbrido, downpipe, pintura rally blue');
+(1, 1, '1234567890', '2021-10-9', '2021-10-11', 'Turbo K04 híbrido, downpipe, pintura blue rally'),
+(2, 2, '9996079999', '2021-10-9', '2021-10-29', '4 Bujías, silenciador don silencioso'),
+(3, 4, '0006079000', '2021-10-9', '2021-10-28', 'Tirar a la basura esta sh*t');
 
 -- COCHE
 INSERT INTO taller.coche (mat_coche, num_bastidor) VALUES
@@ -81,7 +82,9 @@ INSERT INTO taller.ciclomotor (mat_ciclo, num_bastidor) VALUES
 
 -- PROPUESTA
 INSERT INTO taller.propuesta (cod_propuesta, cod_cliente, cod_ventas, num_bastidor, fecha_validez) VALUES
-(1, 1, 1, '9876543210', '2021-10-11');
+(1, 1, 1, '9876543210', '2021-10-11'),
+(2, 2, 1, '5486079685', '2021-12-17'),
+(3, 3, 1, '9876543210', '2021-11-19');
 
 
 

@@ -40,6 +40,29 @@ public class RepairDAO extends AbstractDAO {
 	 * @param repair
 	 */
 	public void addRepair(Repair repair) {
+		try {
+			con.setAutoCommit(false);
+			stm = con.createStatement();
+			stm.executeUpdate(
+					"INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas) VALUES ("
+							+ "0, " + repair.getCod_mecanico() + ", '" + repair.getNum_bastidor() + "', '"
+							+ repair.getFecha_entrada() + "', '" + repair.getFecha_salida() + "', '"
+							+ repair.getPiezas() + "');");
+			con.commit();
+		} catch (SQLException ex) {
+			try {
+				con.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			ex.printStackTrace();
+		} finally {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -58,8 +81,15 @@ public class RepairDAO extends AbstractDAO {
 			try {
 				con.rollback();
 			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 			ex.printStackTrace();
+		} finally {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

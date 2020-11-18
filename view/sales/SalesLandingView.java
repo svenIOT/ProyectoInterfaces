@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -19,14 +20,18 @@ import javax.swing.border.MatteBorder;
 
 import model.Sales;
 import view.LoginView;
+import view.mechanical.MechanicalLandingView;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class SalesLandingView {
 
 	private JFrame frame;
 	private JButton btnLogOut;
+	private JLabel lblUser;
 	private JComboBox<?> customerComboBox;
 	private JComboBox<?> vehicleComboBox;
 	private JComboBox<?> salesComboBox;
@@ -58,6 +63,15 @@ public class SalesLandingView {
 	 * Contiene los controladores
 	 */
 	private void setControllers() {
+		// Al abrir la ventana cargan los datos de usuario
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowOpened(WindowEvent e) {
+				lblUser.setText("Bienvenido/a: " + user.getNombre() + " " + user.getApellidos());
+			}
+		});
+		
+		
+		
 		// Combobox de clientes
 		customerComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -120,6 +134,17 @@ public class SalesLandingView {
 		frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 		topPanel.setBackground(new Color(233, 196, 106));
 		topPanel.setBounds(100, 100, 100, 100);
+		
+		JLabel lblIconUser = new JLabel("");
+		lblIconUser.setIcon(new ImageIcon(MechanicalLandingView.class.getResource("/assets/img/icon_user.png")));
+		lblIconUser.setAlignmentY(0.0f);
+		lblIconUser.setLocation(5, 0);
+		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 5));
+		topPanel.add(lblIconUser);
+		
+		lblUser = new JLabel("");
+		lblUser.setFont(new Font("SansSerif", Font.BOLD, 15));
+		topPanel.add(lblUser);
 
 		JPanel leftPanel = new JPanel();
 		frame.getContentPane().add(leftPanel, BorderLayout.WEST);
