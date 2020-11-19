@@ -139,10 +139,10 @@ CREATE TABLE Vehiculo
 	cod_ventas int,
 	cod_cliente int,
 	cod_conce int,
-    tipo_vehiculo varchar(11),
-	marca varchar(10),
-	modelo varchar(15),
-	combustible varchar(10),
+    tipo_vehiculo varchar(15),
+	marca varchar(25),
+	modelo varchar(35),
+	combustible varchar(15),
 	precio varchar(6),
 	PRIMARY KEY (num_bastidor)
 );

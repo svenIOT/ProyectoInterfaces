@@ -12,7 +12,8 @@ INSERT INTO taller.persona (dni, nombre, apellidos, telefono) VALUES
 
 -- CONCESIONARIO
 INSERT INTO taller.concesionario (cod_conce, nombre) VALUES 
-(1, 'Todo Ruedas');
+(1, 'Todo Ruedas'),
+(2, 'H&N Customs');
 
 -- EMPLEADO
 INSERT INTO taller.empleado (cod_empleado, dni, cod_conce, usuario, contrasena) VALUES 
@@ -67,7 +68,7 @@ INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, t
 -- REPARACION
 INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas) VALUES
 (1, 1, '1234567890', '2021-10-9', '2021-10-11', 'Turbo K04 híbrido, downpipe, pintura blue rally'),
-(2, 2, '9996079999', '2021-10-9', '2021-10-29', '4 Bujías, silenciador don silencioso'),
+(2, 2, '9996079999', '2021-10-9', '2021-10-29', '4 Bujías, silenciador don silencioso, piezas caras saca la pasta'),
 (3, 4, '0006079000', '2021-10-9', '2021-10-28', 'Tirar a la basura esta sh*t');
 
 -- COCHE
@@ -92,9 +93,9 @@ INSERT INTO taller.ciclomotor (mat_ciclo, num_bastidor) VALUES
 
 -- PROPUESTA
 INSERT INTO taller.propuesta (cod_propuesta, cod_cliente, cod_ventas, num_bastidor, fecha_validez) VALUES
-(1, 1, 1, '9876543210', '2021-10-11'),
-(2, 2, 1, '5486079685', '2021-12-17'),
-(3, 3, 1, '9876543210', '2021-11-19');
+(1, 1, 1, '0123456789', '2021-10-11'),
+(2, 2, 1, '1112223334', '2021-12-17'),
+(3, 3, 1, '1111112223', '2021-11-19');
 
 
 
