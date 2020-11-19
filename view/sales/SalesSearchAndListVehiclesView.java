@@ -19,12 +19,13 @@ import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import dao.VehicleDAO;
-import model.Employee;
 import model.Sales;
+import model.Vehicle;
 import view.LoginView;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.stream.Collectors;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -47,17 +48,18 @@ public class SalesSearchAndListVehiclesView {
 	private JRadioButton carsRadioButton;
 	private JRadioButton motorcyclesRadioButton;
 	private JRadioButton mopedsRadioButton;
-	
+
 	private Sales user;
 
 	/**
 	 * Crea la aplicación
-	 * @param user 
+	 * 
+	 * @param user
 	 */
 	public SalesSearchAndListVehiclesView(Sales user) {
 		this.user = user;
-		initialize();
 		vehicleDAO = new VehicleDAO();
+		initialize();
 	}
 
 	/**
@@ -78,17 +80,28 @@ public class SalesSearchAndListVehiclesView {
 	 */
 	private void setControllers() {
 		var tableModel = (DefaultTableModel) vehicleTable.getModel();
+		
+		// Filtrar los vehículos que están a la venta
+		var onSaleVehicles = vehicleDAO.getVehicles().stream().filter(vehicle -> vehicle.getCod_cliente() == 0).collect(Collectors.toList());
+		
+		// Filtrar los coches que están a la venta
+		var onSaleCars = vehicleDAO.getCars().stream().filter(car -> car.getCod_cliente() == 0).collect(Collectors.toList());
+		
+		// Filtrar las motos que están a la venta
+		var onSaleMotorcycles = vehicleDAO.getMotorcycles().stream().filter(motorcycle -> motorcycle.getCod_cliente() == 0).collect(Collectors.toList());
+		
+		// Filtrar los ciclomotores que están a la venta
+		var onSaleMopeds = vehicleDAO.getMopeds().stream().filter(moped -> moped.getCod_cliente() == 0).collect(Collectors.toList());
 
 		// Al abrir la ventana se rellena con los datos de coche
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
-				// Insertar los vehiculos en la tabla vehiculos
-				var vehiclesList = vehicleDAO.getCars();
-				if (vehiclesList != null) {
-					for (var i = 0; i < vehiclesList.size(); ++i) {
-						tableModel.addRow(new Object[] { vehiclesList.get(i).getNum_bastidor(),
-								vehiclesList.get(i).getMarca(), vehiclesList.get(i).getModelo(),
-								vehiclesList.get(i).getCombustible(), vehiclesList.get(i).getPrecio() });
+				// Insertar los coches (por defecto) en la tabla
+				if (onSaleCars != null) {
+					for (var i = 0; i < onSaleCars.size(); ++i) {
+						tableModel.addRow(new Object[] { onSaleCars.get(i).getNum_bastidor(),
+								onSaleCars.get(i).getMarca(), onSaleCars.get(i).getModelo(),
+								onSaleCars.get(i).getCombustible(), onSaleCars.get(i).getPrecio() });
 					}
 				}
 			}
@@ -97,14 +110,14 @@ public class SalesSearchAndListVehiclesView {
 		// Radiobutton filtrado por coches
 		carsRadioButton.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				// Reiniciar el contenido de la tabla vehículos
+				// Reiniciar el contenido de la tabla
 				clearTable(tableModel);
-				var carsList = vehicleDAO.getCars();
-				if (carsList != null) {
-					for (var i = 0; i < carsList.size(); ++i) {
-						tableModel.addRow(new Object[] { carsList.get(i).getNum_bastidor(),
-								carsList.get(i).getMarca(), carsList.get(i).getModelo(),
-								carsList.get(i).getCombustible(), carsList.get(i).getPrecio() });
+				
+				if (onSaleCars != null) {
+					for (var i = 0; i < onSaleCars.size(); ++i) {
+						tableModel.addRow(new Object[] { onSaleCars.get(i).getNum_bastidor(),
+								onSaleCars.get(i).getMarca(), onSaleCars.get(i).getModelo(),
+								onSaleCars.get(i).getCombustible(), onSaleCars.get(i).getPrecio() });
 					}
 				}
 			}
@@ -113,14 +126,14 @@ public class SalesSearchAndListVehiclesView {
 		// Radiobutton filtrado por coches
 		motorcyclesRadioButton.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				// Reiniciar el contenido de la tabla vehículos
+				// Reiniciar el contenido de la tabla
 				clearTable(tableModel);
-				var motorcyclesList = vehicleDAO.getMotorcycles();
-				if (motorcyclesList != null) {
-					for (var i = 0; i < motorcyclesList.size(); ++i) {
-						tableModel.addRow(new Object[] { motorcyclesList.get(i).getNum_bastidor(),
-								motorcyclesList.get(i).getMarca(), motorcyclesList.get(i).getModelo(),
-								motorcyclesList.get(i).getCombustible(), motorcyclesList.get(i).getPrecio() });
+				
+				if (onSaleMotorcycles != null) {
+					for (var i = 0; i < onSaleMotorcycles.size(); ++i) {
+						tableModel.addRow(new Object[] { onSaleMotorcycles.get(i).getNum_bastidor(),
+								onSaleMotorcycles.get(i).getMarca(), onSaleMotorcycles.get(i).getModelo(),
+								onSaleMotorcycles.get(i).getCombustible(), onSaleMotorcycles.get(i).getPrecio() });
 					}
 				}
 			}
@@ -129,14 +142,14 @@ public class SalesSearchAndListVehiclesView {
 		// Radiobutton filtrado por coches
 		mopedsRadioButton.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				// Reiniciar el contenido de la tabla vehículos
+				// Reiniciar el contenido de la tabla
 				clearTable(tableModel);
-				var mopedsList = vehicleDAO.getMopeds();
-				if (mopedsList != null) {
-					for (var i = 0; i < mopedsList.size(); ++i) {
-						tableModel.addRow(new Object[] { mopedsList.get(i).getNum_bastidor(),
-								mopedsList.get(i).getMarca(), mopedsList.get(i).getModelo(),
-								mopedsList.get(i).getCombustible(), mopedsList.get(i).getPrecio() });
+				
+				if (onSaleMopeds != null) {
+					for (var i = 0; i < onSaleMopeds.size(); ++i) {
+						tableModel.addRow(new Object[] { onSaleMopeds.get(i).getNum_bastidor(),
+								onSaleMopeds.get(i).getMarca(), onSaleMopeds.get(i).getModelo(),
+								onSaleMopeds.get(i).getCombustible(), onSaleMopeds.get(i).getPrecio() });
 					}
 				}
 			}
@@ -145,17 +158,31 @@ public class SalesSearchAndListVehiclesView {
 		// Botón buscar vehículo
 		btnSearch.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// Reiniciar el contenido de la tabla vehículos
-				clearTable(tableModel);
+				
 
 				// Buscar vehículo por num bastidor
 				var num_bastidor = textFieldSearch.getText();
-				var vehicleResult = vehicleDAO.searchVehicle(num_bastidor);
+				
+				// Filtra el vehículo con el número de bastidor del txtField
+				var vehicleResult = onSaleVehicles.stream().filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(num_bastidor)).collect(Collectors.toList());
 
-				// Insertar el vehículo devuelto en la tabla vehículos
-				if (vehicleResult != null) {
-					tableModel.addRow(new Object[] { vehicleResult.getNum_bastidor(), vehicleResult.getMarca(),
-							vehicleResult.getModelo(), vehicleResult.getCombustible(), vehicleResult.getPrecio() });
+				if (vehicleResult.size() > 0) {
+					// Reiniciar el contenido de la tabla vehículos
+					clearTable(tableModel);
+					
+					// Insertar el vehículo devuelto en la tabla vehículos
+					tableModel.addRow(new Object[] { vehicleResult.get(0).getNum_bastidor(), vehicleResult.get(0).getMarca(),
+							vehicleResult.get(0).getModelo(), vehicleResult.get(0).getCombustible(), vehicleResult.get(0).getPrecio() });
+
+					// Poner el radioButton en la categoría que corresponde
+					if (vehicleResult.get(0).getTipoVehiculo().equalsIgnoreCase("coche")) {
+						carsRadioButton.setSelected(true);
+					} else if (vehicleResult.get(0).getTipoVehiculo().equalsIgnoreCase("motocicleta")) {
+						motorcyclesRadioButton.setSelected(true);
+					} else {
+						mopedsRadioButton.setSelected(true);
+					}
+
 				} else {
 					JOptionPane.showMessageDialog(frame, "Vehículo no encontrado, revise el número de bastidor",
 							"Warning!", JOptionPane.ERROR_MESSAGE);
@@ -167,19 +194,9 @@ public class SalesSearchAndListVehiclesView {
 		// Botón ver detalles del vehículo
 		btnDetallesDelVehiculo.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// Asignar tipo de vehículo seleccionado
-				String selectedVehicleType = "";
-				if(carsRadioButton.isSelected()) {
-					selectedVehicleType = "Coche";
-				} else if (motorcyclesRadioButton.isSelected()) {
-					selectedVehicleType = "Motocicleta";
-				} else {
-					selectedVehicleType = "Ciclomotor";
-				}
 				// Abrir detalles según la fila elegida
 				if (vehicleTable.getSelectedRow() != -1) {
-					 new SalesVehicleDetailsView(String.valueOf(tableModel.getValueAt(vehicleTable.getSelectedRow(), 0)),
-							 selectedVehicleType).getFrame().setVisible(true);
+					new SalesVehicleDetailsView(String.valueOf(tableModel.getValueAt(vehicleTable.getSelectedRow(), 0))).getFrame().setVisible(true);
 				} else {
 					JOptionPane.showMessageDialog(frame, "Haga clic en un vehículo de la tabla para ver más detalles",
 							"Warning!", JOptionPane.ERROR_MESSAGE);
