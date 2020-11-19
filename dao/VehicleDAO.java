@@ -305,5 +305,19 @@ public class VehicleDAO extends AbstractDAO {
 		}
 		return vehicle;
 	}
+	
+	public Integer getVehiclesUnsold() {
+		int vehiclesUnsold = 0;
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(Constants.SELECT_COUNT_VEHICLES_UNSOLD);
+			if (rs.next()) {
+				vehiclesUnsold = rs.getInt(1);
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return vehiclesUnsold;
+	}
 
 }
