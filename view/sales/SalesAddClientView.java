@@ -28,6 +28,7 @@ import javax.swing.SwingConstants;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Cursor;
 
 public class SalesAddClientView {
 
@@ -130,6 +131,7 @@ public class SalesAddClientView {
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 		// Se añaden los componentes al bottomPanel
 		btnLogOut = new JButton("Cerrar Sesión");
+		btnLogOut.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLogOut.setBorder(null);
 		btnLogOut.setBackground(new Color(233, 196, 106));
 		btnLogOut.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -272,12 +274,14 @@ public class SalesAddClientView {
 
 		// Botones
 		backButton = new JButton("Volver al menú");
+		backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		backButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 		backButton.setBackground(new Color(244, 162, 97));
 		backButton.setForeground(Color.WHITE);
 		bottonPanel.add(backButton);
 
 		registerButton = new JButton("Añadir cliente");
+		registerButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		registerButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 		registerButton.setBackground(new Color(231, 111, 81));
 		registerButton.setForeground(Color.WHITE);

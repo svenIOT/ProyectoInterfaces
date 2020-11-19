@@ -56,8 +56,13 @@ INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, t
 ('9876543210', 1, 3, 1, 'Coche', 'Nissan', '370Z Nismo', 'Gasolina', 35000),
 ('4328457431', 1, 1, 1, 'Motocicleta', 'Honda', 'CBR 1000', 'Gasolina', 7900),
 ('5486079685', 1, 1, 1, 'Ciclomotor', 'Piaggio', 'SH', 'Gasolina', 2900),
-('0006079000', 1, 3, 1, 'Ciclomotor', 'Piaggio', 'ZIP', 'Gasolina', 1000),
-('9996079999', 1, 2, 1, 'Motocicleta', 'Yamaha', 'SR', 'Gasolina', 4900);
+('0006079000', 1, 3, 1, 'Ciclomotor', 'Piaggio', 'ZIP', 'Gasolina', 800),
+('9996079999', 1, 2, 1, 'Motocicleta', 'Yamaha', 'SR', 'Gasolina', 4900),
+('0123456789', null, null, null, 'Coche', 'Seat', 'Ibiza', 'Diesel', 6700),
+('1112223334', null, null, null, 'Motocicleta', 'Suzuki', 'GSX-1300R Hayabusa', 'Gasolina', 35000),
+('4443332221', null, null, null, 'Ciclomotor', 'Hawk', '1800W/40AH L1e-B', 'Híbrido', 1900),
+('1111112223', null, null, null, 'Coche', 'Toyota', 'Prius', 'Híbrido', 20000),
+('3334445556', null, null, null, 'Motocicleta', 'Benelli', 'BN 302', 'Gasolina', 4000);
 
 -- REPARACION
 INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas) VALUES
@@ -68,17 +73,22 @@ INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha
 -- COCHE
 INSERT INTO taller.coche (mat_coche, num_bastidor) VALUES
 ('1122ABC', '1234567890'),
-('3322DEF', '9876543210');
+('3322DEF', '9876543210'),
+('9988PNR', '0123456789'),
+('7766TTT', '1111112223');
 
 -- MOTOCICLETA
 INSERT INTO taller.motocicleta (mat_moto, num_bastidor) VALUES
 ('4455ABC', '4328457431'),
-('1122POL', '9996079999');
+('1122POL', '9996079999'),
+('5588XXX', '1112223334'),
+('2323ERX', '3334445556');
 
 -- CICLOMOTOR
 INSERT INTO taller.ciclomotor (mat_ciclo, num_bastidor) VALUES
 ('4455DEF', '5486079685'),
-('0099SHT', '0006079000');
+('0099SHT', '0006079000'),
+('0101IER', '4443332221');
 
 -- PROPUESTA
 INSERT INTO taller.propuesta (cod_propuesta, cod_cliente, cod_ventas, num_bastidor, fecha_validez) VALUES

@@ -29,6 +29,7 @@ import model.Employee;
 import model.Sales;
 import model.Vehicle;
 import view.LoginView;
+import java.awt.Cursor;
 
 public class SalesAddVehicleView {
 
@@ -134,6 +135,7 @@ public class SalesAddVehicleView {
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 		// Se añaden los componentes al bottomPanel
 		btnLogOut = new JButton("Cerrar Sesión");
+		btnLogOut.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLogOut.setBorder(null);
 		btnLogOut.setBackground(new Color(233, 196, 106));
 		btnLogOut.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -353,12 +355,14 @@ public class SalesAddVehicleView {
 
 		// Botones
 		returnButton = new JButton("Volver al menú");
+		returnButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		returnButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 		returnButton.setBackground(new Color(244, 162, 97));
 		returnButton.setForeground(Color.WHITE);
 		buttonPanel.add(returnButton);
 
 		addVehicleButton = new JButton("Añadir vehículo");
+		addVehicleButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		addVehicleButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 		addVehicleButton.setBackground(new Color(231, 111, 81));
 		addVehicleButton.setForeground(Color.WHITE);

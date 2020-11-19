@@ -298,6 +298,7 @@ public class MechanicalClientDetailsView {
 
 		// Botones
 		backButton = new JButton("Volver");
+		backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		backButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 		backButton.setBackground(new Color(244, 162, 97));
 		backButton.setForeground(Color.WHITE);

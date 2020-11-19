@@ -40,6 +40,7 @@ import dao.VehicleDAO;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Cursor;
 
 public class MechanicalAddRepairView {
 
@@ -178,6 +179,7 @@ public class MechanicalAddRepairView {
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 
 		btnLogOut = new JButton("Cerrar Sesión");
+		btnLogOut.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		btnLogOut.setBorder(null);
 		btnLogOut.setBackground(new Color(233, 196, 106));
@@ -214,6 +216,7 @@ public class MechanicalAddRepairView {
 		headerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 150, 20));
 
 		btnBackToMenu = new JButton("Volver al menú");
+		btnBackToMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnBackToMenu.setForeground(Color.WHITE);
 		btnBackToMenu.setFont(new Font("SansSerif", Font.BOLD, 15));
 		btnBackToMenu.setBackground(new Color(244, 162, 97));
@@ -376,6 +379,7 @@ public class MechanicalAddRepairView {
 		rightDataPanel.add(mechanicalComboBox, gbc_mechanicalComboBox);
 		
 		addRepairBtn = new JButton("Añadir reparación");
+		addRepairBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		addRepairBtn.setForeground(Color.WHITE);
 		addRepairBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
 		addRepairBtn.setBackground(new Color(231, 111, 81));

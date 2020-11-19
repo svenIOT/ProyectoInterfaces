@@ -23,6 +23,7 @@ import view.sales.SalesLandingView;
 
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import java.awt.Cursor;
 
 public class LoginView {
 
@@ -103,6 +104,7 @@ public class LoginView {
 		txtUser.setColumns(10);
 
 		btnLogin = new JButton("Acceder");
+		btnLogin.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		btnLogin.setBorderPainted(false);
 		btnLogin.setForeground(Color.WHITE);

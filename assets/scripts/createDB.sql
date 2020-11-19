@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS Persona;
 
 CREATE TABLE Ciclomotor
 (
-	mat_ciclo varchar(7) NOT NULL,
+	mat_ciclo varchar(7) NOT NULL UNIQUE,
 	num_bastidor varchar(10) NOT NULL,
 	PRIMARY KEY (mat_ciclo)
 );
@@ -41,7 +41,7 @@ CREATE TABLE Cliente
 
 CREATE TABLE Coche
 (
-	mat_coche varchar(7) NOT NULL,
+	mat_coche varchar(7) NOT NULL UNIQUE,
 	num_bastidor varchar(10) NOT NULL,
 	PRIMARY KEY (mat_coche)
 );
@@ -94,7 +94,7 @@ CREATE TABLE Mecanico
 
 CREATE TABLE Motocicleta
 (
-	mat_moto varchar(7) NOT NULL,
+	mat_moto varchar(7) NOT NULL UNIQUE,
 	num_bastidor varchar(10) NOT NULL,
 	PRIMARY KEY (mat_moto)
 );
@@ -102,7 +102,7 @@ CREATE TABLE Motocicleta
 
 CREATE TABLE Persona
 (
-	dni varchar(9) NOT NULL,
+	dni varchar(9) NOT NULL UNIQUE,
 	nombre varchar(15),
 	apellidos varchar(25),
 	telefono varchar(9),
@@ -135,10 +135,10 @@ CREATE TABLE Reparacion
 
 CREATE TABLE Vehiculo
 (
-	num_bastidor varchar(10) NOT NULL,
-	cod_ventas int NOT NULL,
-	cod_cliente int NOT NULL,
-	cod_conce int NOT NULL,
+	num_bastidor varchar(10) NOT NULL UNIQUE,
+	cod_ventas int,
+	cod_cliente int,
+	cod_conce int,
     tipo_vehiculo varchar(11),
 	marca varchar(10),
 	modelo varchar(15),

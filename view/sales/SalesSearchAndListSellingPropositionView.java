@@ -163,6 +163,7 @@ public class SalesSearchAndListSellingPropositionView {
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 
 		btnLogOut = new JButton("Cerrar Sesión");
+		btnLogOut.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		btnLogOut.setBorder(null);
 		btnLogOut.setBackground(new Color(233, 196, 106));
@@ -209,6 +210,7 @@ public class SalesSearchAndListSellingPropositionView {
 		headerPanel2.setLayout(new FlowLayout(FlowLayout.CENTER, 150, 0));
 
 		btnBackToMenu = new JButton("Volver al menú");
+		btnBackToMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -243,6 +245,7 @@ public class SalesSearchAndListSellingPropositionView {
 		textFieldSearch.setColumns(20);
 
 		btnSearch = new JButton("Buscar propuesta de venta");
+		btnSearch.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSearch.setForeground(Color.WHITE);
 		btnSearch.setFont(new Font("SansSerif", Font.BOLD, 15));
 		btnSearch.setBorderPainted(false);

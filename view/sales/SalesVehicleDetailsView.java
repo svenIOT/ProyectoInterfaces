@@ -21,6 +21,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Cursor;
 
 public class SalesVehicleDetailsView {
 	
@@ -388,6 +389,7 @@ public class SalesVehicleDetailsView {
 
 		// Botones
 		returnButton = new JButton("    Cerrar    ");
+		returnButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		returnButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 		returnButton.setBackground(new Color(244, 162, 97));
 		returnButton.setForeground(Color.WHITE);

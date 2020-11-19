@@ -47,6 +47,7 @@ public class MechanicalLandingView {
 	private JButton repairBtn;
 	private JButton clientBtn;
 	private JButton finishRepairBtn;
+	private JButton partsDetailsBtn;
 	private JTable vehiclesRepairTable;
 	private JLabel lblUser;
 
@@ -202,6 +203,19 @@ public class MechanicalLandingView {
 				}
 			}
 		});
+		
+		// Ver detalles de las piezas
+		partsDetailsBtn.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (vehiclesRepairTable.getSelectedRow() != -1) {
+					var carParts = String.valueOf(tableModel.getValueAt(vehiclesRepairTable.getSelectedRow(), 5));
+					new MechanicalCarpartsDetails(carParts).getFrame().setVisible(true);
+				} else {
+					JOptionPane.showMessageDialog(frame, "Seleccione un elemento de la tabla para ver el cliente",
+							"Warning!", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 
 		// Volver al login
 		btnLogOut.addMouseListener(new MouseAdapter() {
@@ -250,6 +264,7 @@ public class MechanicalLandingView {
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 
 		btnLogOut = new JButton("Cerrar Sesión");
+		btnLogOut.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLogOut.setBorder(null);
 		btnLogOut.setBackground(new Color(233, 196, 106));
 		btnLogOut.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -309,6 +324,7 @@ public class MechanicalLandingView {
 		mainActionsPanelLeft.setLayout(sl_mainActionsPanelLeft);
 
 		repairBtn = new JButton("Nueva reparación");
+		repairBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, repairBtn, 109, SpringLayout.NORTH,
 				mainActionsPanelLeft);
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, repairBtn, 10, SpringLayout.WEST,
@@ -325,6 +341,7 @@ public class MechanicalLandingView {
 		mainActionsPanelLeft.add(repairBtn);
 
 		clientBtn = new JButton("Ficha cliente");
+		clientBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, clientBtn, 395, SpringLayout.NORTH,
 				mainActionsPanelLeft);
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, clientBtn, 0, SpringLayout.WEST, repairBtn);
@@ -337,6 +354,7 @@ public class MechanicalLandingView {
 		mainActionsPanelLeft.add(clientBtn);
 
 		finishRepairBtn = new JButton("Acabar reparación");
+		finishRepairBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, finishRepairBtn, 77, SpringLayout.SOUTH, repairBtn);
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, finishRepairBtn, 0, SpringLayout.WEST, repairBtn);
 		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, finishRepairBtn, -76, SpringLayout.NORTH, clientBtn);
@@ -352,18 +370,32 @@ public class MechanicalLandingView {
 		gbc_todayWorkPanelRight.gridx = 1;
 		gbc_todayWorkPanelRight.gridy = 0;
 		bodyPanel.add(todayWorkPanelRight, gbc_todayWorkPanelRight);
+		
 		GridBagLayout gbl_todayWorkPanelRight = new GridBagLayout();
 		gbl_todayWorkPanelRight.columnWidths = new int[] { 832, 0 };
-		gbl_todayWorkPanelRight.rowHeights = new int[] { 0, 0 };
+		gbl_todayWorkPanelRight.rowHeights = new int[] { 0, 550, 0 };
 		gbl_todayWorkPanelRight.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-		gbl_todayWorkPanelRight.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+		gbl_todayWorkPanelRight.rowWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
 		todayWorkPanelRight.setLayout(gbl_todayWorkPanelRight);
+		
+		partsDetailsBtn = new JButton("Ver piezas");
+		partsDetailsBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		partsDetailsBtn.setMinimumSize(new Dimension(120, 21));
+		partsDetailsBtn.setMaximumSize(new Dimension(120, 21));
+		partsDetailsBtn.setForeground(Color.WHITE);
+		partsDetailsBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
+		partsDetailsBtn.setBackground(new Color(231, 111, 81));
+		GridBagConstraints gbc_partsDetailsBtn = new GridBagConstraints();
+		gbc_partsDetailsBtn.insets = new Insets(0, 0, 5, 0);
+		gbc_partsDetailsBtn.gridx = 0;
+		gbc_partsDetailsBtn.gridy = 0;
+		todayWorkPanelRight.add(partsDetailsBtn, gbc_partsDetailsBtn);
 
 		JScrollPane tableScrollPane = new JScrollPane();
 		GridBagConstraints gbc_tableScrollPane = new GridBagConstraints();
 		gbc_tableScrollPane.fill = GridBagConstraints.BOTH;
 		gbc_tableScrollPane.gridx = 0;
-		gbc_tableScrollPane.gridy = 0;
+		gbc_tableScrollPane.gridy = 1;
 		todayWorkPanelRight.add(tableScrollPane, gbc_tableScrollPane);
 
 		vehiclesRepairTable = new JTable();
@@ -392,9 +424,6 @@ public class MechanicalLandingView {
 		vehiclesRepairTable.getTableHeader().setBackground(new Color(244, 162, 97));
 		vehiclesRepairTable.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		tableScrollPane.setViewportView(vehiclesRepairTable);
-
-		JLabel label = new JLabel("New label");
-		tableScrollPane.setColumnHeaderView(label);
 
 	}
 

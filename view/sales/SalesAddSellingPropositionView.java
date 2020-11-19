@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.awt.Cursor;
 
 public class SalesAddSellingPropositionView {
 
@@ -161,6 +162,7 @@ public class SalesAddSellingPropositionView {
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 		// Se añaden los componentes al bottomPanel
 		btnLogOut = new JButton("Cerrar Sesión");
+		btnLogOut.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLogOut.setBorder(null);
 		btnLogOut.setBackground(new Color(233, 196, 106));
 		btnLogOut.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -310,12 +312,14 @@ public class SalesAddSellingPropositionView {
 
 		// Botones
 		backMenuBtn = new JButton("Volver al menú");
+		backMenuBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		backMenuBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
 		backMenuBtn.setBackground(new Color(244, 162, 97));
 		backMenuBtn.setForeground(Color.WHITE);
 		buttonPanel.add(backMenuBtn);
 
 		addPropositionBtn = new JButton("Añadir propuesta");
+		addPropositionBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		addPropositionBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
 		addPropositionBtn.setBackground(new Color(231, 111, 81));
 		addPropositionBtn.setForeground(Color.WHITE);
