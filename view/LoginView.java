@@ -5,6 +5,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -33,8 +36,8 @@ public class LoginView {
 	 * Crea la aplicación
 	 */
 	public LoginView() {
-		initialize();
 		userDAO = new UserDAO();
+		initialize();
 	}
 
 	/**
@@ -108,7 +111,7 @@ public class LoginView {
 		btnLogin.setBounds(300, 440, 191, 30);
 		mainPanel.add(btnLogin);
 
-		txtPassword = new JPasswordField("Usuario");
+		txtPassword = new JPasswordField("usuario");
 		txtPassword.setBounds(300, 376, 191, 30);
 		mainPanel.add(txtPassword);
 
@@ -125,8 +128,31 @@ public class LoginView {
 	 */
 	private Employee createEmployee() {
 		var username = txtUser.getText();
+		
+		// Obtener hash MD5 de la contraseña introducida en el txtField
 		var password = new String(txtPassword.getPassword());
-		return new Employee(username, password);
+		MessageDigest md = null;
+		
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		
+		// Obtención del hash
+	    md.update(password.getBytes());
+	    var digest = md.digest();
+	    
+	    // Casteo de bytes[] a String
+	    var bigInt = new BigInteger(1, digest);
+	    var passwordHashMD5 = bigInt.toString(16);
+	    
+	    // Si no tiene 32 carácteres rellena con 0 a la izquierda
+	    while(passwordHashMD5.length() < 32 ){
+	    	  passwordHashMD5 = "0"+passwordHashMD5;
+	    	}
+		
+		return new Employee(username, passwordHashMD5);
 	}
 
 	public JFrame getFrame() {

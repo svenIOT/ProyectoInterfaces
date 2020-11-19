@@ -16,12 +16,12 @@ INSERT INTO taller.concesionario (cod_conce, nombre) VALUES
 
 -- EMPLEADO
 INSERT INTO taller.empleado (cod_empleado, dni, cod_conce, usuario, contrasena) VALUES 
-(1, '12345678A', 1, 'ventas', 'usuario'),
-(2, '12345678B', 1, 'mecanico', 'usuario'),
-(3, '12345678C', 1, 'mecanicojefe', 'usuario'),
-(4, '12345678D', 1, 'jefe', 'usuario'),
-(5, '12345679X', 1, 'dominic', 'usuario'),
-(6, '0005694R', 1, 'mecanicociclo', 'usuario');
+(1, '12345678A', 1, 'ventas', MD5('usuario')),
+(2, '12345678B', 1, 'mecanico', MD5('usuario')),
+(3, '12345678C', 1, 'mecanicojefe', MD5('usuario')),
+(4, '12345678D', 1, 'jefe', MD5('usuario')),
+(5, '12345679X', 1, 'dominic', MD5('usuario')),
+(6, '0005694R', 1, 'mecanicociclo', MD5('usuario'));
 
 -- CLIENTE
 INSERT INTO taller.cliente (cod_cliente, dni) VALUES 

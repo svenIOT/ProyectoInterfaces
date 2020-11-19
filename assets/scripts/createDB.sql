@@ -61,7 +61,7 @@ CREATE TABLE Empleado
 	dni varchar(9) NOT NULL,
 	cod_conce int NOT NULL,
     usuario varchar(15) UNIQUE,
-    contrasena varchar(15),
+    contrasena varchar(150),
 	PRIMARY KEY (cod_empleado)
 );
 
