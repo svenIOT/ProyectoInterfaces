@@ -69,6 +69,7 @@ public class LoginView {
 					if (userDAO.isBoss(user)) {
 						var bossUser = userDAO.getBossEmployee(user);
 						new BossLandingView(bossUser).getFrame().setVisible(true);
+						frame.dispose();
 					} else if (userDAO.isSalesEmployee(user)) {
 						var salesUser = userDAO.getSalesEmployee(user);
 						new SalesLandingView(salesUser).getFrame().setVisible(true);
