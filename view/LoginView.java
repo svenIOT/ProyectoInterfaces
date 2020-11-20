@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 
 import dao.UserDAO;
 import model.Employee;
+import view.boss.BossLandingView;
 import view.mechanical.MechanicalLandingView;
 import view.sales.SalesLandingView;
 
@@ -63,8 +64,12 @@ public class LoginView {
 			public void mouseClicked(MouseEvent e) {
 				var user = createEmployee();
 				if (userDAO.login(user)) {
-					// Comprobar que tipo de usuario entra (ventas o mecánico, para cada nueva view se le pasará un objeto con su modelo y sus datos)
-					if (userDAO.isSalesEmployee(user)) {
+					// Comprobar que tipo de usuario entra (ventas, mecánico o jefe para cada nueva
+					// view se le pasará un objeto con su modelo y sus datos)
+					if (userDAO.isBoss(user)) {
+						var bossUser = userDAO.getBossEmployee(user);
+						new BossLandingView(bossUser).getFrame().setVisible(true);
+					} else if (userDAO.isSalesEmployee(user)) {
 						var salesUser = userDAO.getSalesEmployee(user);
 						new SalesLandingView(salesUser).getFrame().setVisible(true);
 						frame.dispose();
@@ -130,30 +135,30 @@ public class LoginView {
 	 */
 	private Employee createEmployee() {
 		var username = txtUser.getText();
-		
+
 		// Obtener hash MD5 de la contraseña introducida en el txtField
 		var password = new String(txtPassword.getPassword());
 		MessageDigest md = null;
-		
+
 		try {
 			md = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		
+
 		// Obtención del hash
-	    md.update(password.getBytes());
-	    var digest = md.digest();
-	    
-	    // Casteo de bytes[] a String
-	    var bigInt = new BigInteger(1, digest);
-	    var passwordHashMD5 = bigInt.toString(16);
-	    
-	    // Si no tiene 32 carácteres rellena con 0 a la izquierda
-	    while(passwordHashMD5.length() < 32 ){
-	    	  passwordHashMD5 = "0"+passwordHashMD5;
-	    	}
-		
+		md.update(password.getBytes());
+		var digest = md.digest();
+
+		// Casteo de bytes[] a String
+		var bigInt = new BigInteger(1, digest);
+		var passwordHashMD5 = bigInt.toString(16);
+
+		// Si no tiene 32 carácteres rellena con 0 a la izquierda
+		while (passwordHashMD5.length() < 32) {
+			passwordHashMD5 = "0" + passwordHashMD5;
+		}
+
 		return new Employee(username, passwordHashMD5);
 	}
 

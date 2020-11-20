@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.Constants;
+import model.Boss;
 import model.Employee;
 import model.Mechanical;
 import model.Sales;
@@ -78,6 +79,53 @@ public class UserDAO extends AbstractDAO {
 	}
 
 	/**
+	 * Comprueba si el empleado es un empleado jefe (ceo)
+	 * 
+	 * @param e Empleado
+	 * @return boolean
+	 */
+	public boolean isBoss(Employee e) {
+		var isBoss = false;
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT * FROM taller.empleado INNER JOIN taller.jefe ON empleado.cod_empleado = jefe.cod_empleado WHERE usuario='"
+							+ e.getUsername() + "' AND contrasena='" + e.getPassword() + "'");
+			// Comprobar si el código de jefe y el de mecánico es igual (es jefe)
+			if (rs.next()) {
+				isBoss = true;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return isBoss;
+	}
+
+	/**
+	 * Devuelve el empleado jefe que coincida con el empleado (usuario y contraseña)
+	 * que se le pasa como parámetro
+	 * 
+	 * @param e Empelado
+	 * @return Empleado de mecánica
+	 */
+	public Boss getBossEmployee(Employee e) {
+		Boss bossEmployee = null;
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(
+					"SELECT * FROM taller.persona INNER JOIN taller.empleado ON persona.dni = empleado.dni INNER JOIN taller.jefe ON empleado.cod_empleado = jefe.cod_empleado WHERE usuario='"
+							+ e.getUsername() + "' AND contrasena='" + e.getPassword() + "';");
+			if (rs.next()) {
+				bossEmployee = new Boss(rs.getString("dni"), rs.getString("nombre"), rs.getString("apellidos"),
+						rs.getString("telefono"), rs.getInt("cod_jefe"), rs.getInt("cod_empleado"));
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return bossEmployee;
+	}
+
+	/**
 	 * Devuelve el empleado de ventas que coincida con el empleado (usuario y
 	 * contraseña) que se le pasa como parámetro
 	 * 
@@ -146,4 +194,5 @@ public class UserDAO extends AbstractDAO {
 		}
 		return mechanicals;
 	}
+
 }
