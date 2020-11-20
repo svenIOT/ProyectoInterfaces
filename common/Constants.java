@@ -1,11 +1,8 @@
 package common;
 
 public class Constants {
-	// BBDD------------
-	public static final String CONTROLLER = "com.mysql.cj.jdbc.Driver";
-	public static final String URL = "jdbc:mysql://localhost:3306/taller?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-	public static final String USER = "root";
-	public static final String PASSWORD = "123456";
+	// FICHERO BBDD CONFIG------------
+	public static final String CONFIG_FILE_PATH = "src\\conection.properties";
 	// ----------------
 
 	// CONSULTAS-------

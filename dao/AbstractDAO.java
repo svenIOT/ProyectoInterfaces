@@ -1,9 +1,13 @@
 package dao;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Properties;
 
 import common.Constants;
 
@@ -22,9 +26,20 @@ public abstract class AbstractDAO {
 	 */
 	private void connectDB() {
 		try {
-			Class.forName(Constants.CONTROLLER);
+			// Generar objeto config
+			Properties properties = new Properties();
 			try {
-				this.con = DriverManager.getConnection(Constants.URL, Constants.USER, Constants.PASSWORD);
+				properties.load(new FileReader(Constants.CONFIG_FILE_PATH));
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+			Class.forName(properties.getProperty("controller"));
+			try {
+				this.con = DriverManager.getConnection(properties.getProperty("url"), properties.getProperty("user"),
+						properties.getProperty("password"));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
