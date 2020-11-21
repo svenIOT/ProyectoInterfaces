@@ -9,6 +9,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -57,7 +59,7 @@ public class SalesAddSellingPropositionView {
 	private VehicleDAO vehicleDAO;
 	private ClientDAO clientDAO;
 	private SellingPropositionDAO sellingPropositionDAO;
-	
+
 	private Sales user;
 
 	/**
@@ -110,8 +112,8 @@ public class SalesAddSellingPropositionView {
 				var proposition = createProposition(clients, vehicles);
 				if (proposition != null) {
 					sellingPropositionDAO.addSellingProposition(proposition);
-					JOptionPane.showMessageDialog(frame, "Propuesta de venta añadida",
-							"Success!", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Propuesta de venta añadida", "Success!",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
@@ -129,6 +131,19 @@ public class SalesAddSellingPropositionView {
 			public void mouseClicked(MouseEvent e) {
 				new LoginView().getFrame().setVisible(true);
 				frame.dispose();
+			}
+		});
+
+		// Controlar número de carácteres en los textFields
+		frameNumberTxt.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent e) {
+				correctNumberOfCharacters(frameNumberTxt, e, 10);
+			}
+		});
+
+		priceTxt.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent e) {
+				correctNumberOfCharacters(priceTxt, e, 6);
 			}
 		});
 	}
@@ -281,8 +296,7 @@ public class SalesAddSellingPropositionView {
 		GridBagLayout gbl_sellingPropositionPanelRight = new GridBagLayout();
 		gbl_sellingPropositionPanelRight.columnWidths = new int[] { 220, 0, 265, 0 };
 		gbl_sellingPropositionPanelRight.rowHeights = new int[] { 173, 0 };
-		gbl_sellingPropositionPanelRight.columnWeights = new double[] { 0.0, 0.0, 0.0,
-				Double.MIN_VALUE };
+		gbl_sellingPropositionPanelRight.columnWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		gbl_sellingPropositionPanelRight.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 		sellingPropositionPanelRight.setLayout(gbl_sellingPropositionPanelRight);
 
@@ -336,10 +350,12 @@ public class SalesAddSellingPropositionView {
 	 */
 	private SellingProposition createProposition(List<Client> clients, List<Vehicle> vehicles) {
 		SellingProposition sellingProposition = null;
-		
+
 		// Obtener los datos de la vista y obtener datos de clientes mediante su código
-		var selectedClient = clients.stream().filter(client -> clientsComboBox.getSelectedItem().toString()
-				.equalsIgnoreCase(client.getNombre() + " " + client.getApellidos())).collect(Collectors.toList());
+		var selectedClient = clients.stream()
+				.filter(client -> clientsComboBox.getSelectedItem().toString()
+						.equalsIgnoreCase(client.getNombre() + " " + client.getApellidos()))
+				.collect(Collectors.toList());
 		var frameNumber = frameNumberTxt.getText();
 		var price = priceTxt.getText();
 
@@ -349,7 +365,8 @@ public class SalesAddSellingPropositionView {
 
 		// Comprobar que existe el número de bastidor introducido
 		var frameNumberExist = vehicles.stream()
-				.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber)).collect(Collectors.toList());
+				.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber))
+				.collect(Collectors.toList());
 		if (frameNumberExist.size() == 0) {
 			JOptionPane.showMessageDialog(frame, "Error, no existe el número de bastidor introducido", "Warning!",
 					JOptionPane.ERROR_MESSAGE);
@@ -357,7 +374,8 @@ public class SalesAddSellingPropositionView {
 			JOptionPane.showMessageDialog(frame, "Error, el precio debe ser un número", "Warning!",
 					JOptionPane.ERROR_MESSAGE);
 		} else {
-			sellingProposition = new SellingProposition(0, selectedClient.get(0).getClientCod(), user.getCod_ventas(), frameNumber, dateString);
+			sellingProposition = new SellingProposition(0, selectedClient.get(0).getClientCod(), user.getCod_ventas(),
+					frameNumber, dateString);
 		}
 
 		return sellingProposition;
@@ -378,6 +396,19 @@ public class SalesAddSellingPropositionView {
 			numeric = false;
 		}
 		return numeric;
+	}
+
+	/**
+	 * Limíta el número de carácteres introducidos
+	 * 
+	 * @param txt   campo de texto
+	 * @param e     evento
+	 * @param limit número máximo de carácteres
+	 */
+	private void correctNumberOfCharacters(JTextField txt, KeyEvent e, int limit) {
+		if (txt.getText().length() >= limit) {
+			e.consume();
+		}
 	}
 
 	public JFrame getFrame() {

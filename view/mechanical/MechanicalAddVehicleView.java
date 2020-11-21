@@ -11,6 +11,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 import javax.swing.JButton;
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -108,6 +111,19 @@ public class MechanicalAddVehicleView {
 			public void mouseClicked(MouseEvent e) {
 				new LoginView().getFrame().setVisible(true);
 				frame.dispose();
+			}
+		});
+
+		// Controlar número de carácteres en los textFields
+		frameNumberTxt.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent e) {
+				correctNumberOfCharacters(frameNumberTxt, e, 10);
+			}
+		});
+		
+		vehicleLicenseTxt.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				correctNumberOfCharacters(vehicleLicenseTxt, e, 7);
 			}
 		});
 	}
@@ -381,8 +397,7 @@ public class MechanicalAddVehicleView {
 					"Error, los campos número de bastidor y matrícula no pueden estar vacios, ni contener solo espacios",
 					"Warning!", JOptionPane.ERROR_MESSAGE);
 		} else {
-			// Comprobar si el vehículo ya existe (filtra un vehículo con el númer de
-			// bastidor del txtField)
+			// Comprobar si el vehículo ya existe 
 			var existVehicle = vehicles.stream().filter(v -> v.getNum_bastidor().equalsIgnoreCase(numFrameCar))
 					.collect(Collectors.toList());
 
@@ -394,6 +409,19 @@ public class MechanicalAddVehicleView {
 			}
 		}
 		return vehicle;
+	}
+	
+	/**
+	 * Limíta el número de carácteres introducidos
+	 * 
+	 * @param txt   campo de texto
+	 * @param e     evento
+	 * @param limit número máximo de carácteres
+	 */
+	private void correctNumberOfCharacters(JTextField txt, KeyEvent e, int limit) {
+		if (txt.getText().length() >= limit) {
+			e.consume();
+		}
 	}
 
 	public JFrame getFrame() {

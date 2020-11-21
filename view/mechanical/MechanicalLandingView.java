@@ -114,15 +114,16 @@ public class MechanicalLandingView {
 						// Conseguir datos (apellidos) del mecánico desde su código de mecánico
 						var mechanicalCod = repairs.get(i).getCod_mecanico();
 
-						// Filtra el mecánico con el código de la iteración actual del bucle for (para
-						// añadirlo en la tabla con sus datos y no con código)
+						// Filtra el mecánico con el código de la iteración actual del bucle for
 						var selectedMechanical = mechanicals.stream()
 								.filter(mech -> mech.getCod_mecanico() == mechanicalCod).collect(Collectors.toList());
-
-						tableModel.addRow(new Object[] { repairs.get(i).getCod_reparacion(),
-								selectedMechanical.get(0).getNombre() + " " + selectedMechanical.get(0).getApellidos(),
-								repairs.get(i).getNum_bastidor(), repairs.get(i).getFecha_entrada(),
-								repairs.get(i).getFecha_salida(), repairs.get(i).getPiezas() });
+						
+						if(selectedMechanical.size() > 0) {
+							tableModel.addRow(new Object[] { repairs.get(i).getCod_reparacion(),
+									selectedMechanical.get(0).getNombre() + " " + selectedMechanical.get(0).getApellidos(),
+									repairs.get(i).getNum_bastidor(), repairs.get(i).getFecha_entrada(),
+									repairs.get(i).getFecha_salida(), repairs.get(i).getPiezas() });
+						}
 					}
 
 				} else {

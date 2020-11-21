@@ -15,8 +15,6 @@ import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import common.Constants;
-import dao.ClientDAO;
 import dao.SellingPropositionDAO;
 import model.Sales;
 import model.SellingProposition;
@@ -24,10 +22,6 @@ import view.LoginView;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -46,17 +40,17 @@ public class SalesSearchAndListSellingPropositionView {
 	private JTextField textFieldSearch;
 	private JTable sellingPropositionTable;
 	private JButton btnSearch;
-	private ClientDAO clientDAO;
+	private JButton btnSell;
+
 	private SellingPropositionDAO sellingPropositionDAO;
-	
+
 	private Sales user;
-	
+
 	/**
 	 * Crea la aplicación
 	 */
 	public SalesSearchAndListSellingPropositionView(Sales user) {
 		this.user = user;
-		clientDAO = new ClientDAO();
 		sellingPropositionDAO = new SellingPropositionDAO();
 		initialize();
 	}
@@ -80,48 +74,30 @@ public class SalesSearchAndListSellingPropositionView {
 	private void setControllers() {
 		var tableModel = (DefaultTableModel) sellingPropositionTable.getModel();
 		
+
+
 		// Al abrir la ventana se rellena la tabla con las propuestas de venta
 		frame.addWindowListener(new WindowAdapter() {
-			public void windowOpened(WindowEvent e) {				
+			public void windowOpened(WindowEvent e) {
 				// Insertar los clientes en la tabla clientes
 				var propositionList = sellingPropositionDAO.getSellingProposition();
 				if (propositionList != null) {
 					for (var i = 0; i < propositionList.size(); ++i) {
-						tableModel.addRow(new Object[] { sellingPropositionDAO.getDni_cliente(propositionList.get(i).getCod_cliente()), propositionList.get(i).getCod_propuesta(),
-								propositionList.get(i).getCod_cliente(), propositionList.get(i).getCod_ventas(),
-								propositionList.get(i).getNum_bastidor(), propositionList.get(i).getFecha_validez() });
+						tableModel.addRow(new Object[] {
+								sellingPropositionDAO.getDni_cliente(propositionList.get(i).getCod_cliente()),
+								propositionList.get(i).getCod_propuesta(), propositionList.get(i).getCod_cliente(),
+								propositionList.get(i).getCod_ventas(), propositionList.get(i).getNum_bastidor(),
+								propositionList.get(i).getFecha_validez() });
 					}
 				}
 			}
 		});
-		
-		//Volver atrás
-		btnBackToMenu.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				new SalesLandingView(user).getFrame().setVisible(true);
-				frame.dispose();
-			}
-		});
-		
-		//Volver al login
-		btnLogOut.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				new LoginView().getFrame().setVisible(true);
-				frame.dispose();
-			}
-		});
-		
-		//Buscar propuesta por dni
+
+		// Buscar propuesta por dni
 		btnSearch.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				// Reiniciar el contenido de la tabla propuestas
-				var rows = sellingPropositionTable.getRowCount();
-				// Si hay filas las elimina
-				if (rows > 0) {
-					for (var i = (rows - 1); i > -1; --i) {
-						tableModel.removeRow(i);
-					}
-				}
+				clearTable(tableModel);
 
 				// Buscar cliente por dni
 				var dni = textFieldSearch.getText();
@@ -129,16 +105,59 @@ public class SalesSearchAndListSellingPropositionView {
 
 				// Insertar el cliente devuelto en la tabla clientes
 				if (propositionResult != null) {
-					tableModel.addRow(new Object[] {sellingPropositionDAO.getDni_cliente(propositionResult.getCod_cliente()), propositionResult.getCod_cliente(), propositionResult.getCod_propuesta(),
-							propositionResult.getCod_ventas(), propositionResult.getNum_bastidor(), propositionResult.getFecha_validez() });
+					tableModel.addRow(
+							new Object[] { sellingPropositionDAO.getDni_cliente(propositionResult.getCod_cliente()),
+									propositionResult.getCod_cliente(), propositionResult.getCod_propuesta(),
+									propositionResult.getCod_ventas(), propositionResult.getNum_bastidor(),
+									propositionResult.getFecha_validez() });
 				} else {
 					JOptionPane.showMessageDialog(frame, "Cliente no encontrado, revise el DNI", "Warning!",
 							JOptionPane.ERROR_MESSAGE);
 				}
-
 			}
 		});
-		
+
+		// Confirmar propuesta de venta
+		btnSell.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (sellingPropositionTable.getSelectedRow() != -1) {
+					// Último aviso
+					var lastCheck = JOptionPane.showConfirmDialog(frame,
+							"¿Está seguro de que desea completar esta venta? Se avisará al cliente para que pase a recogerlo",
+							"¡Atención!", 0, 1);
+					// 0 sí, 1 no
+					if (lastCheck == 0) {
+						var sellingProposition = createSellingProposition(tableModel);
+						sellingPropositionDAO.finishSellingProposition(sellingProposition);
+						JOptionPane.showMessageDialog(frame, "Venta completada, prepara las llaves el cliente está en camino", "Info",
+								JOptionPane.INFORMATION_MESSAGE);
+						// Actualizar vista
+						new SalesSearchAndListSellingPropositionView(user).getFrame().setVisible(true);
+						frame.dispose();
+					}
+				} else {
+					JOptionPane.showMessageDialog(frame, "Seleccione un elemento de la tabla para finalizar la venta",
+							"Warning!", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+
+		// Volver atrás
+		btnBackToMenu.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				new SalesLandingView(user).getFrame().setVisible(true);
+				frame.dispose();
+			}
+		});
+
+		// Volver al login
+		btnLogOut.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				new LoginView().getFrame().setVisible(true);
+				frame.dispose();
+			}
+		});
+
 	}
 
 	/**
@@ -198,7 +217,7 @@ public class SalesSearchAndListSellingPropositionView {
 		gbc_headerPanel.gridy = 0;
 		mainPanel.add(headerPanel, gbc_headerPanel);
 		headerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 100, 20));
-		
+
 		JPanel headerPanel2 = new JPanel();
 		GridBagConstraints gbc_headerPanel2 = new GridBagConstraints();
 		gbc_headerPanel2.anchor = GridBagConstraints.WEST;
@@ -267,9 +286,10 @@ public class SalesSearchAndListSellingPropositionView {
 		sellingPropositionTable.getTableHeader().setBackground(new Color(244, 162, 97));
 		sellingPropositionTable.setPreferredScrollableViewportSize(new Dimension(950, 400));
 		sellingPropositionTable.setFont(new Font("SansSerif", Font.BOLD, 15));
-		sellingPropositionTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "DNI Cliente", "Código propuesta", "Código cliente", "Código venta", "Número de bastidor", "Fecha de validez" }) {
-			Class[] columnTypes = new Class[] { String.class, Integer.class, Integer.class, Integer.class, String.class, String.class };
+		sellingPropositionTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "DNI Cliente",
+				"Código propuesta", "Código cliente", "Código venta", "Número de bastidor", "Fecha de validez" }) {
+			Class[] columnTypes = new Class[] { String.class, Integer.class, Integer.class, Integer.class, String.class,
+					String.class };
 
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
@@ -287,7 +307,13 @@ public class SalesSearchAndListSellingPropositionView {
 		sellingPropositionTable.getColumnModel().getColumn(4).setMaxWidth(555);
 		sellingPropositionTable.getColumnModel().getColumn(5).setPreferredWidth(100);
 		sellingPropositionTable.getColumnModel().getColumn(5).setMaxWidth(555);
-		
+
+		btnSell = new JButton("Confirmar venta");
+		btnSell.setForeground(Color.WHITE);
+		btnSell.setFont(new Font("SansSerif", Font.BOLD, 15));
+		btnSell.setBorderPainted(false);
+		btnSell.setBackground(new Color(231, 111, 81));
+		listPanel.add(btnSell);
 
 		JScrollPane tableScrollPane = new JScrollPane(sellingPropositionTable);
 		tableScrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -295,6 +321,34 @@ public class SalesSearchAndListSellingPropositionView {
 		tableScrollPane.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		listPanel.add(tableScrollPane);
 
+	}
+
+	/**
+	 * Crea una propuesta de venta con los datos de la vista
+	 * 
+	 * @param tableModel
+	 * @return
+	 */
+	private SellingProposition createSellingProposition(DefaultTableModel tableModel) {
+		
+		// Asignación de valores de los datos de la vista
+		var propositionId = (int) tableModel.getValueAt(sellingPropositionTable.getSelectedRow(), 1);
+		var clientId = (int) tableModel.getValueAt(sellingPropositionTable.getSelectedRow(), 2);
+		var salesId = (int) tableModel.getValueAt(sellingPropositionTable.getSelectedRow(), 3);
+		var frameNumber = String.valueOf(tableModel.getValueAt(sellingPropositionTable.getSelectedRow(), 4));
+		var validDate = String.valueOf(tableModel.getValueAt(sellingPropositionTable.getSelectedRow(), 5));
+		
+		return new SellingProposition(propositionId, clientId, salesId, frameNumber, validDate);
+	}
+	
+	private void clearTable(DefaultTableModel tableModel) {
+		var rows = sellingPropositionTable.getRowCount();
+		// Si hay filas las elimina
+		if (rows > 0) {
+			for (var i = (rows - 1); i > -1; --i) {
+				tableModel.removeRow(i);
+			}
+		}
 	}
 
 	public JFrame getFrame() {
