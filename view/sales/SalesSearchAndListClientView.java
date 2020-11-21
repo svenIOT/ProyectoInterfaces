@@ -18,7 +18,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import dao.ClientDAO;
-import model.Employee;
 import model.Sales;
 import view.LoginView;
 
@@ -49,8 +48,8 @@ public class SalesSearchAndListClientView {
 	 */
 	public SalesSearchAndListClientView(Sales user) {
 		this.user = user;
-		initialize();
 		clientDAO = new ClientDAO();
+		initialize();
 	}
 
 	/**
@@ -72,17 +71,19 @@ public class SalesSearchAndListClientView {
 	private void setControllers() {
 		var tableModel = (DefaultTableModel) clientTable.getModel();
 		
+		// Obtener datos del DAO
+		var clients = clientDAO.getClients();
+		
 		// Al abrir la ventana se rellena la tabla con TODOS los clientes
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
 				// Insertar los clientes en la tabla clientes
-				var clientList = clientDAO.getClients();
-				if (clientList != null) {
-					for (var i = 0; i < clientList.size(); ++i) {
+				if (clients != null) {
+					for (var i = 0; i < clients.size(); ++i) {
 						var tableModel = (DefaultTableModel) clientTable.getModel();
-						tableModel.addRow(new Object[] { clientList.get(i).getClientCod(), clientList.get(i).getDni(),
-								clientList.get(i).getNombre(), clientList.get(i).getApellidos(),
-								clientList.get(i).getTelefono() });
+						tableModel.addRow(new Object[] { clients.get(i).getClientCod(), clients.get(i).getDni(),
+								clients.get(i).getNombre(), clients.get(i).getApellidos(),
+								clients.get(i).getTelefono() });
 					}
 				}
 			}
@@ -119,7 +120,6 @@ public class SalesSearchAndListClientView {
 		// Botón ver detalles del cliente
 		btnDetallesDelCliente.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				String dni ="";
 				if(clientTable.getSelectedRow() != -1) {
 					new SalesClientDetailsView(String.valueOf(tableModel.getValueAt(clientTable.getSelectedRow(), 1))).getFrame().setVisible(true);
 				} else {

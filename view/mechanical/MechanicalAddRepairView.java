@@ -41,6 +41,8 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Cursor;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MechanicalAddRepairView {
 
@@ -91,54 +93,50 @@ public class MechanicalAddRepairView {
 	 * Contiene los controladores
 	 */
 	private void setControllers() {
+		var comboboxModel = new DefaultComboBoxModel<>();
+		
 		// Obtener datos DAO
 		var mechanicals = userDAO.getMechanicals();
 		var vehicles = vehicleDAO.getVehicles();
+		
+		// Por defecto al abrir carga los mecánicos de coches
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowOpened(WindowEvent e) {
+				addTypeMechanicalsToComboBox(mechanicals, 1, comboboxModel);
+			}
+		});
 
-		// Rellenar el comboBox con los mecánicos según el tipo de vehículo elegido
+		// Rellenar el comboBox con los mecánicos según el tipo de vehículo elegido en
+		// el otro comboBox
 		vehicleTypeComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				var comboboxModel = new DefaultComboBoxModel<>();
-
-				// Si selecciona coche carga los mecanicos con especialidad de coche
+				// Elimina los elementos anteriores y carga los mecánicos según la especialidad
 				if (vehicleTypeComboBox.getSelectedItem().toString().equalsIgnoreCase("Coche")) {
-					
-					// Filtra los mecánicos con especialidad de coche y para cada uno los inserta en el comboBox
-					mechanicals.stream().filter(mechanical -> mechanical.getCod_especialdiad() == 1)
-							.forEach(mechanical -> comboboxModel.addElement(mechanical.getNombre() + " " + mechanical.getApellidos()));
-					
-					// Inserta el modelo del comboBox con los datos
-					mechanicalComboBox.setModel(comboboxModel);
+					comboboxModel.removeAllElements();
+					addTypeMechanicalsToComboBox(mechanicals, 1, comboboxModel);
 
 				} else if (vehicleTypeComboBox.getSelectedItem().toString().equalsIgnoreCase("Motocicleta")) {
-					// IDEM especialidad motocicleta
-					mechanicals.stream().filter(mechanical -> mechanical.getCod_especialdiad() == 2)
-					.forEach(mechanical -> comboboxModel.addElement(mechanical.getNombre() + " " + mechanical.getApellidos()));
-					
-					mechanicalComboBox.setModel(comboboxModel);
-					
+					comboboxModel.removeAllElements();
+					addTypeMechanicalsToComboBox(mechanicals, 2, comboboxModel);
+
 				} else {
-					// IDEM especialidad ciclomotor
-					mechanicals.stream().filter(mechanical -> mechanical.getCod_especialdiad() == 3)
-					.forEach(mechanical -> comboboxModel.addElement(mechanical.getNombre() + " " + mechanical.getApellidos()));
-					
-					mechanicalComboBox.setModel(comboboxModel);
+					comboboxModel.removeAllElements();
+					addTypeMechanicalsToComboBox(mechanicals, 3, comboboxModel);
 				}
 			}
 		});
-		
+
 		// Botón añadir reparación
 		addRepairBtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				var repair = createRepair(mechanicals, vehicles);
 				if (repair != null) {
 					repairDAO.addRepair(repair);
-					JOptionPane.showMessageDialog(frame, "Reparación añadida", "Info",
-							JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Reparación añadida", "Info", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
-		
 
 		// Volver al menú principal
 		btnBackToMenu.addMouseListener(new MouseAdapter() {
@@ -292,9 +290,8 @@ public class MechanicalAddRepairView {
 		rightDataPanel.add(vehicleTypeLbl, gbc_vehicleTypeLbl);
 
 		vehicleTypeComboBox = new JComboBox<Object>();
-		vehicleTypeComboBox
-				.setModel(new DefaultComboBoxModel<>(new String[] {"Coche", "Motocicleta", "Ciclomotor"}));
-		vehicleTypeComboBox.setSelectedIndex(-1);
+		vehicleTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Coche", "Motocicleta", "Ciclomotor" }));
+		vehicleTypeComboBox.setSelectedIndex(0);
 		vehicleTypeComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_vehicleTypeComboBox = new GridBagConstraints();
 		gbc_vehicleTypeComboBox.insets = new Insets(0, 0, 5, 0);
@@ -377,7 +374,7 @@ public class MechanicalAddRepairView {
 		gbc_mechanicalComboBox.gridx = 1;
 		gbc_mechanicalComboBox.gridy = 5;
 		rightDataPanel.add(mechanicalComboBox, gbc_mechanicalComboBox);
-		
+
 		addRepairBtn = new JButton("Añadir reparación");
 		addRepairBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		addRepairBtn.setForeground(Color.WHITE);
@@ -389,52 +386,84 @@ public class MechanicalAddRepairView {
 		rightDataPanel.add(addRepairBtn, gbc_addRepairBtn);
 
 	}
-	
+
 	private Repair createRepair(List<Mechanical> mechanicals, List<Vehicle> vehicles) {
 		Repair repair = null;
 		var frameNumber = numberTextField.getText();
 		var carParts = partsTextArea.getText();
-		
-		// Obtener código de mecanico desde su nombre y apellidos
-		var mechanicalNameAndSurnames = mechanicalComboBox.getSelectedItem().toString();
-		var selectedMechanical = mechanicals.stream()
-				.filter(mechanical -> mechanicalNameAndSurnames.equalsIgnoreCase(mechanical.getNombre() + " " + mechanical.getApellidos())).collect(Collectors.toList());
-		
+
+		var selectedMechanical = getMechanicalByName(mechanicals);
+
 		// Control de errores
 		var frameNumberExist = vehicles.stream()
-				.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber)).collect(Collectors.toList());
-		
+				.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber))
+				.collect(Collectors.toList());
+
 		if (frameNumberExist.size() == 0) {
-			JOptionPane.showMessageDialog(frame, "Error, no existe el número de bastidor introducido", "Warning!",
-					JOptionPane.ERROR_MESSAGE);
+			showErrorMessage("Error, no existe el número de bastidor introducido, regístrelo primero");
 			numberTextField.requestFocus();
-			
-		} else if(carParts.length() > 500) {
-			JOptionPane.showMessageDialog(frame, "Error, la descripción no puede contener más de 500 carácteres", "Warning!",
-					JOptionPane.ERROR_MESSAGE);
+
+		} else if (carParts.length() > 500) {
+			showErrorMessage("Error, la descripción no puede contener más de 500 carácteres");
 			partsTextArea.requestFocus();
-		
-		} else if(initialDateChooser.getDate() == null || finishDateChooser.getDate() == null) {
-			JOptionPane.showMessageDialog(frame, "Seleccione las fechas de entrada y estimación de salida", "Warning!",
-					JOptionPane.ERROR_MESSAGE);
+
+		} else if (initialDateChooser.getDate() == null || finishDateChooser.getDate() == null) {
+			showErrorMessage("Seleccione las fechas de entrada y estimación de salida");
 			initialDateChooser.requestFocus();
-			
-		} else if(!frameNumberExist.get(0).getTipoVehiculo().equalsIgnoreCase(vehicleTypeComboBox.getSelectedItem().toString())) {
-			JOptionPane.showMessageDialog(frame, "Debes asignar un vehículo compatible con la especialidad del mecánico elegido", "Warning!",
-					JOptionPane.ERROR_MESSAGE);
+
+		} else if (!frameNumberExist.get(0).getTipoVehiculo().equalsIgnoreCase(vehicleTypeComboBox.getSelectedItem().toString())) {
+			showErrorMessage("Debes asignar un vehículo compatible con la especialidad del mecánico elegido");
 			numberTextField.requestFocus();
-			
+
 		} else {
 			// Cambiar formato de la fecha
 			var dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			var initialDate = dateFormat.format(initialDateChooser.getDate());
 			var finishDate = dateFormat.format(finishDateChooser.getDate());
-			
+
 			// Crear instancia de reparación con los datos de la vista
-			repair = new Repair(0, selectedMechanical.get(0).getCod_mecanico(), frameNumber, carParts, initialDate, finishDate);
+			repair = new Repair(0, selectedMechanical.get(0).getCod_mecanico(), frameNumber, carParts, initialDate,
+					finishDate);
 		}
-		
+
 		return repair;
+	}
+
+	/**
+	 * Filtra los mecánicos con especialidad indicada y para cada uno los inserta en el comboBox
+	 * 
+	 * @param mechanicals   lista de mecánicos
+	 * @param specialty     especialidad del mecánico
+	 * @param comboboxModel comboBox al que añadir
+	 */
+	private void addTypeMechanicalsToComboBox(List<Mechanical> mechanicals, int specialty, DefaultComboBoxModel<Object> comboboxModel) {
+		mechanicals.stream().filter(mechanical -> mechanical.getCod_especialdiad() == specialty)
+				.forEach(mechanical -> comboboxModel.addElement(mechanical.getNombre() + " " + mechanical.getApellidos()));
+
+		// Inserta el modelo del comboBox con los datos
+		mechanicalComboBox.setModel(comboboxModel);
+	}
+
+	/**
+	 * Obtiene el mecánico que coincide con el nombre y apellidos seleccionado en el comboBox
+	 * 
+	 * @param mechanicals
+	 * @return List mecánico
+	 */
+	private List<Mechanical> getMechanicalByName(List<Mechanical> mechanicals) {
+		var mechanicalNameAndSurnames = mechanicalComboBox.getSelectedItem().toString();
+		var selectedMechanical = mechanicals.stream()
+				.filter(mechanical -> mechanicalNameAndSurnames.equalsIgnoreCase(mechanical.getNombre() + " " + mechanical.getApellidos()))
+				.collect(Collectors.toList());
+		return selectedMechanical;
+	}
+	
+	/**
+	 * Muestra un mensaje de error por pantalla
+	 * @param message
+	 */
+	private void showErrorMessage(String message) {
+		JOptionPane.showMessageDialog(frame, message, "Warning!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public JFrame getFrame() {

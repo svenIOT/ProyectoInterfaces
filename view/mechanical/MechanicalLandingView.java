@@ -48,6 +48,7 @@ public class MechanicalLandingView {
 	private JButton clientBtn;
 	private JButton finishRepairBtn;
 	private JButton partsDetailsBtn;
+	private JButton vehicleRegisterBtn;
 	private JTable vehiclesRepairTable;
 	private JLabel lblUser;
 
@@ -144,6 +145,14 @@ public class MechanicalLandingView {
 
 				// Cargar datos de usuario
 				lblUser.setText("Bienvenido/a " + user.getNombre() + " " + user.getApellidos());
+			}
+		});
+		
+		// Añadir nuevo vehículo a reparar
+		vehicleRegisterBtn.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				new MechanicalAddVehicleView(user, isBoss).getFrame().setVisible(true);
+				frame.dispose();
 			}
 		});
 
@@ -325,44 +334,50 @@ public class MechanicalLandingView {
 
 		repairBtn = new JButton("Nueva reparación");
 		repairBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, repairBtn, 109, SpringLayout.NORTH,
-				mainActionsPanelLeft);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, repairBtn, 10, SpringLayout.WEST,
-				mainActionsPanelLeft);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, repairBtn, 174, SpringLayout.NORTH,
-				mainActionsPanelLeft);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, repairBtn, 214, SpringLayout.WEST,
-				mainActionsPanelLeft);
 		// Comprobar si es jefe o no para ocultar el botón añadir vehículo a reparar
 		repairBtn.setVisible(isBoss);
 		repairBtn.setForeground(Color.WHITE);
 		repairBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
-		repairBtn.setBackground(new Color(231, 111, 81));
+		repairBtn.setBackground(new Color(244, 162, 97));
 		mainActionsPanelLeft.add(repairBtn);
 
 		clientBtn = new JButton("Ficha cliente");
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, repairBtn, 0, SpringLayout.WEST, clientBtn);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, repairBtn, 0, SpringLayout.EAST, clientBtn);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, clientBtn, 10, SpringLayout.WEST, mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, clientBtn, -8, SpringLayout.EAST, mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, clientBtn, 471, SpringLayout.NORTH,
+				mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, clientBtn, -50, SpringLayout.SOUTH, mainActionsPanelLeft);
 		clientBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, clientBtn, 395, SpringLayout.NORTH,
-				mainActionsPanelLeft);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, clientBtn, 0, SpringLayout.WEST, repairBtn);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, clientBtn, -126, SpringLayout.SOUTH,
-				mainActionsPanelLeft);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, clientBtn, 0, SpringLayout.EAST, repairBtn);
 		clientBtn.setForeground(Color.WHITE);
 		clientBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
 		clientBtn.setBackground(new Color(231, 111, 81));
 		mainActionsPanelLeft.add(clientBtn);
 
 		finishRepairBtn = new JButton("Acabar reparación");
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, repairBtn, -72, SpringLayout.NORTH, finishRepairBtn);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, finishRepairBtn, 338, SpringLayout.NORTH, mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, finishRepairBtn, 10, SpringLayout.WEST, mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, finishRepairBtn, -68, SpringLayout.NORTH, clientBtn);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, finishRepairBtn, -8, SpringLayout.EAST, mainActionsPanelLeft);
 		finishRepairBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, finishRepairBtn, 77, SpringLayout.SOUTH, repairBtn);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, finishRepairBtn, 0, SpringLayout.WEST, repairBtn);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, finishRepairBtn, -76, SpringLayout.NORTH, clientBtn);
-		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, finishRepairBtn, 0, SpringLayout.EAST, repairBtn);
 		finishRepairBtn.setForeground(Color.WHITE);
 		finishRepairBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
 		finishRepairBtn.setBackground(new Color(244, 162, 97));
 		mainActionsPanelLeft.add(finishRepairBtn);
+		
+		vehicleRegisterBtn = new JButton("Registrar vehículo");
+		vehicleRegisterBtn.setVisible(isBoss);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.WEST, vehicleRegisterBtn, 10, SpringLayout.WEST, mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.EAST, vehicleRegisterBtn, -10, SpringLayout.EAST, mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, repairBtn, 72, SpringLayout.SOUTH, vehicleRegisterBtn);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.NORTH, vehicleRegisterBtn, 64, SpringLayout.NORTH, mainActionsPanelLeft);
+		sl_mainActionsPanelLeft.putConstraint(SpringLayout.SOUTH, vehicleRegisterBtn, 129, SpringLayout.NORTH, mainActionsPanelLeft);
+		vehicleRegisterBtn.setForeground(Color.WHITE);
+		vehicleRegisterBtn.setFont(new Font("SansSerif", Font.BOLD, 15));
+		vehicleRegisterBtn.setBackground(new Color(231, 111, 81));
+		mainActionsPanelLeft.add(vehicleRegisterBtn);
 
 		JPanel todayWorkPanelRight = new JPanel();
 		GridBagConstraints gbc_todayWorkPanelRight = new GridBagConstraints();
