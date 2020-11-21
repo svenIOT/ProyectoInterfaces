@@ -3,6 +3,10 @@ package model;
 public class Person {
 
 	private String dni, nombre, apellidos, telefono;
+	
+	public Person() {
+		
+	}
 
 	public Person(String dni, String nombre, String apellidos, String telefono) {
 		this.dni = dni;
