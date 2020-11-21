@@ -10,6 +10,8 @@ public class Constants {
 	public static final String SELECT_MECHANICALS_ALL_DATA = "SELECT * FROM taller.persona INNER JOIN taller.empleado ON persona.dni = empleado.dni INNER JOIN taller.mecanico ON empleado.cod_empleado = mecanico.cod_empleado;";
 	// ClientDAO
 	public static final String SELECT_CLIENTS_ALL_DATA = "SELECT cliente.cod_cliente, cliente.dni, persona.nombre, persona.apellidos, persona.telefono FROM persona INNER JOIN cliente on persona.dni = cliente.dni";
+	// EmployeeDAO
+	public static final String SELECT_EMPLOYEES_ALL_DATA = "SELECT * FROM taller.persona INNER JOIN taller.empleado ON persona.DNI = empleado.dni";
 	// VehicleDAO
 	public static final String SELECT_VEHICLES = "SELECT * FROM taller.vehiculo";
 	public static final String SELECT_CARS_AlL_DATA = "SELECT * FROM taller.vehiculo INNER JOIN taller.coche ON vehiculo.num_bastidor = coche.num_bastidor;";
