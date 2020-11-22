@@ -19,6 +19,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import model.Client;
 import model.Mechanical;
 import model.Vehicle;
 import view.LoginView;
@@ -32,10 +33,13 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
+import dao.ClientDAO;
 import dao.VehicleDAO;
 
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Cursor;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MechanicalAddVehicleView {
 
@@ -43,6 +47,7 @@ public class MechanicalAddVehicleView {
 	private JComboBox<?> vehicleTypeComboBox;
 	private JComboBox<?> fuelVehicleComboBox;
 	private JComboBox<?> concessionaireComboBox;
+	private JComboBox<Object> clientComboBox;
 	private JButton returnButton;
 	private JButton addVehicleButton;
 	private JButton btnLogOut;
@@ -52,6 +57,7 @@ public class MechanicalAddVehicleView {
 	private JTextField modelTxt;
 
 	private VehicleDAO vehicleDAO;
+	private ClientDAO clientDAO;
 
 	private Mechanical user;
 	private boolean isBoss;
@@ -63,6 +69,7 @@ public class MechanicalAddVehicleView {
 		this.user = user;
 		this.isBoss = isBoss;
 		this.vehicleDAO = new VehicleDAO();
+		this.clientDAO = new ClientDAO();
 		initialize();
 	}
 
@@ -83,13 +90,26 @@ public class MechanicalAddVehicleView {
 	 * Contiene los controladores
 	 */
 	private void setControllers() {
+		var comboboxModel = new DefaultComboBoxModel<>();
+		
 		// Obtener datos DAO
 		var vehicles = vehicleDAO.getVehicles();
+		var clients = clientDAO.getClients();
+		
+		// Al abrir carga los clientes en el comboBox
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowOpened(WindowEvent e) {
+				clients.stream().forEach(client -> comboboxModel.addElement(client.getNombre() + " " + client.getApellidos()));
+				
+				// Inserta el modelo del comboBox con los datos
+				clientComboBox.setModel(comboboxModel);
+			}
+		});
 
 		// Añadir vehículo
 		addVehicleButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				var vehicle = createVehicle(vehicles);
+				var vehicle = createVehicle(vehicles, clients);
 				if (vehicle != null) {
 					vehicleDAO.addVehicle(vehicle, vehicleLicenseTxt.getText(), false);
 					JOptionPane.showMessageDialog(frame, "Vehículo añadido", "Success!",
@@ -122,7 +142,7 @@ public class MechanicalAddVehicleView {
 		});
 		
 		vehicleLicenseTxt.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {
+			public void keyTyped(KeyEvent e) {
 				correctNumberOfCharacters(vehicleLicenseTxt, e, 7);
 			}
 		});
@@ -350,6 +370,20 @@ public class MechanicalAddVehicleView {
 		concessionaireComboBox.setSelectedIndex(0);
 		concessionaireComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesDatesPanelRight.add(concessionaireComboBox);
+		
+		clientComboBox = new JComboBox<Object>();
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, clientComboBox, 17, SpringLayout.SOUTH, concessionaireComboBox);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, clientComboBox, 0, SpringLayout.WEST, fuelVehicleComboBox);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, clientComboBox, 0, SpringLayout.EAST, fuelVehicleComboBox);
+		clientComboBox.setSelectedIndex(-1);
+		clientComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		vehiclesDatesPanelRight.add(clientComboBox);
+		
+		JLabel lblClient = new JLabel("Propietario:");
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, lblClient, 4, SpringLayout.NORTH, clientComboBox);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, lblClient, 0, SpringLayout.WEST, fuelVehicleLbl);
+		lblClient.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		vehiclesDatesPanelRight.add(lblClient);
 
 		JPanel buttonPanel = new JPanel();
 		GridBagConstraints gbc_botonPanel = new GridBagConstraints();
@@ -382,7 +416,7 @@ public class MechanicalAddVehicleView {
 	 * 
 	 * @return Si no existe devuelve un vehículo, sino null
 	 */
-	private Vehicle createVehicle(List<Vehicle> vehicles) {
+	private Vehicle createVehicle(List<Vehicle> vehicles, List<Client> clients) {
 		Vehicle vehicle = null;
 
 		var numFrameCar = frameNumberTxt.getText();
@@ -391,6 +425,11 @@ public class MechanicalAddVehicleView {
 		var fuel = fuelVehicleComboBox.getSelectedItem().toString();
 		var concessionaire = concessionaireComboBox.getSelectedIndex() + 1;
 		var vehicleType = vehicleTypeComboBox.getSelectedItem().toString();
+		var clientName = clientComboBox.getSelectedItem().toString();
+		
+		// Obtener cliente propietario
+		var selectedClient = clients.stream().filter(client -> clientName.equalsIgnoreCase(client.getNombre() + " " + client.getApellidos()))
+				.collect(Collectors.toList());
 
 		if (frameNumberTxt.getText().isBlank() || vehicleLicenseTxt.getText().isBlank()) {
 			JOptionPane.showMessageDialog(frame,
@@ -405,7 +444,7 @@ public class MechanicalAddVehicleView {
 				JOptionPane.showMessageDialog(frame, "Error, ya existe el número de bastidor del vehículo introducido",
 						"Warning!", JOptionPane.ERROR_MESSAGE);
 			} else {
-				vehicle = new Vehicle(numFrameCar, brand, model, fuel, null, 0, 0, concessionaire, vehicleType);
+				vehicle = new Vehicle(numFrameCar, brand, model, fuel, null, 0, selectedClient.get(0).getClientCod(), concessionaire, vehicleType);
 			}
 		}
 		return vehicle;
