@@ -6,6 +6,7 @@ import java.util.List;
 
 import common.Constants;
 import model.Car;
+import model.Employee;
 import model.Moped;
 import model.Motorcycle;
 import model.Vehicle;
@@ -193,7 +194,36 @@ public class VehicleDAO extends AbstractDAO {
 	
 	}
 	
-
+	public List<Vehicle> getVehiclesSold() {
+		var vehicle = new ArrayList<Vehicle>();
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery(Constants.SELECT_VEHICLES_SOLD);
+			while (rs.next()) {
+				vehicle.add(new Vehicle (rs.getInt("cod_empleado"), rs.getString("nombre"), rs.getString("apellidos"), rs.getString("marca"), 
+						rs.getString("modelo"), rs.getString("precio"), rs.getString("tipo_vehiculo")));
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return vehicle;
+	
+	}
+	
+	public List<Vehicle> searchVehicleByDni(String dni) {
+		var vehicle = new ArrayList<Vehicle>();
+		try {
+			stm = con.createStatement();
+			rs = stm.executeQuery("SELECT ventas.cod_empleado, persona.nombre, persona.apellidos, vehiculo.marca, vehiculo.modelo, vehiculo.precio, vehiculo.tipo_vehiculo, persona.dni FROM taller.ventas, taller.persona, taller.vehiculo, taller.empleado WHERE ventas.cod_ventas = vehiculo.cod_ventas AND ventas.cod_empleado = empleado.cod_empleado AND empleado.dni = persona.dni AND persona.dni = '" + dni + "' ORDER BY ventas.cod_empleado");
+			while (rs.next()) {
+				vehicle.add(new Vehicle (rs.getInt("cod_empleado"), rs.getString("nombre"), rs.getString("apellidos"), rs.getString("marca"), 
+						rs.getString("modelo"), rs.getString("precio"), rs.getString("tipo_vehiculo")));
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return vehicle;
+	}
 
 
 }
