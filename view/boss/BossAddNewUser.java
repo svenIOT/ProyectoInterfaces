@@ -25,6 +25,7 @@ import dao.EmployeeDAO;
 import model.Boss;
 import model.Client;
 import model.Employee;
+import view.LoginView;
 import view.sales.SalesLandingView;
 
 import java.awt.GridBagLayout;
@@ -111,6 +112,13 @@ public class BossAddNewUser {
 			}
 		});
 		
+		// Volver al login
+		btnLogOut.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				new LoginView().getFrame().setVisible(true);
+				frame.dispose();
+			}
+		});
 		
 	}
 	
