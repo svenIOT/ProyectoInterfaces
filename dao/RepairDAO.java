@@ -50,18 +50,8 @@ public class RepairDAO extends AbstractDAO {
 							+ repair.getPiezas() + "');");
 			con.commit();
 		} catch (SQLException ex) {
-			try {
-				con.rollback();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 			ex.printStackTrace();
-		} finally {
-			try {
-				con.setAutoCommit(true);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			conectionRollback();
 		}
 
 	}
@@ -78,18 +68,8 @@ public class RepairDAO extends AbstractDAO {
 			stm.executeUpdate("DELETE FROM taller.reparacion WHERE cod_reparacion=" + repairId);
 			con.commit();
 		} catch (SQLException ex) {
-			try {
-				con.rollback();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 			ex.printStackTrace();
-		} finally {
-			try {
-				con.setAutoCommit(true);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			conectionRollback();
 		}
 
 	}

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
@@ -45,6 +46,23 @@ public abstract class AbstractDAO {
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Ejecuta un rollback y vuelve a activar el autocommit
+	 */
+	protected void conectionRollback() {
+		try {
+			con.rollback();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				con.setAutoCommit(true);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

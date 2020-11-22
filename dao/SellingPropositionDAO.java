@@ -107,17 +107,7 @@ public class SellingPropositionDAO extends AbstractDAO {
 			con.commit();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			try {
-				con.rollback();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} finally {
-			try {
-				con.setAutoCommit(true);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			conectionRollback();
 		}
 	}
 

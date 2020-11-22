@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.Constants;
-import model.Car;
 import model.Client;
 import model.Employee;
 
@@ -56,14 +55,8 @@ public class EmployeeDAO extends AbstractDAO {
 
 			con.commit();
 		} catch (Exception ex) {
-			try {
-				con.rollback();
-			} catch (SQLException e1) {}
 			ex.printStackTrace();
-		} finally {
-			try {
-				con.setAutoCommit(true);
-			} catch (SQLException e1) {}
+			conectionRollback();
 		}
 	}
 
