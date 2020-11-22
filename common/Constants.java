@@ -17,6 +17,7 @@ public class Constants {
 	public static final String SELECT_CARS_AlL_DATA = "SELECT * FROM taller.vehiculo INNER JOIN taller.coche ON vehiculo.num_bastidor = coche.num_bastidor;";
 	public static final String SELECT_MOTORCICLES_ALL_DATA = "SELECT * FROM taller.vehiculo INNER JOIN taller.motocicleta ON vehiculo.num_bastidor = motocicleta.num_bastidor;";
 	public static final String SELECT_MOPEDS_ALL_DATA = "SELECT * FROM taller.vehiculo INNER JOIN taller.ciclomotor ON vehiculo.num_bastidor = ciclomotor.num_bastidor;";
+	public static final String SELECT_VEHICLES_UNSOLD = "SELECT * FROM taller.vehiculo WHERE vehiculo.cod_cliente is null";
 	public static final String SELECT_COUNT_VEHICLES_UNSOLD = "SElECT count(*) from taller.vehiculo where cod_cliente is null";
 	// SellingPropositionDAO
 	public static final String SELECT_PROPOSITION = "SELECT * FROM taller.propuesta;";
