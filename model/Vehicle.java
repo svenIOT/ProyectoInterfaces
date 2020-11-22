@@ -2,8 +2,8 @@ package model;
 
 public class Vehicle {
 
-	private String num_bastidor, marca, modelo, combustible, precio, tipoVehiculo;
-	private int cod_ventas, cod_cliente, cod_conce;
+	private String num_bastidor, marca, modelo, combustible, precio, tipoVehiculo, nombre, apellidos;
+	private int cod_ventas, cod_cliente, cod_conce, cod_empleado;
 
 	// Constructor con códigos
 	public Vehicle(String num_bastidor, String marca, String modelo, String combustible, String precio, int cod_ventas,
@@ -24,6 +24,28 @@ public class Vehicle {
 		this.num_bastidor = num_bastidor;
 		this.marca = marca;
 		this.modelo = modelo;
+	}
+	
+	public Vehicle(int cod_empleado, String nombre, String apellidos, String marca, String modelo, String precio, String tipo_vehiculo) {
+		this.cod_empleado = cod_empleado;
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.precio = precio;
+		this.tipoVehiculo = tipo_vehiculo;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public String getApellidos() {
+		return apellidos;
+	}
+
+	public int getCod_empleado() {
+		return cod_empleado;
 	}
 
 	// Getters
