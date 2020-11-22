@@ -26,7 +26,7 @@ public class RepairDAO extends AbstractDAO {
 			while (rs.next()) {
 				repairs.add(
 						new Repair(rs.getInt("cod_reparacion"), rs.getInt("cod_mecanico"), rs.getString("num_bastidor"),
-								rs.getString("piezas"), rs.getString("fecha_entrada"), rs.getString("fecha_salida")));
+								rs.getString("piezas"), rs.getString("fecha_entrada"), rs.getString("fecha_salida"), rs.getString("precio")));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -44,10 +44,10 @@ public class RepairDAO extends AbstractDAO {
 			con.setAutoCommit(false);
 			stm = con.createStatement();
 			stm.executeUpdate(
-					"INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas) VALUES ("
+					"INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas, precio) VALUES ("
 							+ "0, " + repair.getCod_mecanico() + ", '" + repair.getNum_bastidor() + "', '"
 							+ repair.getFecha_entrada() + "', '" + repair.getFecha_salida() + "', '"
-							+ repair.getPiezas() + "');");
+							+ repair.getPiezas() + "', " + repair.getPrecio() + ");");
 			con.commit();
 		} catch (SQLException ex) {
 			ex.printStackTrace();

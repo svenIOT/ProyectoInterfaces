@@ -129,6 +129,7 @@ CREATE TABLE Reparacion
     fecha_entrada date,
     fecha_salida date,
 	piezas varchar(500),
+    precio varchar(6),
 	PRIMARY KEY (cod_reparacion)
 );
 

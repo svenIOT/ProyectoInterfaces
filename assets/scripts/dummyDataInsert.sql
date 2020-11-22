@@ -75,11 +75,11 @@ INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, t
 ('0000000001', null, 4, 1, 'Coche', 'BMW', '335d', 'Diesel', null); -- Vehículo en reparaciones, sin precio ni cod ventas
 
 -- REPARACION
-INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas) VALUES
-(1, 1, '1234567890', '2021-10-9', '2021-10-11', 'Turbo K04 híbrido, downpipe, pintura blue rally'),
-(2, 2, '9996079999', '2021-10-9', '2021-10-29', '4 Bujías, silenciador don silencioso, piezas caras saca la pasta'),
-(3, 4, '0006079000', '2021-10-9', '2021-10-28', 'Tirar a la basura esta sh*t'),
-(4, 3, '0000000001', '2021-10-16', '2021-12-18', 'Pastillas de freno, pinzas nuevas, 4 neumáticos continental sport, adblue, hierro pa los buques');
+INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas, precio) VALUES
+(1, 1, '1234567890', '2021-10-9', '2021-10-11', 'Turbo K04 híbrido, downpipe, pintura blue rally', 500),
+(2, 2, '9996079999', '2021-10-9', '2021-10-29', '4 Bujías, silenciador don silencioso, piezas caras saca la pasta', 320),
+(3, 4, '0006079000', '2021-10-9', '2021-10-28', 'Tirar a la basura esta sh*t', 50),
+(4, 3, '0000000001', '2021-10-16', '2021-12-18', 'Pastillas de freno, pinzas nuevas, 4 neumáticos continental sport, adblue, hierro pa los buques', 1200);
 
 -- COCHE
 INSERT INTO taller.coche (mat_coche, num_bastidor) VALUES

@@ -43,19 +43,22 @@ import java.awt.event.ActionEvent;
 import java.awt.Cursor;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 public class MechanicalAddRepairView {
 
 	private JFrame frame;
 	private JButton btnLogOut;
 	private JButton btnBackToMenu;
+	private JButton addRepairBtn;
 	private JTextField numberTextField;
 	private JTextArea partsTextArea;
 	private JDateChooser initialDateChooser;
 	private JDateChooser finishDateChooser;
 	private JComboBox<Object> vehicleTypeComboBox;
 	private JComboBox<Object> mechanicalComboBox;
-	private JButton addRepairBtn;
+	private JSpinner spinnerPrice;
 
 	private UserDAO userDAO;
 	private RepairDAO repairDAO;
@@ -265,9 +268,9 @@ public class MechanicalAddRepairView {
 		bodyPanel.add(rightDataPanel);
 		GridBagLayout gbl_rightDataPanel = new GridBagLayout();
 		gbl_rightDataPanel.columnWidths = new int[] { 257, 236, 0 };
-		gbl_rightDataPanel.rowHeights = new int[] { 114, 85, 75, 75, 76, 70, 59, 0 };
+		gbl_rightDataPanel.rowHeights = new int[] { 114, 74, 66, 68, 64, 69, 61, 59, 0 };
 		gbl_rightDataPanel.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-		gbl_rightDataPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_rightDataPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		rightDataPanel.setLayout(gbl_rightDataPanel);
 
 		JLabel lblRepairData = new JLabel("Datos de la reparación:");
@@ -374,6 +377,23 @@ public class MechanicalAddRepairView {
 		gbc_mechanicalComboBox.gridx = 1;
 		gbc_mechanicalComboBox.gridy = 5;
 		rightDataPanel.add(mechanicalComboBox, gbc_mechanicalComboBox);
+		
+		JLabel lblPrice = new JLabel("Precio de la reparación:");
+		lblPrice.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		GridBagConstraints gbc_lblPrice = new GridBagConstraints();
+		gbc_lblPrice.insets = new Insets(0, 0, 5, 5);
+		gbc_lblPrice.gridx = 0;
+		gbc_lblPrice.gridy = 6;
+		rightDataPanel.add(lblPrice, gbc_lblPrice);
+		
+		spinnerPrice = new JSpinner();
+		spinnerPrice.setModel(new SpinnerNumberModel(20, 20, 999999, 1));
+		spinnerPrice.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		GridBagConstraints gbc_spinnerPrice = new GridBagConstraints();
+		gbc_spinnerPrice.insets = new Insets(0, 0, 5, 0);
+		gbc_spinnerPrice.gridx = 1;
+		gbc_spinnerPrice.gridy = 6;
+		rightDataPanel.add(spinnerPrice, gbc_spinnerPrice);
 
 		addRepairBtn = new JButton("Añadir reparación");
 		addRepairBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -382,7 +402,7 @@ public class MechanicalAddRepairView {
 		addRepairBtn.setBackground(new Color(231, 111, 81));
 		GridBagConstraints gbc_addRepairBtn = new GridBagConstraints();
 		gbc_addRepairBtn.gridx = 1;
-		gbc_addRepairBtn.gridy = 6;
+		gbc_addRepairBtn.gridy = 7;
 		rightDataPanel.add(addRepairBtn, gbc_addRepairBtn);
 
 	}
@@ -391,6 +411,7 @@ public class MechanicalAddRepairView {
 		Repair repair = null;
 		var frameNumber = numberTextField.getText();
 		var carParts = partsTextArea.getText();
+		var price = spinnerPrice.getValue() + "";
 
 		var selectedMechanical = getMechanicalByName(mechanicals);
 
@@ -423,7 +444,7 @@ public class MechanicalAddRepairView {
 
 			// Crear instancia de reparación con los datos de la vista
 			repair = new Repair(0, selectedMechanical.get(0).getCod_mecanico(), frameNumber, carParts, initialDate,
-					finishDate);
+					finishDate, price);
 		}
 
 		return repair;
