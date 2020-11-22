@@ -17,38 +17,47 @@ public class VehicleDAO extends AbstractDAO {
 	}
 
 	/**
-	 * Comprueba el tipo de vehiculo y lo añade a la BBDD
-	 * 
-	 * @param v           objeto vehiculo
-	 * @param vehicleType tipo de vehículo que viene de un combobox
-	 * @param enrollment  matrícula del vehículo en cuestión, viene de un txtField
-	 */
-	public void addVehicle(Vehicle v, String vehicleType, String enrollment) {
-		String vehicleTypeInsert;
-		// Asignar tipo de vehiculo para insertarlo en su tabla
-		if (vehicleType.equalsIgnoreCase("coche")) {
-			vehicleTypeInsert = "INSERT INTO taller.coche (mat_coche, num_bastidor) VALUES ('" + enrollment + "', '"
-					+ v.getNum_bastidor() + "')";
-		} else if (vehicleType.equalsIgnoreCase("motocicleta")) {
-			vehicleTypeInsert = "INSERT INTO taller.motocicleta (mat_moto, num_bastidor) VALUES ('" + enrollment
-					+ "', '" + v.getNum_bastidor() + "')";
-		} else {
-			vehicleTypeInsert = "INSERT INTO taller.ciclomotor (mat_ciclo, num_bastidor) VALUES ('" + enrollment
-					+ "', '" + v.getNum_bastidor() + "' )";
-		}
-
-		try {
-			stm = con.createStatement();
-			stm.executeUpdate(
-					"INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, marca, modelo, combustible, precio) VALUES ("
-							+ "'" + v.getNum_bastidor() + "', " + v.getCod_ventas() + ", " + v.getCod_cliente() + ", "
-							+ v.getCod_conce() + ", '" + v.getMarca() + "', '" + v.getModelo() + "', '"
-							+ v.getCombustible() + "', " + v.getPrecio() + ")");
-			stm.executeUpdate(vehicleTypeInsert);
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-	}
+	  * Comprueba el tipo de vehiculo y lo añade a la BBDD
+	  * 
+	  * @param v          objeto vehiculo
+	  * @param enrollment matrícula del vehículo en cuestión, viene de un txtField
+	  */
+	 public void addVehicle(Vehicle v, String enrollment, boolean isSaleVehicle) {
+	  String vehicleTypeInsert;
+	  // Asignar tipo de vehiculo para insertarlo en su tabla
+	  if (v.getTipoVehiculo().equalsIgnoreCase("coche")) {
+	   vehicleTypeInsert = "INSERT INTO taller.coche (mat_coche, num_bastidor) VALUES ('" + enrollment + "', '"
+	     + v.getNum_bastidor() + "')";
+	  } else if (v.getTipoVehiculo().equalsIgnoreCase("motocicleta")) {
+	   vehicleTypeInsert = "INSERT INTO taller.motocicleta (mat_moto, num_bastidor) VALUES ('" + enrollment
+	     + "', '" + v.getNum_bastidor() + "')";
+	  } else {
+	   vehicleTypeInsert = "INSERT INTO taller.ciclomotor (mat_ciclo, num_bastidor) VALUES ('" + enrollment
+	     + "', '" + v.getNum_bastidor() + "' )";
+	  }
+	  
+	  // Comprobar si es un vehículo a la venta o un vehículo a reparar (evitar error SQL)
+	  var insert = "";
+	  
+	  if(isSaleVehicle) {
+	   insert = "INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, tipo_vehiculo, marca, modelo, combustible, precio) VALUES ("
+	     + "'" + v.getNum_bastidor() + "', " + v.getCod_ventas() + ", " + v.getCod_cliente() + ", "
+	     + v.getCod_conce() + ", '" + v.getTipoVehiculo() + "', '" + v.getMarca() + "', '"
+	     + v.getModelo() + "', '" + v.getCombustible() + "', " + v.getPrecio() + ");";
+	  } else {
+	   insert = "INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, tipo_vehiculo, marca, modelo, combustible, precio) VALUES ("
+	     + "'" + v.getNum_bastidor() + "', NULL, " + v.getCod_cliente() + ", "+ v.getCod_conce() + ", '" + v.getTipoVehiculo() + "', '" + v.getMarca() + "', '"
+	     + v.getModelo() + "', '" + v.getCombustible() + "', " + v.getPrecio() + ");";
+	  }
+	  
+	  try {
+	   stm = con.createStatement();
+	   stm.executeUpdate(insert);
+	   stm.executeUpdate(vehicleTypeInsert);
+	  } catch (SQLException ex) {
+	   ex.printStackTrace();
+	  }
+	 }
 
 	
 	/**
