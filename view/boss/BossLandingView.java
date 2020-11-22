@@ -93,7 +93,7 @@ public class BossLandingView {
 		// Boton detalles ventas
 		detallesbtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// new BossSalesSummariesView(user).getFrame().setVisible(true);
+				new BossSalesSummariesView(user).getFrame().setVisible(true);
 				frame.dispose();
 			}
 		});
@@ -137,7 +137,7 @@ public class BossLandingView {
 		topPanel.setBounds(100, 100, 100, 100);
 
 		JLabel lblIconUser = new JLabel("");
-		lblIconUser.setIcon(new ImageIcon(MechanicalLandingView.class.getResource("/assets/img/icon_add_user.png")));
+		lblIconUser.setIcon(new ImageIcon(MechanicalLandingView.class.getResource("/assets/img/icon_user.png")));
 		lblIconUser.setAlignmentY(0.0f);
 		lblIconUser.setLocation(5, 0);
 		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 5));
