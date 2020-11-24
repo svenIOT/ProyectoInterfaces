@@ -3,7 +3,6 @@ package view.boss;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -16,13 +15,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
 import dao.VehicleDAO;
 import model.Boss;
 import view.LoginView;
 import view.mechanical.MechanicalLandingView;
-import view.sales.SalesLandingView;
 import java.awt.Cursor;
 import javax.swing.ImageIcon;
 import java.awt.event.WindowAdapter;
@@ -36,8 +35,10 @@ public class BossLandingView {
 	private JButton detallesbtn;
 	private JButton newdetallesbtn;
 	private JButton registrarbtn;
+	
 	private JTextField txtTotal;
 	private JTextField txtStock;
+	
 	private JLabel lblUser;
 
 	private VehicleDAO vehicleDAO;
@@ -101,7 +102,7 @@ public class BossLandingView {
 		// Boton recaudaciones totales
 		newdetallesbtn.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// new BossTotalCollectionsView(user).getFrame().setVisible(true);
+				new BossTotalCollectionsView(user).getFrame().setVisible(true);
 				frame.dispose();
 			}
 		});
@@ -116,6 +117,7 @@ public class BossLandingView {
 
 		// Mostrar el número de vehiculos que no se han vendido en el JTextField
 		txtStock.setText(vehicleDAO.getCountVehiclesUnsold().toString());
+		txtStock.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		// Volver al login
 		btnLogOut.addMouseListener(new MouseAdapter() {
@@ -124,7 +126,15 @@ public class BossLandingView {
 				frame.dispose();
 			}
 		});
-
+		
+		int total = 0;
+		
+		for(int i = 0; i<vehicleDAO.getVehiclesSold().size(); i++) {
+			total += Integer.parseInt(vehicleDAO.getVehiclesSold().get(i).getPrecio());
+		}
+		
+		txtTotal.setText(total+"€");
+		txtTotal.setHorizontalAlignment(SwingConstants.CENTER);
 	}
 
 	private void setUIComponents() {
@@ -229,15 +239,15 @@ public class BossLandingView {
 
 		// Label panel 3
 		JLabel resumenLbl = new JLabel("Resúmenes de ventas");
-		sl_resumenPanel.putConstraint(SpringLayout.NORTH, resumenLbl, 37, SpringLayout.NORTH, resumenPanel);
-		sl_resumenPanel.putConstraint(SpringLayout.EAST, resumenLbl, -575, SpringLayout.EAST, resumenPanel);
 		resumenLbl.setFont(new Font("SansSerif", Font.PLAIN, 18));
 
 		// Button Panel 3
 		detallesbtn = new JButton("Detalles");
+		sl_resumenPanel.putConstraint(SpringLayout.NORTH, detallesbtn, 33, SpringLayout.NORTH, resumenPanel);
+		sl_resumenPanel.putConstraint(SpringLayout.WEST, detallesbtn, 643, SpringLayout.WEST, resumenPanel);
+		sl_resumenPanel.putConstraint(SpringLayout.NORTH, resumenLbl, 4, SpringLayout.NORTH, detallesbtn);
+		sl_resumenPanel.putConstraint(SpringLayout.EAST, resumenLbl, -157, SpringLayout.WEST, detallesbtn);
 		detallesbtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		sl_resumenPanel.putConstraint(SpringLayout.NORTH, detallesbtn, -4, SpringLayout.NORTH, resumenLbl);
-		sl_resumenPanel.putConstraint(SpringLayout.WEST, detallesbtn, 157, SpringLayout.EAST, resumenLbl);
 		detallesbtn.setForeground(Color.WHITE);
 		detallesbtn.setBorderPainted(false);
 		detallesbtn.setBackground(new Color(231, 111, 81));
@@ -253,13 +263,13 @@ public class BossLandingView {
 		recaudacionPanel.setLayout(sl_recaudacionPanel);
 
 		// Label panel 4
-		JLabel lblTotal = new JLabel("Total recaudado (mes)");
+		JLabel lblTotal = new JLabel("Total recaudado");
 		lblTotal.setFont(new Font("SansSerif", Font.PLAIN, 18));
 
 		// TextField panel 4
 		txtTotal = new JTextField();
 		sl_recaudacionPanel.putConstraint(SpringLayout.NORTH, lblTotal, 3, SpringLayout.NORTH, txtTotal);
-		sl_recaudacionPanel.putConstraint(SpringLayout.EAST, lblTotal, -23, SpringLayout.WEST, txtTotal);
+		sl_recaudacionPanel.putConstraint(SpringLayout.EAST, lblTotal, -73, SpringLayout.WEST, txtTotal);
 		sl_recaudacionPanel.putConstraint(SpringLayout.NORTH, txtTotal, 34, SpringLayout.NORTH, recaudacionPanel);
 		sl_recaudacionPanel.putConstraint(SpringLayout.EAST, txtTotal, -449, SpringLayout.EAST, recaudacionPanel);
 		txtTotal.setFont(new Font("SansSerif", Font.PLAIN, 18));
@@ -268,8 +278,8 @@ public class BossLandingView {
 
 		// Button panel 4
 		newdetallesbtn = new JButton("Detalles");
+		sl_recaudacionPanel.putConstraint(SpringLayout.NORTH, newdetallesbtn, 33, SpringLayout.NORTH, recaudacionPanel);
 		newdetallesbtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		sl_recaudacionPanel.putConstraint(SpringLayout.NORTH, newdetallesbtn, -4, SpringLayout.NORTH, lblTotal);
 		sl_recaudacionPanel.putConstraint(SpringLayout.WEST, newdetallesbtn, 31, SpringLayout.EAST, txtTotal);
 		newdetallesbtn.setForeground(Color.WHITE);
 		newdetallesbtn.setBorderPainted(false);

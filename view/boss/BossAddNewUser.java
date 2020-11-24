@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -23,10 +22,8 @@ import javax.swing.border.MatteBorder;
 
 import dao.EmployeeDAO;
 import model.Boss;
-import model.Client;
 import model.Employee;
 import view.LoginView;
-import view.sales.SalesLandingView;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -34,7 +31,6 @@ import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.JCheckBox;
 
 public class BossAddNewUser {
 
@@ -69,6 +65,7 @@ public class BossAddNewUser {
 	private JButton btnLogOut;
 	
 	private EmployeeDAO employeeDAO;
+	
 	/**
 	 * Create the application.
 	 */

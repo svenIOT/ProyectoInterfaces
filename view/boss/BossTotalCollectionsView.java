@@ -16,11 +16,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -30,17 +28,15 @@ import view.LoginView;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
-public class BossSalesSummariesView {
+public class BossTotalCollectionsView {
 
 	private Boss user;
 	private JFrame frame;
 	
-	private JTextField filtertxt;
 	private JLabel lbltotal;
 	
 	private JButton btnLogOut;
 	private JButton backButton;
-	private JButton btnSearch;
 	
 	private JTable salesSummariesTable;
 	
@@ -50,7 +46,7 @@ public class BossSalesSummariesView {
 	/**
 	 * Create the application.
 	 */
-	public BossSalesSummariesView(Boss user) {
+	public BossTotalCollectionsView(Boss user) {
 		this.user = user;
 		initialize();
 		vehicleDAO = new VehicleDAO();
@@ -102,39 +98,6 @@ public class BossSalesSummariesView {
 					}
 				});
 				
-				btnSearch.addMouseListener(new MouseAdapter() {
-					public void mouseClicked(MouseEvent e) {
-						// Reiniciar el contenido de la tabla clientes
-						var rows = salesSummariesTable.getRowCount();
-						// Si hay filas las elimina
-						if (rows > 0) {
-							for (var i = (rows - 1); i > -1; --i) {
-								tableModel.removeRow(i);
-							}
-						}
-
-						// Buscar vehiculo vendidp por dni empleado
-						var dni = filtertxt.getText();
-
-						// Insertar el cliente devuelto en la tabla clientes
-						if (vehicleDAO.searchVehicleByDni(dni) != null) {
-							for (var i = 0; i < vehicleDAO.searchVehicleByDni(dni).size(); ++i) {
-								tableModel.addRow(new Object[] { vehicleDAO.searchVehicleByDni(dni).get(i).getCod_empleado(), vehicleDAO.searchVehicleByDni(dni).get(i).getNombre(),
-										vehicleDAO.searchVehicleByDni(dni).get(i).getApellidos(), vehicleDAO.searchVehicleByDni(dni).get(i).getMarca(),
-										vehicleDAO.searchVehicleByDni(dni).get(i).getModelo(), vehicleDAO.searchVehicleByDni(dni).get(i).getPrecio(), vehicleDAO.searchVehicleByDni(dni).get(i).getTipoVehiculo()});
-								
-							}
-							lbltotal.setText(totalVentas().toString()+"€");
-						} else {
-							JOptionPane.showMessageDialog(frame, "Empleado no encontrado, revise el DNI", "Warning!",
-							JOptionPane.ERROR_MESSAGE);
-						}
-						
-					}
-					
-				});
-				
-				
 				
 	}
 
@@ -177,9 +140,9 @@ public class BossSalesSummariesView {
 		frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_mainPanel = new GridBagLayout();
 		gbl_mainPanel.columnWidths = new int[]{1061, 0};
-		gbl_mainPanel.rowHeights = new int[]{106, 73, 409, 93};
+		gbl_mainPanel.rowHeights = new int[]{106, 0, 409, 93};
 		gbl_mainPanel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_mainPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0};
+		gbl_mainPanel.rowWeights = new double[]{0.0, 0.0, 0.0};
 		mainPanel.setLayout(gbl_mainPanel);
 				
 		JPanel panel1 = new JPanel();
@@ -194,32 +157,6 @@ public class BossSalesSummariesView {
 		JLabel vehiclesLbl = new JLabel("Resúmenes de ventas");
 		vehiclesLbl.setFont(new Font("SansSerif", Font.BOLD, 25));
 		panel1.add(vehiclesLbl);
-		
-		JPanel filterPanel = new JPanel();
-		filterPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 70, 30));
-		GridBagConstraints gbc_filterPanel = new GridBagConstraints();
-		gbc_filterPanel.fill = GridBagConstraints.BOTH;
-		gbc_filterPanel.insets = new Insets(0, 0, 5, 0);
-		gbc_filterPanel.gridx = 0;
-		gbc_filterPanel.gridy = 1;
-		mainPanel.add(filterPanel, gbc_filterPanel);
-		
-		JLabel filterlbl = new JLabel("Filtrar por DNI:");
-		filterlbl.setFont(new Font("SansSerif", Font.BOLD, 18));
-		filterPanel.add(filterlbl);
-		
-		filtertxt = new JTextField();
-		filtertxt.setColumns(10);
-		filtertxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		filterPanel.add(filtertxt);
-		
-		btnSearch = new JButton("Buscar empleado");
-		btnSearch.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnSearch.setForeground(Color.WHITE);
-		btnSearch.setFont(new Font("SansSerif", Font.BOLD, 15));
-		btnSearch.setBorderPainted(false);
-		btnSearch.setBackground(new Color(231, 111, 81));
-		filterPanel.add(btnSearch);
 		
 		JPanel tablePanel = new JPanel();
 		tablePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20 ,20));
@@ -314,3 +251,4 @@ public class BossSalesSummariesView {
 	}
 
 }
+
