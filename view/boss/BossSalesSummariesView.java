@@ -237,9 +237,10 @@ public class BossSalesSummariesView {
 		salesSummariesTable.setFont(new Font("SansSerif", Font.BOLD, 15));
 		salesSummariesTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] {"Código empleado", "Nombre", "Apellidos", "Marca", "Modelo", "Precio", "Tipo"}) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class, String.class, String.class };
+					private static final long serialVersionUID = 1L;
+			Class<?>[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class, String.class, String.class };
 
-			public Class getColumnClass(int columnIndex) {
+			public Class<?> getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 		});

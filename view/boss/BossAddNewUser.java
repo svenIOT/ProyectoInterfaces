@@ -54,9 +54,9 @@ public class BossAddNewUser {
 	
 	private JPasswordField passtxt;
 	
-	private JComboBox<?> rolComboBox;
-	private JComboBox<?> concesionarioComboBox;
-	private JComboBox<?> especialidadCB;
+	private JComboBox<Object> rolComboBox;
+	private JComboBox<Object> concesionarioComboBox;
+	private JComboBox<Object> especialidadCB;
 	
 	private JButton backButton;
 	private JButton registerButton;
@@ -236,7 +236,7 @@ public class BossAddNewUser {
 		
 		rolComboBox = new JComboBox<>();
 		sl_datesPanelLeft.putConstraint(SpringLayout.NORTH, rolComboBox, -3, SpringLayout.NORTH, rollbl);
-		rolComboBox.setModel(new DefaultComboBoxModel(new String[] { "Jefe", "Ventas", "Mecánico" }));
+		rolComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Jefe", "Ventas", "Mecánico" }));
 		rolComboBox.setSelectedIndex(0);
 		rolComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		datesPanelLeft.add(rolComboBox);
@@ -253,7 +253,7 @@ public class BossAddNewUser {
 		sl_datesPanelLeft.putConstraint(SpringLayout.WEST, rolComboBox, 0, SpringLayout.WEST, especialidadCB);
 		sl_datesPanelLeft.putConstraint(SpringLayout.EAST, rolComboBox, 0, SpringLayout.EAST, especialidadCB);
 		sl_datesPanelLeft.putConstraint(SpringLayout.NORTH, especialidadCB, -3, SpringLayout.NORTH, especialidad);
-		especialidadCB.setModel(new DefaultComboBoxModel(new String[] { "Coches", "Motocicletas", "Ciclomotores"}));
+		especialidadCB.setModel(new DefaultComboBoxModel<>(new String[] { "Coches", "Motocicletas", "Ciclomotores"}));
 		especialidadCB.setSelectedIndex(0);
 		especialidadCB.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		datesPanelLeft.add(especialidadCB);
@@ -314,7 +314,7 @@ public class BossAddNewUser {
 		sl_datesPanelRight.putConstraint(SpringLayout.NORTH, concesionarioComboBox, -3, SpringLayout.NORTH, concelbl);
 		sl_datesPanelRight.putConstraint(SpringLayout.WEST, concesionarioComboBox, 106, SpringLayout.EAST, concelbl);
 		sl_datesPanelRight.putConstraint(SpringLayout.EAST, concesionarioComboBox, -135, SpringLayout.EAST, datesPanelRight);
-		concesionarioComboBox.setModel(new DefaultComboBoxModel(new String[] { "Todo Ruedas", "H&N Customs" }));
+		concesionarioComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Todo Ruedas", "H&N Customs" }));
 		concesionarioComboBox.setSelectedIndex(0);
 		concesionarioComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		datesPanelRight.add(concesionarioComboBox);
@@ -357,13 +357,13 @@ public class BossAddNewUser {
 		var dni = dnitxt.getText();
 		var telephone = telefonotxt.getText();
 		var user = usertxt.getText();
-		var pass = passtxt.getText();
+		var pass = new String(passtxt.getPassword());
 		var rol = rolComboBox.getSelectedItem();
 		var cod_conce = concesionarioComboBox.getSelectedItem();
 		var cod_especialidad = especialidadCB.getSelectedItem();
 
 		if (dnitxt.getText().isBlank() || nombretxt.getText().isBlank() || apellidotxt.getText().isBlank()
-				|| telefonotxt.getText().isBlank() || usertxt.getText().isBlank() || passtxt.getText().isBlank()) {
+				|| telefonotxt.getText().isBlank() || usertxt.getText().isBlank() || pass.isBlank()) {
 			JOptionPane.showMessageDialog(frame, "Error, los campos no pueden estar vacios, ni contener solo espacios",
 					"Warning!", JOptionPane.ERROR_MESSAGE);
 		} else {

@@ -42,8 +42,8 @@ public class BossDetailsUnsoldVehiclesView {
 	 */
 	public BossDetailsUnsoldVehiclesView(Boss user) {
 		this.user = user;
-		initialize();
 		vehicleDAO = new VehicleDAO();
+		initialize();
 	}
 
 	/**
@@ -144,9 +144,10 @@ public class BossDetailsUnsoldVehiclesView {
 		vehiclesUnSoldTable.setFont(new Font("SansSerif", Font.BOLD, 15));
 		vehiclesUnSoldTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] {"Tipo de vehículo", "Número de bastidor", "Marca", "Modelo", "Combustible", "Precio"}) {
-			Class[] columnTypes = new Class[] { String.class, String.class, String.class, String.class, String.class, String.class };
+					private static final long serialVersionUID = 1L;
+			Class<?>[] columnTypes = new Class[] { String.class, String.class, String.class, String.class, String.class, String.class };
 
-			public Class getColumnClass(int columnIndex) {
+			public Class<?> getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 		});
