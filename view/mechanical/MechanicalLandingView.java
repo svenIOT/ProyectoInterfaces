@@ -419,10 +419,11 @@ public class MechanicalLandingView {
 		vehiclesRepairTable.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		vehiclesRepairTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Código reparación",
 				"Mecánico asignado", "N\u00FAmero de bastidor", "Fecha entrada", "Fecha salida", "Piezas" }) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class,
+					private static final long serialVersionUID = 1L;
+			Class<?>[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class,
 					String.class };
 
-			public Class getColumnClass(int columnIndex) {
+			public Class<?> getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 

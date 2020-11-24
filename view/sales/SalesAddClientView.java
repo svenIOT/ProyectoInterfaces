@@ -20,7 +20,6 @@ import javax.swing.border.MatteBorder;
 
 import dao.ClientDAO;
 import model.Client;
-import model.Employee;
 import model.Sales;
 import view.LoginView;
 

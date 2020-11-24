@@ -288,10 +288,11 @@ public class SalesSearchAndListSellingPropositionView {
 		sellingPropositionTable.setFont(new Font("SansSerif", Font.BOLD, 15));
 		sellingPropositionTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "DNI Cliente",
 				"Código propuesta", "Código cliente", "Código venta", "Número de bastidor", "Fecha de validez" }) {
-			Class[] columnTypes = new Class[] { String.class, Integer.class, Integer.class, Integer.class, String.class,
+					private static final long serialVersionUID = 1L;
+			Class<?>[] columnTypes = new Class[] { String.class, Integer.class, Integer.class, Integer.class, String.class,
 					String.class };
 
-			public Class getColumnClass(int columnIndex) {
+			public Class<?> getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 		});

@@ -44,9 +44,9 @@ import java.awt.event.WindowEvent;
 public class MechanicalAddVehicleView {
 
 	private JFrame frame;
-	private JComboBox<?> vehicleTypeComboBox;
-	private JComboBox<?> fuelVehicleComboBox;
-	private JComboBox<?> concessionaireComboBox;
+	private JComboBox<Object> vehicleTypeComboBox;
+	private JComboBox<Object> fuelVehicleComboBox;
+	private JComboBox<Object> concessionaireComboBox;
 	private JComboBox<Object> clientComboBox;
 	private JButton returnButton;
 	private JButton addVehicleButton;
@@ -250,7 +250,7 @@ public class MechanicalAddVehicleView {
 				vehicleTypeLbl);
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.EAST, vehicleTypeComboBox, -106, SpringLayout.EAST,
 				vehiclesDatesPanelLeft);
-		vehicleTypeComboBox.setModel(new DefaultComboBoxModel(new String[] { "Coche", "Motocicleta", "Ciclomotor" }));
+		vehicleTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Coche", "Motocicleta", "Ciclomotor" }));
 		vehicleTypeComboBox.setSelectedIndex(0);
 		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, vehicleTypeComboBox, -3, SpringLayout.NORTH,
 				vehicleTypeLbl);
@@ -346,7 +346,7 @@ public class MechanicalAddVehicleView {
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, fuelVehicleComboBox, -81, SpringLayout.EAST,
 				vehiclesDatesPanelRight);
 		fuelVehicleComboBox
-				.setModel(new DefaultComboBoxModel(new String[] { "Diesel", "Gasolina", "Eléctrico", "Híbrido" }));
+				.setModel(new DefaultComboBoxModel<>(new String[] { "Diesel", "Gasolina", "Eléctrico", "Híbrido" }));
 		fuelVehicleComboBox.setSelectedIndex(0);
 		fuelVehicleComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesDatesPanelRight.add(fuelVehicleComboBox);
@@ -366,7 +366,7 @@ public class MechanicalAddVehicleView {
 				fuelVehicleComboBox);
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, concessionaireComboBox, 0, SpringLayout.EAST,
 				fuelVehicleComboBox);
-		concessionaireComboBox.setModel(new DefaultComboBoxModel(new String[] { "Todo Ruedas", "H&N Customs" }));
+		concessionaireComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Todo Ruedas", "H&N Customs" }));
 		concessionaireComboBox.setSelectedIndex(0);
 		concessionaireComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesDatesPanelRight.add(concessionaireComboBox);

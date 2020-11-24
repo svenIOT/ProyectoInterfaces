@@ -20,7 +20,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import dao.VehicleDAO;
 import model.Sales;
-import model.Vehicle;
 import view.LoginView;
 
 import java.awt.event.WindowAdapter;
@@ -364,9 +363,10 @@ public class SalesSearchAndListVehiclesView {
 		vehicleTable.setFont(new Font("SansSerif", Font.BOLD, 15));
 		vehicleTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "Número de bastidor", "Marca", "Modelo", "Combustible", "Precio" }) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class };
+					private static final long serialVersionUID = 1L;
+			Class<?>[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class, String.class };
 
-			public Class getColumnClass(int columnIndex) {
+			public Class<?> getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 		});

@@ -268,10 +268,11 @@ public class SalesClientDetailsView {
 		clientTable.setFont(new Font("SansSerif", Font.BOLD, 15));
 		clientTable.setModel(
 				new DefaultTableModel(new Object[][] {}, new String[] { "Número bastidor", "Marca", "Modelo" }) {
-					Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class,
+					private static final long serialVersionUID = 1L;
+					Class<?>[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class,
 							String.class };
 
-					public Class getColumnClass(int columnIndex) {
+					public Class<?> getColumnClass(int columnIndex) {
 						return columnTypes[columnIndex];
 					}
 				});

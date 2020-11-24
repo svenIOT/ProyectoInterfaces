@@ -48,7 +48,7 @@ import java.awt.Cursor;
 public class SalesAddSellingPropositionView {
 
 	private JFrame frame;
-	private JComboBox<?> clientsComboBox;
+	private JComboBox<Object> clientsComboBox;
 	private JButton backMenuBtn;
 	private JButton addPropositionBtn;
 	private JButton btnLogOut;
@@ -97,7 +97,7 @@ public class SalesAddSellingPropositionView {
 		// Al abrir la ventana se rellena el combobox con los clientes
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowOpened(WindowEvent e) {
-				var comboboxModel = new DefaultComboBoxModel();
+				var comboboxModel = new DefaultComboBoxModel<>();
 
 				for (var client : clients) {
 					comboboxModel.addElement(client.getNombre() + " " + client.getApellidos());

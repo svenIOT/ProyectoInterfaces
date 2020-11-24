@@ -32,9 +32,9 @@ public class SalesLandingView {
 	private JFrame frame;
 	private JButton btnLogOut;
 	private JLabel lblUser;
-	private JComboBox<?> customerComboBox;
-	private JComboBox<?> vehicleComboBox;
-	private JComboBox<?> salesComboBox;
+	private JComboBox<Object> customerComboBox;
+	private JComboBox<Object> vehicleComboBox;
+	private JComboBox<Object> salesComboBox;
 	
 	private Sales user; // TODO: mostrar usuario en la vista
 
@@ -194,7 +194,7 @@ public class SalesLandingView {
 
 		customerComboBox = new JComboBox<>();
 		customerComboBox
-				.setModel(new DefaultComboBoxModel(new String[] { "Elige una", "Alta cliente", "Listar cliente" }));
+				.setModel(new DefaultComboBoxModel<>(new String[] { "Elige una", "Alta cliente", "Listar cliente" }));
 		customerComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		customerPanel.add(customerComboBox);
 
@@ -209,7 +209,7 @@ public class SalesLandingView {
 
 		vehicleComboBox = new JComboBox<>();
 		vehicleComboBox
-				.setModel(new DefaultComboBoxModel(new String[] { "Elige una", "Alta vehículo", "Listar vehículo" }));
+				.setModel(new DefaultComboBoxModel<>(new String[] { "Elige una", "Alta vehículo", "Listar vehículo" }));
 		vehicleComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesPanel.add(vehicleComboBox);
 
@@ -224,7 +224,7 @@ public class SalesLandingView {
 
 		salesComboBox = new JComboBox<>();
 		salesComboBox.setModel(
-				new DefaultComboBoxModel(new String[] { "Elige una", "Añadir propuesta", "Listar propuestas" }));
+				new DefaultComboBoxModel<>(new String[] { "Elige una", "Añadir propuesta", "Listar propuestas" }));
 		salesComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		salesPanel.add(salesComboBox);
 
