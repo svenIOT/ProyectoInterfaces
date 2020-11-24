@@ -43,7 +43,7 @@ public class EmployeeDAO extends AbstractDAO {
 				ex.printStackTrace();
 			}
 			
-			
+			//Por si en un futuro hubiese que implementar el añadir jefes
 			if(e.getRol().equals("Jefe")) {
 				stm.execute("INSERT INTO taller.jefe (cod_jefe, cod_empleado) VALUES (0, '" + e.getCod_Empleado() + "')");
 			} else if (e.getRol().equals("Ventas")){
