@@ -236,7 +236,7 @@ public class BossAddNewUser {
 		
 		rolComboBox = new JComboBox<>();
 		sl_datesPanelLeft.putConstraint(SpringLayout.NORTH, rolComboBox, -3, SpringLayout.NORTH, rollbl);
-		rolComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Jefe", "Ventas", "Mecánico" }));
+		rolComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"Ventas", "Mecánico" }));
 		rolComboBox.setSelectedIndex(0);
 		rolComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		datesPanelLeft.add(rolComboBox);
