@@ -432,17 +432,14 @@ public class MechanicalAddVehicleView {
 				.collect(Collectors.toList());
 
 		if (frameNumberTxt.getText().isBlank() || vehicleLicenseTxt.getText().isBlank()) {
-			JOptionPane.showMessageDialog(frame,
-					"Error, los campos número de bastidor y matrícula no pueden estar vacios, ni contener solo espacios",
-					"Warning!", JOptionPane.ERROR_MESSAGE);
+			showErrorMessage("Error, los campos número de bastidor y matrícula no pueden estar vacios, ni contener solo espacios");
 		} else {
 			// Comprobar si el vehículo ya existe 
 			var existVehicle = vehicles.stream().filter(v -> v.getNum_bastidor().equalsIgnoreCase(numFrameCar))
 					.collect(Collectors.toList());
 
 			if (existVehicle.size() > 0) {
-				JOptionPane.showMessageDialog(frame, "Error, ya existe el número de bastidor del vehículo introducido",
-						"Warning!", JOptionPane.ERROR_MESSAGE);
+				showErrorMessage("Error, ya existe el número de bastidor del vehículo introducido");
 			} else {
 				vehicle = new Vehicle(numFrameCar, brand, model, fuel, null, 0, selectedClient.get(0).getClientCod(), concessionaire, vehicleType);
 			}
@@ -461,6 +458,14 @@ public class MechanicalAddVehicleView {
 		if (txt.getText().length() >= limit) {
 			e.consume();
 		}
+	}
+	
+	/**
+	 * Muestra un mensaje de error por pantalla
+	 * @param message
+	 */
+	private void showErrorMessage(String message) {
+		JOptionPane.showMessageDialog(frame, message, "Warning!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public JFrame getFrame() {

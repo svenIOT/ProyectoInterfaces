@@ -332,8 +332,9 @@ public class MechanicalAddRepairView {
 		rightDataPanel.add(lblStartDate, gbc_lblStartDate);
 
 		initialDateChooser = new JDateChooser();
+		initialDateChooser.setPreferredSize(new Dimension(200, 25));
 		initialDateChooser.getCalendarButton().setPreferredSize(new Dimension(50, 25));
-		initialDateChooser.getCalendarButton().setFont(new Font("SansSerif", Font.PLAIN, 15));
+		initialDateChooser.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_dateChooser = new GridBagConstraints();
 		gbc_dateChooser.insets = new Insets(0, 0, 5, 0);
 		gbc_dateChooser.gridx = 1;
@@ -350,9 +351,9 @@ public class MechanicalAddRepairView {
 		rightDataPanel.add(lblFinishDate, gbc_lblFinishDate);
 
 		finishDateChooser = new JDateChooser();
+		finishDateChooser.setPreferredSize(new Dimension(200, 25));
 		finishDateChooser.getCalendarButton().setPreferredSize(new Dimension(50, 25));
-		finishDateChooser.getCalendarButton().setFont(new Font("SansSerif", Font.PLAIN, 15));
-
+		finishDateChooser.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		GridBagConstraints gbc_finishDateChooser = new GridBagConstraints();
 		gbc_finishDateChooser.insets = new Insets(0, 0, 5, 0);
 		gbc_finishDateChooser.gridx = 1;
