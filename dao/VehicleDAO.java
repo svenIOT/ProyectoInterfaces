@@ -54,7 +54,7 @@ public class VehicleDAO extends AbstractDAO {
 				cars.add(new Car(rs.getString("num_bastidor"), rs.getString("marca"), rs.getString("modelo"),
 						rs.getString("combustible"), rs.getString("precio"), rs.getInt("cod_ventas"),
 						rs.getInt("cod_cliente"), rs.getInt("cod_conce"), rs.getString("tipo_vehiculo"),
-						rs.getString("mat_coche")));
+						rs.getString("mat_coche"), rs.getString("anno"), rs.getString("kilometros")));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -76,7 +76,7 @@ public class VehicleDAO extends AbstractDAO {
 				motorcycles.add(new Motorcycle(rs.getString("num_bastidor"), rs.getString("marca"),
 						rs.getString("modelo"), rs.getString("combustible"), rs.getString("precio"),
 						rs.getInt("cod_ventas"), rs.getInt("cod_cliente"), rs.getInt("cod_conce"),
-						rs.getString("tipo_vehiculo"), rs.getString("mat_moto")));
+						rs.getString("tipo_vehiculo"), rs.getString("mat_moto"), rs.getString("anno"), rs.getString("kilometros")));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -99,7 +99,7 @@ public class VehicleDAO extends AbstractDAO {
 				moped.add(new Moped(rs.getString("num_bastidor"), rs.getString("marca"), rs.getString("modelo"),
 						rs.getString("combustible"), rs.getString("precio"), rs.getInt("cod_ventas"),
 						rs.getInt("cod_cliente"), rs.getInt("cod_conce"), rs.getString("tipo_vehiculo"),
-						rs.getString("mat_ciclo")));
+						rs.getString("mat_ciclo"), rs.getString("anno"), rs.getString("kilometros")));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();

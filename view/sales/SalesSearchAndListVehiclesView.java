@@ -35,6 +35,8 @@ import java.awt.Cursor;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.SwingConstants;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class SalesSearchAndListVehiclesView {
 
@@ -44,12 +46,14 @@ public class SalesSearchAndListVehiclesView {
 	private JTextField textFieldSearchFrameNum;
 	private JTable vehicleTable;
 	private JButton btnSearch;
+	private JButton btnSearchByFrameNum;
 	private JButton btnDetallesDelVehiculo;
 	private VehicleDAO vehicleDAO;
 	private ButtonGroup group1;
 	private JRadioButton carsRadioButton;
 	private JRadioButton motorcyclesRadioButton;
 	private JRadioButton mopedsRadioButton;
+	private JComboBox<Object> fuelVehicleComboBox;
 
 	private Sales user;
 	private JTextField textFieldSearchKm;
@@ -109,6 +113,7 @@ public class SalesSearchAndListVehiclesView {
 					for (var i = 0; i < onSaleCars.size(); ++i) {
 						tableModel.addRow(new Object[] { onSaleCars.get(i).getNum_bastidor(),
 								onSaleCars.get(i).getMarca(), onSaleCars.get(i).getModelo(),
+								onSaleCars.get(i).getAnno(), onSaleCars.get(i).getKilometros(),
 								onSaleCars.get(i).getCombustible(), onSaleCars.get(i).getPrecio() });
 					}
 				}
@@ -125,6 +130,7 @@ public class SalesSearchAndListVehiclesView {
 					for (var i = 0; i < onSaleCars.size(); ++i) {
 						tableModel.addRow(new Object[] { onSaleCars.get(i).getNum_bastidor(),
 								onSaleCars.get(i).getMarca(), onSaleCars.get(i).getModelo(),
+								onSaleCars.get(i).getAnno(), onSaleCars.get(i).getKilometros(),
 								onSaleCars.get(i).getCombustible(), onSaleCars.get(i).getPrecio() });
 					}
 				}
@@ -141,6 +147,7 @@ public class SalesSearchAndListVehiclesView {
 					for (var i = 0; i < onSaleMotorcycles.size(); ++i) {
 						tableModel.addRow(new Object[] { onSaleMotorcycles.get(i).getNum_bastidor(),
 								onSaleMotorcycles.get(i).getMarca(), onSaleMotorcycles.get(i).getModelo(),
+								onSaleMotorcycles.get(i).getAnno(), onSaleMotorcycles.get(i).getKilometros(),
 								onSaleMotorcycles.get(i).getCombustible(), onSaleMotorcycles.get(i).getPrecio() });
 					}
 				}
@@ -157,58 +164,76 @@ public class SalesSearchAndListVehiclesView {
 					for (var i = 0; i < onSaleMopeds.size(); ++i) {
 						tableModel.addRow(new Object[] { onSaleMopeds.get(i).getNum_bastidor(),
 								onSaleMopeds.get(i).getMarca(), onSaleMopeds.get(i).getModelo(),
+								onSaleMopeds.get(i).getAnno(), onSaleMopeds.get(i).getKilometros(),
 								onSaleMopeds.get(i).getCombustible(), onSaleMopeds.get(i).getPrecio() });
 					}
 				}
 			}
 		});
 
-		// Botón buscar vehículo
-		btnSearch.addMouseListener(new MouseAdapter() {
+		// Botón buscar por número de bastidor
+		btnSearchByFrameNum.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-
-				// Buscar vehículo por num bastidor
 				var frameNumber = textFieldSearchFrameNum.getText();
-				var km = textFieldSearchKm.getText();
-				var anno = textFieldSearchAnno.getText();
 
-				List<Vehicle> vehicleResult;
-				// Filtra el vehículo con los críterios de búsqueda seleccionados
-				if (frameNumber.isBlank()) {
-					vehicleResult = onSaleVehicles.stream()
-							.filter(vehicle -> vehicle.getKilometros().equalsIgnoreCase(km))
-							.filter(vehicle -> vehicle.getAnno().equalsIgnoreCase(anno))
-							.collect(Collectors.toList());
-				} else {
-					vehicleResult = onSaleVehicles.stream()
-							.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber))
-							.collect(Collectors.toList());
-				}
-				
+				// Filtra el vehículo con el número de bastidor
+				var vehicleResult = onSaleVehicles.stream()
+						.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber))
+						.collect(Collectors.toList());
+
 				// Si encuentra resultados
 				if (vehicleResult.size() > 0) {
 					clearTable(tableModel);
 
-					// Insertar el/los vehículos devueltos en la tabla vehículos
+					// Insertar el vehículo devuelto en la tabla
+					tableModel.addRow(new Object[] { vehicleResult.get(0).getNum_bastidor(),
+							vehicleResult.get(0).getMarca(), vehicleResult.get(0).getModelo(),
+							vehicleResult.get(0).getAnno(), vehicleResult.get(0).getKilometros(),
+							vehicleResult.get(0).getCombustible(), vehicleResult.get(0).getPrecio() });
+
+					// Poner el radioButton en la categoría que corresponde (si es 1 único
+					// resultado)
+					setVehicleCategory(vehicleResult);
+				} else {
+					showErrorMessage("No hay resultados, revise el número de bastidor");
+				}
+			}
+		});
+
+		// Botón buscar vehículo con filtros
+		btnSearch.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				// Datos de la vista
+				var km = textFieldSearchKm.getText();
+				var anno = textFieldSearchAnno.getText();
+				var fuel = fuelVehicleComboBox.getSelectedItem().toString();
+
+				// Filtra el vehículo con los críterios de búsqueda seleccionados
+				var vehicleResult = onSaleVehicles.stream()
+						.filter(vehicle -> vehicle.getKilometros().equalsIgnoreCase(km))
+						.filter(vehicle -> vehicle.getAnno().equalsIgnoreCase(anno))
+						.filter(vehicle -> vehicle.getCombustible().equalsIgnoreCase(fuel))
+						.collect(Collectors.toList());
+
+				// Si encuentra resultados
+				if (vehicleResult.size() > 0) {
+					clearTable(tableModel);
+
+					// Insertar el/los vehículos devueltos en la tabla
 					for (var vehicle : vehicleResult) {
 						tableModel.addRow(new Object[] { vehicle.getNum_bastidor(), vehicle.getMarca(),
-								vehicle.getModelo(), vehicle.getCombustible(), vehicle.getPrecio() });
+								vehicle.getModelo(), vehicle.getAnno(), vehicle.getKilometros(),
+								vehicle.getCombustible(), vehicle.getPrecio() });
 					}
 
-					// Poner el radioButton en la categoría que corresponde
-					if (vehicleResult.get(0).getTipoVehiculo().equalsIgnoreCase("coche")) {
-						carsRadioButton.setSelected(true);
-					} else if (vehicleResult.get(0).getTipoVehiculo().equalsIgnoreCase("motocicleta")) {
-						motorcyclesRadioButton.setSelected(true);
-					} else {
-						mopedsRadioButton.setSelected(true);
+					// Poner el radioButton en la categoría que corresponde (si es 1 único
+					// resultado)
+					if (vehicleResult.size() <= 1) {
+						setVehicleCategory(vehicleResult);
 					}
-
 				} else {
-					JOptionPane.showMessageDialog(frame, "No hay resultados, revise los campos de búsqueda",
-							"Warning!", JOptionPane.ERROR_MESSAGE);
+					showErrorMessage("No hay resultados, revise los campos de búsqueda");
 				}
-
 			}
 		});
 
@@ -220,8 +245,7 @@ public class SalesSearchAndListVehiclesView {
 					new SalesVehicleDetailsView(String.valueOf(tableModel.getValueAt(vehicleTable.getSelectedRow(), 0)))
 							.getFrame().setVisible(true);
 				} else {
-					JOptionPane.showMessageDialog(frame, "Haga clic en un vehículo de la tabla para ver más detalles",
-							"Warning!", JOptionPane.ERROR_MESSAGE);
+					showErrorMessage("Haga clic en un vehículo de la tabla para ver más detalles");
 				}
 			}
 		});
@@ -321,9 +345,9 @@ public class SalesSearchAndListVehiclesView {
 		mainPanel.add(searchPanel, gbc_searchPanel);
 		GridBagLayout gbl_searchPanel = new GridBagLayout();
 		gbl_searchPanel.columnWidths = new int[] { 50, 174, 50, 136, 50, 153, 50, 377, 0 };
-		gbl_searchPanel.rowHeights = new int[] { 31, 50, 52, 49, 0 };
+		gbl_searchPanel.rowHeights = new int[] { 31, 50, 49, 49, 44, 0 };
 		gbl_searchPanel.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_searchPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_searchPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		searchPanel.setLayout(gbl_searchPanel);
 
 		JLabel lblSearchFrameNum = new JLabel("Número de bastidor");
@@ -339,7 +363,7 @@ public class SalesSearchAndListVehiclesView {
 
 		textFieldSearchFrameNum = new JTextField();
 		textFieldSearchFrameNum.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		textFieldSearchFrameNum.setText("1234567890");
+		textFieldSearchFrameNum.setText("1111112223");
 		GridBagConstraints gbc_textFieldSearchFrameNum = new GridBagConstraints();
 		gbc_textFieldSearchFrameNum.anchor = GridBagConstraints.WEST;
 		gbc_textFieldSearchFrameNum.insets = new Insets(0, 0, 5, 5);
@@ -350,46 +374,23 @@ public class SalesSearchAndListVehiclesView {
 
 		group1 = new ButtonGroup();
 
-		JLabel lblSearchKm = new JLabel("Kilómetros");
-		lblSearchKm.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSearchKm.setHorizontalTextPosition(SwingConstants.LEADING);
-		lblSearchKm.setFont(new Font("SansSerif", Font.BOLD, 18));
-		GridBagConstraints gbc_lblSearchKm = new GridBagConstraints();
-		gbc_lblSearchKm.insets = new Insets(0, 0, 5, 5);
-		gbc_lblSearchKm.gridx = 1;
-		gbc_lblSearchKm.gridy = 2;
-		searchPanel.add(lblSearchKm, gbc_lblSearchKm);
-
-		textFieldSearchKm = new JTextField();
-		textFieldSearchKm.setText("120000");
-		textFieldSearchKm.setFont(new Font("SansSerif", Font.PLAIN, 15));
-		textFieldSearchKm.setColumns(10);
-		GridBagConstraints gbc_textFieldSearchKm = new GridBagConstraints();
-		gbc_textFieldSearchKm.insets = new Insets(0, 0, 5, 5);
-		gbc_textFieldSearchKm.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textFieldSearchKm.gridx = 3;
-		gbc_textFieldSearchKm.gridy = 2;
-		searchPanel.add(textFieldSearchKm, gbc_textFieldSearchKm);
-
-		btnSearch = new JButton("Buscar vehículo");
-		btnSearch.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnSearch.setForeground(Color.WHITE);
-		btnSearch.setFont(new Font("SansSerif", Font.BOLD, 15));
-		btnSearch.setBorderPainted(false);
-		btnSearch.setBackground(new Color(231, 111, 81));
-		GridBagConstraints gbc_btnSearch = new GridBagConstraints();
-		gbc_btnSearch.anchor = GridBagConstraints.WEST;
-		gbc_btnSearch.insets = new Insets(0, 0, 5, 5);
-		gbc_btnSearch.gridx = 5;
-		gbc_btnSearch.gridy = 2;
-		searchPanel.add(btnSearch, gbc_btnSearch);
+		btnSearchByFrameNum = new JButton("Buscar bastidor");
+		btnSearchByFrameNum.setForeground(Color.WHITE);
+		btnSearchByFrameNum.setFont(new Font("SansSerif", Font.BOLD, 15));
+		btnSearchByFrameNum.setBorderPainted(false);
+		btnSearchByFrameNum.setBackground(new Color(231, 111, 81));
+		GridBagConstraints gbc_btnSearchByFrameNum = new GridBagConstraints();
+		gbc_btnSearchByFrameNum.insets = new Insets(0, 0, 5, 5);
+		gbc_btnSearchByFrameNum.gridx = 5;
+		gbc_btnSearchByFrameNum.gridy = 1;
+		searchPanel.add(btnSearchByFrameNum, gbc_btnSearchByFrameNum);
 
 		JPanel filterPanel = new JPanel();
 		GridBagConstraints gbc_filterPanel = new GridBagConstraints();
 		gbc_filterPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_filterPanel.anchor = GridBagConstraints.NORTHWEST;
 		gbc_filterPanel.gridx = 7;
-		gbc_filterPanel.gridy = 2;
+		gbc_filterPanel.gridy = 1;
 		searchPanel.add(filterPanel, gbc_filterPanel);
 		filterPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20));
 
@@ -417,12 +418,33 @@ public class SalesSearchAndListVehiclesView {
 		group1.add(motorcyclesRadioButton);
 		group1.add(mopedsRadioButton);
 
+		JLabel lblSearchKm = new JLabel("Kilómetros");
+		lblSearchKm.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSearchKm.setHorizontalTextPosition(SwingConstants.LEADING);
+		lblSearchKm.setFont(new Font("SansSerif", Font.BOLD, 18));
+		GridBagConstraints gbc_lblSearchKm = new GridBagConstraints();
+		gbc_lblSearchKm.insets = new Insets(0, 0, 5, 5);
+		gbc_lblSearchKm.gridx = 1;
+		gbc_lblSearchKm.gridy = 2;
+		searchPanel.add(lblSearchKm, gbc_lblSearchKm);
+
+		textFieldSearchKm = new JTextField();
+		textFieldSearchKm.setText("120000");
+		textFieldSearchKm.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		textFieldSearchKm.setColumns(10);
+		GridBagConstraints gbc_textFieldSearchKm = new GridBagConstraints();
+		gbc_textFieldSearchKm.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldSearchKm.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldSearchKm.gridx = 3;
+		gbc_textFieldSearchKm.gridy = 2;
+		searchPanel.add(textFieldSearchKm, gbc_textFieldSearchKm);
+
 		JLabel lblSearchAnno = new JLabel("Año del vehículo");
 		lblSearchAnno.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSearchAnno.setHorizontalTextPosition(SwingConstants.LEADING);
 		lblSearchAnno.setFont(new Font("SansSerif", Font.BOLD, 18));
 		GridBagConstraints gbc_lblSearchAnno = new GridBagConstraints();
-		gbc_lblSearchAnno.insets = new Insets(0, 0, 0, 5);
+		gbc_lblSearchAnno.insets = new Insets(0, 0, 5, 5);
 		gbc_lblSearchAnno.gridx = 1;
 		gbc_lblSearchAnno.gridy = 3;
 		searchPanel.add(lblSearchAnno, gbc_lblSearchAnno);
@@ -432,11 +454,46 @@ public class SalesSearchAndListVehiclesView {
 		textFieldSearchAnno.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		textFieldSearchAnno.setColumns(10);
 		GridBagConstraints gbc_textFieldSearchAnno = new GridBagConstraints();
-		gbc_textFieldSearchAnno.insets = new Insets(0, 0, 0, 5);
+		gbc_textFieldSearchAnno.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldSearchAnno.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldSearchAnno.gridx = 3;
 		gbc_textFieldSearchAnno.gridy = 3;
 		searchPanel.add(textFieldSearchAnno, gbc_textFieldSearchAnno);
+
+		btnSearch = new JButton("Buscar vehículo");
+		btnSearch.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnSearch.setForeground(Color.WHITE);
+		btnSearch.setFont(new Font("SansSerif", Font.BOLD, 15));
+		btnSearch.setBorderPainted(false);
+		btnSearch.setBackground(new Color(231, 111, 81));
+		GridBagConstraints gbc_btnSearch = new GridBagConstraints();
+		gbc_btnSearch.anchor = GridBagConstraints.WEST;
+		gbc_btnSearch.insets = new Insets(0, 0, 5, 5);
+		gbc_btnSearch.gridx = 5;
+		gbc_btnSearch.gridy = 3;
+		searchPanel.add(btnSearch, gbc_btnSearch);
+
+		JLabel lblSearchFuel = new JLabel("Combustible");
+		lblSearchFuel.setHorizontalTextPosition(SwingConstants.LEADING);
+		lblSearchFuel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSearchFuel.setFont(new Font("SansSerif", Font.BOLD, 18));
+		GridBagConstraints gbc_lblSearchFuel = new GridBagConstraints();
+		gbc_lblSearchFuel.insets = new Insets(0, 0, 0, 5);
+		gbc_lblSearchFuel.gridx = 1;
+		gbc_lblSearchFuel.gridy = 4;
+		searchPanel.add(lblSearchFuel, gbc_lblSearchFuel);
+
+		fuelVehicleComboBox = new JComboBox<Object>();
+		fuelVehicleComboBox.setModel(
+				new DefaultComboBoxModel<>(new String[] { "", "Diesel", "Gasolina", "Híbrido", "Eléctrico" }));
+		fuelVehicleComboBox.setSelectedIndex(0);
+		fuelVehicleComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		GridBagConstraints gbc_fuelVehicleComboBox = new GridBagConstraints();
+		gbc_fuelVehicleComboBox.insets = new Insets(0, 0, 0, 5);
+		gbc_fuelVehicleComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_fuelVehicleComboBox.gridx = 3;
+		gbc_fuelVehicleComboBox.gridy = 4;
+		searchPanel.add(fuelVehicleComboBox, gbc_fuelVehicleComboBox);
 
 		JPanel listPanel = new JPanel();
 		listPanel.setBorder(new MatteBorder(0, 1, 0, 0, (Color) new Color(0, 0, 0)));
@@ -454,10 +511,10 @@ public class SalesSearchAndListVehiclesView {
 		vehicleTable.setPreferredScrollableViewportSize(new Dimension(950, 400));
 		vehicleTable.setFont(new Font("SansSerif", Font.BOLD, 15));
 		vehicleTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Número de bastidor", "Marca", "Modelo", "Combustible", "Precio" }) {
+				new String[] { "Número de bastidor", "Marca", "Modelo", "Año", "Kms", "Combustible", "Precio" }) {
 			private static final long serialVersionUID = 1L;
 			Class<?>[] columnTypes = new Class[] { Integer.class, String.class, String.class, String.class,
-					String.class };
+					String.class, String.class, String.class };
 
 			public Class<?> getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
@@ -484,7 +541,7 @@ public class SalesSearchAndListVehiclesView {
 
 		JScrollPane tableScrollPane = new JScrollPane(vehicleTable);
 		tableScrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		tableScrollPane.setPreferredSize(new Dimension(1000, 370));
+		tableScrollPane.setPreferredSize(new Dimension(1000, 330));
 		tableScrollPane.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		listPanel.add(tableScrollPane);
 
@@ -504,6 +561,31 @@ public class SalesSearchAndListVehiclesView {
 				tableModel.removeRow(i);
 			}
 		}
+	}
+
+	/**
+	 * Coloca el radiobutton en la categoría correspondiente al primer elemento de
+	 * la lista
+	 * 
+	 * @param vehicleResult
+	 */
+	private void setVehicleCategory(List<Vehicle> vehicleResult) {
+		if (vehicleResult.get(0).getTipoVehiculo().equalsIgnoreCase("coche")) {
+			carsRadioButton.setSelected(true);
+		} else if (vehicleResult.get(0).getTipoVehiculo().equalsIgnoreCase("motocicleta")) {
+			motorcyclesRadioButton.setSelected(true);
+		} else {
+			mopedsRadioButton.setSelected(true);
+		}
+	}
+
+	/**
+	 * Muestra un mensaje de error por pantalla
+	 * 
+	 * @param message
+	 */
+	private void showErrorMessage(String message) {
+		JOptionPane.showMessageDialog(frame, message, "Warning!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public JFrame getFrame() {
