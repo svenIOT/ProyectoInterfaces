@@ -7,7 +7,6 @@ public class Vehicle {
 
 	public Vehicle(String num_bastidor, String marca, String modelo, String combustible, String precio,
 			String tipoVehiculo, String anno, String kilometros, int cod_ventas, int cod_cliente, int cod_conce) {
-		super();
 		this.num_bastidor = num_bastidor;
 		this.marca = marca;
 		this.modelo = modelo;

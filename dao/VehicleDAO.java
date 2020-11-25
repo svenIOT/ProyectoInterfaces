@@ -23,10 +23,12 @@ public class VehicleDAO extends AbstractDAO {
 	 * @param enrollment matrícula del vehículo en cuestión, viene de un txtField
 	 */
 	public void addVehicle(Vehicle v, String enrollment, boolean isSaleVehicle) {
-		// Asignar tipo de vehiculo para insertarlo en su tabla (Coche, moto o ciclomotor)
+		// Asignar tipo de vehiculo para insertarlo en su tabla (Coche, moto o
+		// ciclomotor)
 		var vehicleTypeInsert = getInsertByVehicleType(v, enrollment);
 
-		// Comprobar si es un vehículo a la venta o un vehículo a reparar (evitar error SQL)
+		// Comprobar si es un vehículo a la venta o un vehículo a reparar (evitar error
+		// SQL)
 		var vehicleInsert = getInsertByVehicle(v, isSaleVehicle);
 
 		try {
@@ -117,8 +119,9 @@ public class VehicleDAO extends AbstractDAO {
 			rs = stm.executeQuery(Constants.SELECT_VEHICLES);
 			while (rs.next()) {
 				vehicles.add(new Vehicle(rs.getString("num_bastidor"), rs.getString("marca"), rs.getString("modelo"),
-						rs.getString("combustible"), rs.getString("precio"), rs.getInt("cod_ventas"),
-						rs.getInt("cod_cliente"), rs.getInt("cod_conce"), rs.getString("tipo_vehiculo")));
+						rs.getString("combustible"), rs.getString("precio"), rs.getString("tipo_vehiculo"),
+						rs.getString("anno"), rs.getString("kilometros"), rs.getInt("cod_ventas"),
+						rs.getInt("cod_cliente"), rs.getInt("cod_conce")));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -238,9 +241,10 @@ public class VehicleDAO extends AbstractDAO {
 	}
 
 	/**
-	 * Obtiene el insert con los campos que sean necesarios según si es un vehículo de ventas o en reparaciones
+	 * Obtiene el insert con los campos que sean necesarios según si es un vehículo
+	 * de ventas o en reparaciones
 	 * 
-	 * @param v          Vehículo
+	 * @param v             Vehículo
 	 * @param isSaleVehicle boolean
 	 * @return String con el insert
 	 */

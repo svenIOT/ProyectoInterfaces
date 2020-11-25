@@ -176,12 +176,12 @@ public class SalesSearchAndListVehiclesView {
 				// Filtra el vehículo con los críterios de búsqueda seleccionados
 				if (frameNumber.isBlank()) {
 					vehicleResult = onSaleVehicles.stream()
-							.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber))
+							.filter(vehicle -> vehicle.getKilometros().equalsIgnoreCase(km))
+							.filter(vehicle -> vehicle.getAnno().equalsIgnoreCase(anno))
 							.collect(Collectors.toList());
 				} else {
 					vehicleResult = onSaleVehicles.stream()
-							.filter(vehicle -> vehicle.getKilometros().equalsIgnoreCase(km))
-							.filter(vehicle -> vehicle.getAnno().equalsIgnoreCase(anno))
+							.filter(vehicle -> vehicle.getNum_bastidor().equalsIgnoreCase(frameNumber))
 							.collect(Collectors.toList());
 				}
 				
