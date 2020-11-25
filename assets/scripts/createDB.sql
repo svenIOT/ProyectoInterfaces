@@ -145,6 +145,8 @@ CREATE TABLE Vehiculo
 	modelo varchar(35),
 	combustible varchar(15),
 	precio varchar(6),
+    anno varchar(4),
+    kilometros varchar(6),
 	PRIMARY KEY (num_bastidor)
 );
 

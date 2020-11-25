@@ -2,10 +2,26 @@ package model;
 
 public class Vehicle {
 
-	private String num_bastidor, marca, modelo, combustible, precio, tipoVehiculo, nombre, apellidos;
+	private String num_bastidor, marca, modelo, combustible, precio, tipoVehiculo, nombre, apellidos, anno, kilometros;
 	private int cod_ventas, cod_cliente, cod_conce, cod_empleado;
 
-	// Constructor con códigos
+	public Vehicle(String num_bastidor, String marca, String modelo, String combustible, String precio,
+			String tipoVehiculo, String anno, String kilometros, int cod_ventas, int cod_cliente, int cod_conce) {
+		super();
+		this.num_bastidor = num_bastidor;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.combustible = combustible;
+		this.precio = precio;
+		this.tipoVehiculo = tipoVehiculo;
+		this.anno = anno;
+		this.kilometros = kilometros;
+		this.cod_ventas = cod_ventas;
+		this.cod_cliente = cod_cliente;
+		this.cod_conce = cod_conce;
+	}
+
+	// Constructor con códigos sin año ni kilometros
 	public Vehicle(String num_bastidor, String marca, String modelo, String combustible, String precio, int cod_ventas,
 			int cod_cliente, int cod_conce, String vehicleType) {
 		this.num_bastidor = num_bastidor;
@@ -84,5 +100,15 @@ public class Vehicle {
 	public String getTipoVehiculo() {
 		return tipoVehiculo;
 	}
+
+	public String getAnno() {
+		return anno;
+	}
+
+	public String getKilometros() {
+		return kilometros;
+	}
+	
+	
 
 }

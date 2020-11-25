@@ -60,19 +60,19 @@ INSERT INTO taller.ventas (cod_ventas, cod_empleado) VALUES
 (3, 8);
 
 -- VEHÍCULO
-INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, tipo_vehiculo, marca, modelo, combustible, precio) VALUES 
-('1234567890', 1, 2, 1, 'Coche', 'Subaru', 'WRX STI', 'Gasolina', 37000),
-('9876543210', 2, 3, 1, 'Coche', 'Nissan', '370Z Nismo', 'Gasolina', 35000),
-('4328457431', 1, 1, 1, 'Motocicleta', 'Honda', 'CBR 1000', 'Gasolina', 7900),
-('5486079685', 3, 1, 1, 'Ciclomotor', 'Piaggio', 'SH', 'Gasolina', 2900),
-('0006079000', 3, 3, 1, 'Ciclomotor', 'Piaggio', 'ZIP', 'Gasolina', 800),
-('9996079999', 1, 2, 1, 'Motocicleta', 'Yamaha', 'SR', 'Gasolina', 4900), -- Vehículo ya vendido (algunos en reparación)
-('0123456789', null, null, 1, 'Coche', 'Seat', 'Ibiza', 'Diesel', 6700),
-('1112223334', null, null, 1, 'Motocicleta', 'Suzuki', 'GSX-1300R Hayabusa', 'Gasolina', 35000),
-('4443332221', null, null, 1, 'Ciclomotor', 'Hawk', '1800W/40AH L1e-B', 'Híbrido', 1900),
-('1111112223', null, null, 1, 'Coche', 'Toyota', 'Prius', 'Híbrido', 20000),
-('3334445556', null, null, 1, 'Motocicleta', 'Benelli', 'BN 302', 'Gasolina', 4000), -- Vehículo a la venta, sin dueño ni cod ventas
-('0000000001', null, 4, 1, 'Coche', 'BMW', '335d', 'Diesel', null); -- Vehículo en reparaciones, sin precio ni cod ventas
+INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, tipo_vehiculo, marca, modelo, combustible, precio, anno, kilometros) VALUES 
+('1234567890', 1, 2, 1, 'Coche', 'Subaru', 'WRX STI', 'Gasolina', 37000, '2017', '1540'),
+('9876543210', 2, 3, 1, 'Coche', 'Nissan', '370Z Nismo', 'Gasolina', 35000, '2017', '3000'),
+('4328457431', 1, 1, 1, 'Motocicleta', 'Honda', 'CBR 1000', 'Gasolina', 7900, '2010', '1100'),
+('5486079685', 3, 1, 1, 'Ciclomotor', 'Piaggio', 'SH', 'Gasolina', 2900, '2012', '5988'),
+('0006079000', 3, 3, 1, 'Ciclomotor', 'Piaggio', 'ZIP', 'Gasolina', 800, '2009', '6888'),
+('9996079999', 1, 2, 1, 'Motocicleta', 'Yamaha', 'SR', 'Gasolina', 4900, '2014', '5566'), -- Vehículo ya vendido (algunos en reparación)
+('0123456789', null, null, 1, 'Coche', 'Seat', 'Ibiza', 'Diesel', 6700, '2011', '120000'),
+('1112223334', null, null, 1, 'Motocicleta', 'Suzuki', 'GSX-1300R Hayabusa', 'Gasolina', 35000, '2019', '3999'),
+('4443332221', null, null, 1, 'Ciclomotor', 'Hawk', '1800W/40AH L1e-B', 'Híbrido', 1900, '2020', '11'),
+('1111112223', null, null, 1, 'Coche', 'Toyota', 'Prius', 'Híbrido', 20000, '2019', '50300'),
+('3334445556', null, null, 1, 'Motocicleta', 'Benelli', 'BN 302', 'Gasolina', 4000, '2004', '15440'), -- Vehículo a la venta, sin dueño ni cod ventas
+('0000000001', null, 4, 1, 'Coche', 'BMW', '335d', 'Diesel', null, '2015', '143540'); -- Vehículo en reparaciones, sin precio ni cod ventas
 
 -- REPARACION
 INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas, precio) VALUES

@@ -31,6 +31,8 @@ import model.Sales;
 import model.Vehicle;
 import view.LoginView;
 import java.awt.Cursor;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 public class SalesAddVehicleView {
 
@@ -46,6 +48,8 @@ public class SalesAddVehicleView {
 	private JTextField brandTxt;
 	private JTextField modelTxt;
 	private JTextField priceTxt;
+	private JTextField kmTxt;
+	private JSpinner spinnerAnno;
 
 	private VehicleDAO vehicleDAO;
 
@@ -348,6 +352,38 @@ public class SalesAddVehicleView {
 		concessionaireComboBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesDatesPanelRight.add(concessionaireComboBox);
 
+		JLabel annoLbl = new JLabel("Año:");
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, annoLbl, 26, SpringLayout.SOUTH,
+				concessionaireLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, annoLbl, 0, SpringLayout.WEST, fuelVehicleLbl);
+		annoLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		vehiclesDatesPanelRight.add(annoLbl);
+
+		kmTxt = new JTextField();
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, kmTxt, 0, SpringLayout.WEST, fuelVehicleComboBox);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.SOUTH, kmTxt, -64, SpringLayout.SOUTH,
+				vehiclesDatesPanelRight);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, kmTxt, 0, SpringLayout.EAST, fuelVehicleComboBox);
+		kmTxt.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		kmTxt.setColumns(10);
+		vehiclesDatesPanelRight.add(kmTxt);
+
+		JLabel kmLbl = new JLabel("Kilómetros:");
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, kmLbl, 3, SpringLayout.NORTH, kmTxt);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, kmLbl, 0, SpringLayout.WEST, fuelVehicleLbl);
+		kmLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		vehiclesDatesPanelRight.add(kmLbl);
+
+		spinnerAnno = new JSpinner();
+		spinnerAnno.setModel(new SpinnerNumberModel(1969, 1969, 2050, 1));
+		spinnerAnno.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, spinnerAnno, 0, SpringLayout.WEST,
+				fuelVehicleComboBox);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.SOUTH, spinnerAnno, -20, SpringLayout.NORTH, kmTxt);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, spinnerAnno, 0, SpringLayout.EAST,
+				fuelVehicleComboBox);
+		vehiclesDatesPanelRight.add(spinnerAnno);
+
 		JPanel buttonPanel = new JPanel();
 		GridBagConstraints gbc_botonPanel = new GridBagConstraints();
 		gbc_botonPanel.fill = GridBagConstraints.BOTH;
@@ -389,13 +425,15 @@ public class SalesAddVehicleView {
 		var concessionaire = concessionaireComboBox.getSelectedIndex() + 1;
 		var price = priceTxt.getText();
 		var vehicleType = vehicleTypeComboBox.getSelectedItem().toString();
+		var anno = spinnerAnno.getValue().toString();
+		var km = kmTxt.getText();
 
-		if (frameNumberTxt.getText().isBlank() || brandTxt.getText().isBlank() || modelTxt.getText().isBlank()
-				|| priceTxt.getText().isBlank()) {
+		if (numFrameCar.isBlank() || brand.isBlank() || model.isBlank() || price.isBlank() || km.isBlank()) {
 			JOptionPane.showMessageDialog(frame, "Error, los campos no pueden estar vacios, ni contener solo espacios",
 					"Warning!", JOptionPane.ERROR_MESSAGE);
 		} else {
-			// Comprobar si el vehículo ya existe (filtra un vehículo con el númer de bastidor del txtField)
+			// Comprobar si el vehículo ya existe (filtra un vehículo con el númer de
+			// bastidor del txtField)
 			var existVehicle = vehicles.stream().filter(v -> v.getNum_bastidor().equalsIgnoreCase(numFrameCar))
 					.collect(Collectors.toList());
 
@@ -403,8 +441,8 @@ public class SalesAddVehicleView {
 				JOptionPane.showMessageDialog(frame, "Error, ya existe el número de bastidor del vehículo introducido",
 						"Warning!", JOptionPane.ERROR_MESSAGE);
 			} else {
-				vehicle = new Vehicle(numFrameCar, brand, model, fuel, price, user.getCod_ventas(), 0, concessionaire,
-						vehicleType);
+				vehicle = new Vehicle(numFrameCar, brand, model, fuel, price, vehicleType, anno, km,
+						user.getCod_ventas(), 0, concessionaire);
 			}
 		}
 		return vehicle;
@@ -413,5 +451,4 @@ public class SalesAddVehicleView {
 	public JFrame getFrame() {
 		return frame;
 	}
-
 }
