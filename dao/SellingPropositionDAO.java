@@ -42,7 +42,7 @@ public class SellingPropositionDAO extends AbstractDAO {
 		try {
 			stm = con.createStatement();
 			stm.executeUpdate(
-					"INSERT INTO taller.propuesta (cod_propuesta, cod_cliente, cod_ventas, num_bastidor, fecha_validez) VALUES ("
+					"INSERT INTO taller.propuesta (cod_propuesta, cod_cliente, cod_ventas, num_bastidor, fecha_validez, precio) VALUES ("
 							+ sp.getCod_propuesta() + ", " + sp.getCod_cliente() + ", " + sp.getCod_ventas() + ", '"
 							+ sp.getNum_bastidor() + "', '" + sp.getFecha_validez() + "', " + sp.getPrecio() + ")");
 		} catch (SQLException ex) {

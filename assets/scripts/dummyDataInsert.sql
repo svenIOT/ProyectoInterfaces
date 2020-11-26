@@ -25,7 +25,7 @@ INSERT INTO taller.empleado (cod_empleado, dni, cod_conce, usuario, contrasena) 
 (3, '12345678C', 1, 'mecanicojefe', MD5('usuario')),
 (4, '12345678D', 1, 'jefe', MD5('usuario')),
 (5, '12345679X', 1, 'dominic', MD5('usuario')),
-(6, '0005694R', 1, 'mecanicociclo', MD5('usuario')),
+(6, '00056964R', 1, 'mecanicociclo', MD5('usuario')),
 (7, '95175345H', 1, 'ventas2', MD5('usuario')),
 (8, '74185296M', 1, 'ventas3', MD5('usuario'));
 
