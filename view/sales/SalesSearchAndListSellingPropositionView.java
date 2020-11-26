@@ -87,7 +87,7 @@ public class SalesSearchAndListSellingPropositionView {
 								sellingPropositionDAO.getDni_cliente(propositionList.get(i).getCod_cliente()),
 								propositionList.get(i).getCod_propuesta(), propositionList.get(i).getCod_cliente(),
 								propositionList.get(i).getCod_ventas(), propositionList.get(i).getNum_bastidor(),
-								propositionList.get(i).getFecha_validez() });
+								propositionList.get(i).getFecha_validez(), propositionList.get(i).getPrecio() });
 					}
 				}
 			}
@@ -109,7 +109,7 @@ public class SalesSearchAndListSellingPropositionView {
 							new Object[] { sellingPropositionDAO.getDni_cliente(propositionResult.getCod_cliente()),
 									propositionResult.getCod_cliente(), propositionResult.getCod_propuesta(),
 									propositionResult.getCod_ventas(), propositionResult.getNum_bastidor(),
-									propositionResult.getFecha_validez() });
+									propositionResult.getFecha_validez(), propositionResult.getPrecio() });
 				} else {
 					JOptionPane.showMessageDialog(frame, "Cliente no encontrado, revise el DNI", "Warning!",
 							JOptionPane.ERROR_MESSAGE);
@@ -287,10 +287,10 @@ public class SalesSearchAndListSellingPropositionView {
 		sellingPropositionTable.setPreferredScrollableViewportSize(new Dimension(950, 400));
 		sellingPropositionTable.setFont(new Font("SansSerif", Font.BOLD, 15));
 		sellingPropositionTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "DNI Cliente",
-				"Código propuesta", "Código cliente", "Código venta", "Número de bastidor", "Fecha de validez" }) {
+				"Código propuesta", "Código cliente", "Código venta", "Número de bastidor", "Fecha de validez", "Precio" }) {
 					private static final long serialVersionUID = 1L;
 			Class<?>[] columnTypes = new Class[] { String.class, Integer.class, Integer.class, Integer.class, String.class,
-					String.class };
+					String.class, String.class };
 
 			public Class<?> getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
@@ -308,6 +308,8 @@ public class SalesSearchAndListSellingPropositionView {
 		sellingPropositionTable.getColumnModel().getColumn(4).setMaxWidth(555);
 		sellingPropositionTable.getColumnModel().getColumn(5).setPreferredWidth(100);
 		sellingPropositionTable.getColumnModel().getColumn(5).setMaxWidth(555);
+		sellingPropositionTable.getColumnModel().getColumn(6).setPreferredWidth(100);
+		sellingPropositionTable.getColumnModel().getColumn(6).setMaxWidth(555);
 
 		btnSell = new JButton("Confirmar venta");
 		btnSell.setForeground(Color.WHITE);
@@ -338,8 +340,9 @@ public class SalesSearchAndListSellingPropositionView {
 		var salesId = (int) tableModel.getValueAt(sellingPropositionTable.getSelectedRow(), 3);
 		var frameNumber = String.valueOf(tableModel.getValueAt(sellingPropositionTable.getSelectedRow(), 4));
 		var validDate = String.valueOf(tableModel.getValueAt(sellingPropositionTable.getSelectedRow(), 5));
+		var price = String.valueOf(tableModel.getValueAt(sellingPropositionTable.getSelectedRow(), 6));
 		
-		return new SellingProposition(propositionId, clientId, salesId, frameNumber, validDate);
+		return new SellingProposition(propositionId, clientId, salesId, frameNumber, validDate, price);
 	}
 	
 	private void clearTable(DefaultTableModel tableModel) {

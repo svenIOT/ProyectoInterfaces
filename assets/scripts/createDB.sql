@@ -117,6 +117,7 @@ CREATE TABLE Propuesta
 	cod_ventas int NOT NULL,
 	num_bastidor varchar(10) NOT NULL,
     fecha_validez date,
+    precio varchar(6),
 	PRIMARY KEY (cod_propuesta)
 );
 

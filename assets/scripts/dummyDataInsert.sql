@@ -103,10 +103,10 @@ INSERT INTO taller.ciclomotor (mat_ciclo, num_bastidor) VALUES
 ('0101IER', '4443332221');
 
 -- PROPUESTA
-INSERT INTO taller.propuesta (cod_propuesta, cod_cliente, cod_ventas, num_bastidor, fecha_validez) VALUES
-(1, 1, 1, '0123456789', '2021-10-11'),
-(2, 2, 1, '1112223334', '2021-12-17'),
-(3, 3, 1, '1111112223', '2021-11-19');
+INSERT INTO taller.propuesta (cod_propuesta, cod_cliente, cod_ventas, num_bastidor, fecha_validez, precio) VALUES
+(1, 1, 1, '0123456789', '2021-10-11', 5000),
+(2, 2, 1, '1112223334', '2021-12-17', 49999),
+(3, 3, 1, '1111112223', '2021-11-19', 12312);
 
 
 

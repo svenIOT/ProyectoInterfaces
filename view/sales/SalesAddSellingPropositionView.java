@@ -375,7 +375,7 @@ public class SalesAddSellingPropositionView {
 					JOptionPane.ERROR_MESSAGE);
 		} else {
 			sellingProposition = new SellingProposition(0, selectedClient.get(0).getClientCod(), user.getCod_ventas(),
-					frameNumber, dateString);
+					frameNumber, dateString, price);
 		}
 
 		return sellingProposition;

@@ -25,7 +25,7 @@ public class SellingPropositionDAO extends AbstractDAO {
 			rs = stm.executeQuery(Constants.SELECT_PROPOSITION);
 			while (rs.next()) {
 				sellingProposition.add(new SellingProposition(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4),
-						rs.getString(5)));
+						rs.getString(5), rs.getString(6)));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -44,7 +44,7 @@ public class SellingPropositionDAO extends AbstractDAO {
 			stm.executeUpdate(
 					"INSERT INTO taller.propuesta (cod_propuesta, cod_cliente, cod_ventas, num_bastidor, fecha_validez) VALUES ("
 							+ sp.getCod_propuesta() + ", " + sp.getCod_cliente() + ", " + sp.getCod_ventas() + ", '"
-							+ sp.getNum_bastidor() + "', '" + sp.getFecha_validez() + "')");
+							+ sp.getNum_bastidor() + "', '" + sp.getFecha_validez() + "', " + sp.getPrecio() + ")");
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -81,7 +81,7 @@ public class SellingPropositionDAO extends AbstractDAO {
 					+ "'" + "AND cliente.cod_cliente = propuesta.cod_cliente;");
 			if (rs.next()) {
 				proposition = new SellingProposition(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4),
-						rs.getString(5));
+						rs.getString(5), rs.getString(6));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -98,9 +98,9 @@ public class SellingPropositionDAO extends AbstractDAO {
 		try {
 			con.setAutoCommit(false);
 			stm = con.createStatement();
-			// Actualizar código de cliente y código de ventas del vehículo
+			// Actualizar código de cliente, código de ventas del vehículo y el nuevo precio (propuesta final)
 			stm.executeUpdate("UPDATE taller.vehiculo SET cod_ventas=" + sp.getCod_ventas() + ", cod_cliente="
-					+ sp.getCod_cliente() + " WHERE vehiculo.num_bastidor=" + sp.getNum_bastidor() + ";");
+					+ sp.getCod_cliente() + ", precio=" + sp.getPrecio() +  " WHERE vehiculo.num_bastidor=" + sp.getNum_bastidor() + ";");
 
 			// Eliminar propuesta de venta
 			stm.executeUpdate("DELETE FROM taller.propuesta WHERE propuesta.cod_propuesta=" + sp.getCod_propuesta() + ";");
