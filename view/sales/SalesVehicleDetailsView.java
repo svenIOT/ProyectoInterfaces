@@ -17,12 +17,19 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
 import dao.VehicleDAO;
+import model.Car;
+import model.Moped;
+import model.Motorcycle;
+import model.Vehicle;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.awt.Cursor;
+import javax.swing.ImageIcon;
 
 public class SalesVehicleDetailsView {
 
@@ -37,6 +44,8 @@ public class SalesVehicleDetailsView {
 	private JLabel resultModelLbl;
 	private JLabel resultFuelVehicleLbl;
 	private JLabel resultPriceLbl;
+	private JLabel resultAnnoLbl;
+	private JLabel resultKmLbl;
 
 	private VehicleDAO vehicleDAO;
 
@@ -86,47 +95,31 @@ public class SalesVehicleDetailsView {
 
 				if (filteredVehicle.get(0).getTipoVehiculo().equalsIgnoreCase("coche")) {
 					// Filtrar el coche para obtener su matrícula
-					var filteredCar = cars.stream()
-							.filter(car -> car.getNum_bastidor().equalsIgnoreCase(filteredVehicle.get(0).getNum_bastidor()))
+					var filteredCar = cars.stream().filter(
+							car -> car.getNum_bastidor().equalsIgnoreCase(filteredVehicle.get(0).getNum_bastidor()))
 							.collect(Collectors.toList());
 
 					// Rellenar labels
-					resultVehicleTypeLbl.setText(filteredVehicle.get(0).getTipoVehiculo());
-					resultBrandLbl.setText(filteredVehicle.get(0).getMarca());
-					resultFrameNumberLbl.setText(filteredVehicle.get(0).getNum_bastidor());
-					resultFuelVehicleLbl.setText(filteredVehicle.get(0).getCombustible());
-					resultModelLbl.setText(filteredVehicle.get(0).getModelo());
-					resultPriceLbl.setText(filteredVehicle.get(0).getPrecio());
-					resultVehicleLicenseLbl.setText(filteredCar.get(0).getMat_coche());
+					fillCarLabels(filteredVehicle, filteredCar);
 
 				} else if (filteredVehicle.get(0).getTipoVehiculo().equalsIgnoreCase("motocicleta")) {
 					// Filtrar la motocicleta para obtener su matrícula
 					var filteredMotorcycle = motorcycles.stream()
-							.filter(motorcycle -> motorcycle.getNum_bastidor().equalsIgnoreCase(filteredVehicle.get(0).getNum_bastidor()))
+							.filter(motorcycle -> motorcycle.getNum_bastidor()
+									.equalsIgnoreCase(filteredVehicle.get(0).getNum_bastidor()))
 							.collect(Collectors.toList());
-					
+
 					// Rellenar labels
-					resultVehicleTypeLbl.setText(filteredVehicle.get(0).getTipoVehiculo());
-					resultBrandLbl.setText(filteredVehicle.get(0).getMarca());
-					resultFrameNumberLbl.setText(filteredVehicle.get(0).getNum_bastidor());
-					resultFuelVehicleLbl.setText(filteredVehicle.get(0).getCombustible());
-					resultModelLbl.setText(filteredVehicle.get(0).getModelo());
-					resultPriceLbl.setText(filteredVehicle.get(0).getPrecio());
-					resultVehicleLicenseLbl.setText(filteredMotorcycle.get(0).getMat_moto());
+					fillMotorcycleLabels(filteredVehicle, filteredMotorcycle);
+
 				} else {
 					// Filtrar la motocicleta para obtener su matrícula
-					var filteredMoped = mopeds.stream()
-							.filter(moped -> moped.getNum_bastidor().equalsIgnoreCase(filteredVehicle.get(0).getNum_bastidor()))
+					var filteredMoped = mopeds.stream().filter(
+							moped -> moped.getNum_bastidor().equalsIgnoreCase(filteredVehicle.get(0).getNum_bastidor()))
 							.collect(Collectors.toList());
-					
+
 					// Rellenar labels
-					resultVehicleTypeLbl.setText(filteredVehicle.get(0).getTipoVehiculo());
-					resultBrandLbl.setText(filteredVehicle.get(0).getMarca());
-					resultFrameNumberLbl.setText(filteredVehicle.get(0).getNum_bastidor());
-					resultFuelVehicleLbl.setText(filteredVehicle.get(0).getCombustible());
-					resultModelLbl.setText(filteredVehicle.get(0).getModelo());
-					resultPriceLbl.setText(filteredVehicle.get(0).getPrecio());
-					resultVehicleLicenseLbl.setText(filteredMoped.get(0).getMat_ciclo());
+					fillMopedLabels(filteredVehicle, filteredMoped);
 				}
 			}
 		});
@@ -181,7 +174,7 @@ public class SalesVehicleDetailsView {
 		frame.getContentPane().add(mainPanel);
 		GridBagLayout gbl_mainPanel = new GridBagLayout();
 		gbl_mainPanel.columnWidths = new int[] { 857, 0 };
-		gbl_mainPanel.rowHeights = new int[] { 137, 298, 328, 0 };
+		gbl_mainPanel.rowHeights = new int[] { 137, 466, 328, 0 };
 		gbl_mainPanel.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
 		gbl_mainPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		mainPanel.setLayout(gbl_mainPanel);
@@ -214,12 +207,13 @@ public class SalesVehicleDetailsView {
 		mainPanel.add(vehiclesDatesPanel, gbc_vehiclesDatesPanel);
 		GridBagLayout gbl_vehiclesDatesPanel = new GridBagLayout();
 		gbl_vehiclesDatesPanel.columnWidths = new int[] { 340, 432, 0 };
-		gbl_vehiclesDatesPanel.rowHeights = new int[] { 267, 0 };
+		gbl_vehiclesDatesPanel.rowHeights = new int[] { 351, 0 };
 		gbl_vehiclesDatesPanel.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
 		gbl_vehiclesDatesPanel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 		vehiclesDatesPanel.setLayout(gbl_vehiclesDatesPanel);
 
 		JPanel vehiclesDatesPanelLeft = new JPanel();
+		vehiclesDatesPanelLeft.setBorder(new MatteBorder(0, 0, 0, 1, (Color) Color.BLACK));
 		GridBagConstraints gbc_vehiclesDatesPanelLeft = new GridBagConstraints();
 		gbc_vehiclesDatesPanelLeft.fill = GridBagConstraints.BOTH;
 		gbc_vehiclesDatesPanelLeft.insets = new Insets(0, 0, 0, 5);
@@ -232,10 +226,8 @@ public class SalesVehicleDetailsView {
 		// Componentes panel derecho
 		// Añadir Jlabel y JText para los distintos datos del ciente
 		JLabel vehicleTypeLbl = new JLabel("Tipo de vehículo:");
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, vehicleTypeLbl, 28, SpringLayout.WEST,
-				vehiclesDatesPanelLeft);
-		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.SOUTH, vehicleTypeLbl, -220, SpringLayout.SOUTH,
-				vehiclesDatesPanelLeft);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.NORTH, vehicleTypeLbl, 26, SpringLayout.NORTH, vehiclesDatesPanelLeft);
+		sl_vehiclesDatesPanelLeft.putConstraint(SpringLayout.WEST, vehicleTypeLbl, 28, SpringLayout.WEST, vehiclesDatesPanelLeft);
 		vehicleTypeLbl.setFont(new Font("SansSerif", Font.BOLD, 15));
 		vehiclesDatesPanelLeft.add(vehicleTypeLbl);
 
@@ -324,6 +316,7 @@ public class SalesVehicleDetailsView {
 		vehiclesDatesPanelRight.add(fuelVehicleLbl);
 
 		JLabel priceLbl = new JLabel("Precio:");
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, priceLbl, 25, SpringLayout.SOUTH, fuelVehicleLbl);
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, priceLbl, 0, SpringLayout.WEST, fuelVehicleLbl);
 		priceLbl.setFont(new Font("SansSerif", Font.BOLD, 15));
 		vehiclesDatesPanelRight.add(priceLbl);
@@ -331,21 +324,53 @@ public class SalesVehicleDetailsView {
 		resultFuelVehicleLbl = new JLabel("");
 		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, resultFuelVehicleLbl, 0, SpringLayout.NORTH,
 				fuelVehicleLbl);
-		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, resultFuelVehicleLbl, 6, SpringLayout.EAST,
-				fuelVehicleLbl);
 		resultFuelVehicleLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesDatesPanelRight.add(resultFuelVehicleLbl);
 
 		resultPriceLbl = new JLabel("");
-		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, resultPriceLbl, 70, SpringLayout.NORTH,
-				vehiclesDatesPanelRight);
-		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, priceLbl, 0, SpringLayout.NORTH, resultPriceLbl);
-		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, resultPriceLbl, 0, SpringLayout.WEST,
-				resultFuelVehicleLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, resultFuelVehicleLbl, 0, SpringLayout.WEST,
+				resultPriceLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, resultPriceLbl, 0, SpringLayout.NORTH, priceLbl);
 		resultPriceLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		vehiclesDatesPanelRight.add(resultPriceLbl);
 
+		JLabel annoLbl = new JLabel("Año de matriculación:");
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, annoLbl, 19, SpringLayout.SOUTH, priceLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, annoLbl, 0, SpringLayout.WEST, fuelVehicleLbl);
+		annoLbl.setFont(new Font("SansSerif", Font.BOLD, 15));
+		vehiclesDatesPanelRight.add(annoLbl);
+
+		JLabel kmLbl = new JLabel("Kilómetros:");
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, kmLbl, 20, SpringLayout.SOUTH, annoLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, kmLbl, 0, SpringLayout.WEST, fuelVehicleLbl);
+		kmLbl.setFont(new Font("SansSerif", Font.BOLD, 15));
+		vehiclesDatesPanelRight.add(kmLbl);
+
+		resultAnnoLbl = new JLabel("");
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, resultPriceLbl, 0, SpringLayout.WEST,
+				resultAnnoLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, resultAnnoLbl, 0, SpringLayout.NORTH, annoLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, resultAnnoLbl, -198, SpringLayout.EAST,
+				vehiclesDatesPanelRight);
+		resultAnnoLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		vehiclesDatesPanelRight.add(resultAnnoLbl);
+
+		resultKmLbl = new JLabel("");
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, resultKmLbl, 0, SpringLayout.NORTH, kmLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, resultKmLbl, 0, SpringLayout.EAST, resultAnnoLbl);
+		resultKmLbl.setFont(new Font("SansSerif", Font.PLAIN, 15));
+		vehiclesDatesPanelRight.add(resultKmLbl);
+		
+		JLabel imagelbl = new JLabel("");
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.NORTH, imagelbl, 30, SpringLayout.SOUTH, kmLbl);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.WEST, imagelbl, 62, SpringLayout.WEST, vehiclesDatesPanelRight);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.SOUTH, imagelbl, -34, SpringLayout.SOUTH, vehiclesDatesPanelRight);
+		sl_vehiclesDatesPanelRight.putConstraint(SpringLayout.EAST, imagelbl, 112, SpringLayout.EAST, fuelVehicleLbl);
+		imagelbl.setIcon(new ImageIcon(SalesVehicleDetailsView.class.getResource("/assets/img/car.png")));
+		vehiclesDatesPanelRight.add(imagelbl);
+
 		JPanel buttonPanel = new JPanel();
+		buttonPanel.setBorder(new MatteBorder(1, 0, 0, 0, (Color) Color.BLACK));
 		GridBagConstraints gbc_botonPanel = new GridBagConstraints();
 		gbc_botonPanel.fill = GridBagConstraints.BOTH;
 		gbc_botonPanel.gridx = 0;
@@ -371,9 +396,62 @@ public class SalesVehicleDetailsView {
 		gbc_returnButton.gridy = 0;
 		buttonPanel.add(returnButton, gbc_returnButton);
 	}
+	
+	/**
+	 * Rellena los labels con los datos del ciclomotor
+	 * 
+	 * @param filteredVehicle
+	 * @param filteredMoped
+	 */
+	private void fillMopedLabels(List<Vehicle> filteredVehicle, List<Moped> filteredMoped) {
+		resultVehicleTypeLbl.setText(filteredVehicle.get(0).getTipoVehiculo());
+		resultBrandLbl.setText(filteredVehicle.get(0).getMarca());
+		resultFrameNumberLbl.setText(filteredVehicle.get(0).getNum_bastidor());
+		resultFuelVehicleLbl.setText(filteredVehicle.get(0).getCombustible());
+		resultModelLbl.setText(filteredVehicle.get(0).getModelo());
+		resultPriceLbl.setText(filteredVehicle.get(0).getPrecio());
+		resultVehicleLicenseLbl.setText(filteredMoped.get(0).getMat_ciclo());
+		resultAnnoLbl.setText(filteredVehicle.get(0).getAnno());
+		resultKmLbl.setText(filteredVehicle.get(0).getKilometros());
+	}
+
+	/**
+	 * Rellena los labels con los datos de la moto
+	 * 
+	 * @param filteredVehicle
+	 * @param filteredMotorcycle
+	 */
+	private void fillMotorcycleLabels(List<Vehicle> filteredVehicle, List<Motorcycle> filteredMotorcycle) {
+		resultVehicleTypeLbl.setText(filteredVehicle.get(0).getTipoVehiculo());
+		resultBrandLbl.setText(filteredVehicle.get(0).getMarca());
+		resultFrameNumberLbl.setText(filteredVehicle.get(0).getNum_bastidor());
+		resultFuelVehicleLbl.setText(filteredVehicle.get(0).getCombustible());
+		resultModelLbl.setText(filteredVehicle.get(0).getModelo());
+		resultPriceLbl.setText(filteredVehicle.get(0).getPrecio());
+		resultVehicleLicenseLbl.setText(filteredMotorcycle.get(0).getMat_moto());
+		resultAnnoLbl.setText(filteredVehicle.get(0).getAnno());
+		resultKmLbl.setText(filteredVehicle.get(0).getKilometros());
+	}
+
+	/**
+	 * Rellena los labels con los datos del coche
+	 * 
+	 * @param filteredVehicle
+	 * @param filteredCar
+	 */
+	private void fillCarLabels(List<Vehicle> filteredVehicle, List<Car> filteredCar) {
+		resultVehicleTypeLbl.setText(filteredVehicle.get(0).getTipoVehiculo());
+		resultBrandLbl.setText(filteredVehicle.get(0).getMarca());
+		resultFrameNumberLbl.setText(filteredVehicle.get(0).getNum_bastidor());
+		resultFuelVehicleLbl.setText(filteredVehicle.get(0).getCombustible());
+		resultModelLbl.setText(filteredVehicle.get(0).getModelo());
+		resultPriceLbl.setText(filteredVehicle.get(0).getPrecio());
+		resultVehicleLicenseLbl.setText(filteredCar.get(0).getMat_coche());
+		resultAnnoLbl.setText(filteredVehicle.get(0).getAnno());
+		resultKmLbl.setText(filteredVehicle.get(0).getKilometros());
+	}
 
 	public JFrame getFrame() {
 		return frame;
 	}
-
 }

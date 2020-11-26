@@ -19,6 +19,9 @@ import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import dao.VehicleDAO;
+import model.Car;
+import model.Moped;
+import model.Motorcycle;
 import model.Sales;
 import model.Vehicle;
 import view.LoginView;
@@ -209,11 +212,8 @@ public class SalesSearchAndListVehiclesView {
 				var fuel = fuelVehicleComboBox.getSelectedItem().toString();
 
 				// Filtra el vehículo con los críterios de búsqueda seleccionados
-				var vehicleResult = onSaleVehicles.stream()
-						.filter(vehicle -> vehicle.getKilometros().equalsIgnoreCase(km))
-						.filter(vehicle -> vehicle.getAnno().equalsIgnoreCase(anno))
-						.filter(vehicle -> vehicle.getCombustible().equalsIgnoreCase(fuel))
-						.collect(Collectors.toList());
+				var vehicleResult = getVehicleBySelectedCategory(onSaleCars, onSaleMotorcycles, onSaleMopeds, km, anno,
+						fuel);
 
 				// Si encuentra resultados
 				if (vehicleResult.size() > 0) {
@@ -224,12 +224,6 @@ public class SalesSearchAndListVehiclesView {
 						tableModel.addRow(new Object[] { vehicle.getNum_bastidor(), vehicle.getMarca(),
 								vehicle.getModelo(), vehicle.getAnno(), vehicle.getKilometros(),
 								vehicle.getCombustible(), vehicle.getPrecio() });
-					}
-
-					// Poner el radioButton en la categoría que corresponde (si es 1 único
-					// resultado)
-					if (vehicleResult.size() <= 1) {
-						setVehicleCategory(vehicleResult);
 					}
 				} else {
 					showErrorMessage("No hay resultados, revise los campos de búsqueda");
@@ -561,6 +555,41 @@ public class SalesSearchAndListVehiclesView {
 				tableModel.removeRow(i);
 			}
 		}
+	}
+
+	/**
+	 * Obtiene el vehículo filtrado con los parámetros elegidos, según el
+	 * radiobutton (tipo de vehículo) seleccionado,
+	 * 
+	 * @param onSaleCars 
+	 * @param onSaleMotorcycles
+	 * @param onSaleMopeds
+	 * @param km
+	 * @param anno
+	 * @param fuel
+	 * @return Lista de vehículos
+	 */
+	private List<Vehicle> getVehicleBySelectedCategory(List<Car> onSaleCars, List<Motorcycle> onSaleMotorcycles,
+			List<Moped> onSaleMopeds, String km, String anno, String fuel) {
+		List<Vehicle> vehicleResult;
+		if (carsRadioButton.isSelected()) {
+			vehicleResult = onSaleCars.stream()
+					.filter(car -> car.getKilometros().equalsIgnoreCase(km))
+					.filter(car -> car.getAnno().equalsIgnoreCase(anno))
+					.filter(car -> car.getCombustible().equalsIgnoreCase(fuel)).collect(Collectors.toList());
+		} else if (motorcyclesRadioButton.isSelected()) {
+			vehicleResult = onSaleMotorcycles.stream()
+					.filter(motorcycle -> motorcycle.getKilometros().equalsIgnoreCase(km))
+					.filter(motorcycle -> motorcycle.getAnno().equalsIgnoreCase(anno))
+					.filter(motorcycle -> motorcycle.getCombustible().equalsIgnoreCase(fuel))
+					.collect(Collectors.toList());
+		} else {
+			vehicleResult = onSaleMopeds.stream()
+					.filter(moped -> moped.getKilometros().equalsIgnoreCase(km))
+					.filter(moped -> moped.getAnno().equalsIgnoreCase(anno))
+					.filter(moped -> moped.getCombustible().equalsIgnoreCase(fuel)).collect(Collectors.toList());
+		}
+		return vehicleResult;
 	}
 
 	/**
