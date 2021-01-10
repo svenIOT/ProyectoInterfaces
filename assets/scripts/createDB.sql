@@ -118,6 +118,7 @@ CREATE TABLE Propuesta
 	num_bastidor varchar(10) NOT NULL,
     fecha_validez date,
     precio varchar(6),
+    vendido boolean,
 	PRIMARY KEY (cod_propuesta)
 );
 
@@ -131,6 +132,7 @@ CREATE TABLE Reparacion
     fecha_salida date,
 	piezas varchar(500),
     precio varchar(6),
+    finalizado boolean,
 	PRIMARY KEY (cod_reparacion)
 );
 

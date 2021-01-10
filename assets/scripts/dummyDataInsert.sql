@@ -75,11 +75,11 @@ INSERT INTO taller.vehiculo (num_bastidor, cod_ventas, cod_cliente, cod_conce, t
 ('0000000001', null, 4, 1, 'Coche', 'BMW', '335d', 'Diesel', null, '2015', '143540'); -- Vehículo en reparaciones, sin precio ni cod ventas
 
 -- REPARACION
-INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas, precio) VALUES
-(1, 1, '1234567890', '2021-10-9', '2021-10-11', 'Turbo K04 híbrido, downpipe, pintura blue rally', 500),
-(2, 2, '9996079999', '2021-10-9', '2021-10-29', '4 Bujías, silenciador don silencioso, piezas caras saca la pasta', 320),
-(3, 4, '0006079000', '2021-10-9', '2021-10-28', 'Tirar a la basura esta sh*t', 50),
-(4, 3, '0000000001', '2021-10-16', '2021-12-18', 'Pastillas de freno, pinzas nuevas, 4 neumáticos continental sport, adblue, hierro pa los buques', 1200);
+INSERT INTO taller.reparacion (cod_reparacion, cod_mecanico, num_bastidor, fecha_entrada, fecha_salida, piezas, precio, finalizado) VALUES
+(1, 1, '1234567890', '2021-10-9', '2021-10-11', 'Turbo K04 híbrido, downpipe, pintura blue rally', 500, false),
+(2, 2, '9996079999', '2021-10-9', '2021-10-29', '4 Bujías, silenciador don silencioso, piezas caras saca la pasta', 320, false),
+(3, 4, '0006079000', '2021-10-9', '2021-10-28', 'Tirar a la basura esta sh*t', 50, false),
+(4, 3, '0000000001', '2021-10-16', '2021-12-18', 'Pastillas de freno, pinzas nuevas, 4 neumáticos continental sport, adblue, hierro pa los buques', 1200, false);
 
 -- COCHE
 INSERT INTO taller.coche (mat_coche, num_bastidor) VALUES
@@ -103,11 +103,16 @@ INSERT INTO taller.ciclomotor (mat_ciclo, num_bastidor) VALUES
 ('0101IER', '4443332221');
 
 -- PROPUESTA
-INSERT INTO taller.propuesta (cod_propuesta, cod_cliente, cod_ventas, num_bastidor, fecha_validez, precio) VALUES
-(1, 1, 1, '0123456789', '2021-10-11', 5000),
-(2, 2, 1, '1112223334', '2021-12-17', 49999),
-(3, 3, 1, '1111112223', '2021-11-19', 12312);
-
-
+INSERT INTO taller.propuesta (cod_propuesta, cod_cliente, cod_ventas, num_bastidor, fecha_validez, precio, vendido) VALUES
+(1, 1, 1, '0123456789', '2022-10-11', 5000, false),
+(2, 2, 1, '1112223334', '2020-12-17', 49999, true),
+(3, 3, 1, '9876543210', '2020-12-12', 44000, true),
+(4, 1, 1, '4328457431', '2020-10-27', 7900, true),
+(5, 1, 1, '5486079685', '2020-11-19', 2900, true),
+(6, 3, 1, '0006079000', '2019-11-19', 800, true),
+(7, 2, 1, '9996079999', '2019-11-20', 4900, true),
+(8, 2, 1, '3334445556', '2021-11-19', 4000, false),
+(9, 3, 1, '1111112223', '2021-11-19', 12312, false),
+(10, 1, 1, '4443332221', '2021-11-19', 1900, false);
 
 
